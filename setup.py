@@ -19,6 +19,9 @@ extras_require['all'] = list(chain.from_iterable(extras_require.values()))
 extras_require['app-win'] = ['pypiwin32', 'kivy_deps.sdl2', 'kivy_deps.gstreamer', 'kivy_deps.angle']
 extras_require['all-win'] = extras_require['all'] + extras_require['app-win']
 
+# To install kivy dev version on python 3.8:
+# pip install kivy[base] kivy_examples --pre --extra-index-url https://kivy.org/downloads/simple/
+
 setup(
     name='naturtag',
     version=__version__,
@@ -30,7 +33,7 @@ setup(
         'click-help-colors',
         'pillow>=7.0',
         'pyexiv2',
-        'pyinaturalist==0.11.0.dev254',
+        'pyinaturalist==0.11.0.dev299',
         'pyyaml',
         'requests',
         'requests-cache',
