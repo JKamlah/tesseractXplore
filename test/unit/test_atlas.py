@@ -1,5 +1,5 @@
 import pytest
-from naturtag.atlas import get_atlas_dimensions
+from tesseractXplore.atlas import get_atlas_dimensions
 
 
 # Test various combinations of inputs and limits

@@ -9,8 +9,8 @@ before_install:
 install:
   - pip install -e '.[dev]'
 script:
-  - naturtag -cdo 45524803
-  - naturtag -cdt 48978
+  - tesseractXplore -cdo 45524803
+  - tesseractXplore -cdt 48978
   - pytest ./test
 
 deploy:

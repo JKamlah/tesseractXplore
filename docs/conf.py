@@ -4,7 +4,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-from naturtag import __version__
+from tesseractXplore import __version__
 
 # Basic config
 project = 'Naturtag'
@@ -35,7 +35,7 @@ intersphinx_mapping = {
 intersphinx_timeout = 30
 
 # Use apidoc to auto-generate rst sources
-apidoc_module_dir = '../naturtag'
+apidoc_module_dir = '../tesseractXplore'
 apidoc_output_dir = 'modules'
 apidoc_module_first = True
 apidoc_toc_file = False

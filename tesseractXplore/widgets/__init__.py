@@ -1,0 +1,24 @@
+"""
+Custom widgets with more complex behavior that can't be defined in just kvlang.
+See widgets.kv for non-behavioral widget settings
+"""
+
+# Not sure where else to put thus
+def truncate(text: str) -> str:
+    """ Truncate a label string to not exceed maximum length """
+    if len(text) > MAX_LABEL_CHARS:
+        text = text[:MAX_LABEL_CHARS - 2] + '...'
+    return text
+
+
+from tesseractXplore.constants import MAX_LABEL_CHARS
+from tesseractXplore.widgets.inputs import DropdownTextField, TextFieldWrapper
+from tesseractXplore.widgets.autocomplete import AutocompleteSearch, DropdownContainer, DropdownItem
+from tesseractXplore.widgets.buttons import StarButton, TooltipFloatingButton, TooltipIconButton
+from tesseractXplore.widgets.images import CachedAsyncImage, IconicTaxaIcon, ImageMetaTile
+from tesseractXplore.widgets.labels import HideableTooltip, TooltipLabel
+from tesseractXplore.widgets.tabs import Tab
+from tesseractXplore.widgets.lists import SortableList, SwitchListItem, TextInputListItem, TaxonListItem, ThumbnailListItem
+from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, PhotoContextMenuItem, ListContextMenuItem
+from tesseractXplore.widgets.progress_bar import LoaderProgressBar
+from tesseractXplore.widgets.taxon_autocomplete import TaxonAutocompleteSearch

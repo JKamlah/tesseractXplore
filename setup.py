@@ -1,6 +1,6 @@
 from itertools import chain
 from setuptools import setup, find_packages
-from naturtag import __version__
+from tesseractXplore import __version__
 
 extras_require = {
     'app': ['kivy>=1.11', 'kivymd~=0.104.1', 'kivy-garden.contextmenu', 'pygments'],
@@ -23,7 +23,7 @@ extras_require['all-win'] = extras_require['all'] + extras_require['app-win']
 # pip install kivy[base] kivy_examples --pre --extra-index-url https://kivy.org/downloads/simple/
 
 setup(
-    name='naturtag',
+    name='tesseractXplore',
     version=__version__,
     packages=find_packages(),
     install_requires=[
@@ -33,7 +33,6 @@ setup(
         'click-help-colors',
         'pillow>=7.0',
         'pyexiv2',
-        'pyinaturalist==0.11.0.dev299',
         'pyyaml',
         'requests',
         'requests-cache',
@@ -42,11 +41,11 @@ setup(
     extras_require=extras_require,
     entry_points={
         'console_scripts': [
-            'naturtag=naturtag.cli:main',
-            'nt=naturtag.cli:main',
+            'tesseractXplore=tesseractXplore.cli:main',
+            'nt=tesseractXplore.cli:main',
         ],
         'gui_scripts': [
-            'naturtag-app=naturtag.app.app:main',
+            'tesseractXplore-app=tesseractXplore.app.app:main',
         ],
     }
 )
