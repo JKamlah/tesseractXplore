@@ -130,3 +130,7 @@ class SettingsController:
     @property
     def display(self):
         return self.settings_dict['display']
+
+    @property
+    def tesseract(self):
+        return self.settings_dict['tesseract']

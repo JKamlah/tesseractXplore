@@ -17,7 +17,11 @@ metadata:
 photos:
   start_dir: '/'
   # Not yet configurable
-  filetypes: ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff']
+  filetypes: ['jpg', 'jpeg', 'png', 'ppm', 'gif', 'tif', 'tiff']
+tesseract:
+  model: null
+  psm: null
+  oem: null
 # Not yet configurable
 search:
   autocomplete_delay: 0.5

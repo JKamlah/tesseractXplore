@@ -35,6 +35,9 @@ class SettingsScreen(MDScreen):
 class MetadataViewScreen(MDScreen):
     pass
 
+class FulltextViewScreen(MDScreen):
+    pass
+
 class TaxonScreen(MDScreen):
     pass
 
@@ -46,6 +49,7 @@ SCREENS = {
     HOME_SCREEN: ImageSelectionScreen,
     'settings': SettingsScreen,
     'metadata': MetadataViewScreen,
+    'fulltext': FulltextViewScreen,
     'taxon': TaxonScreen,
     'observation': ObservationScreen,
 }

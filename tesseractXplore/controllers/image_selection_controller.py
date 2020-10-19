@@ -9,7 +9,6 @@ from tesseractXplore.widgets import ImageMetaTile
 
 logger = getLogger().getChild(__name__)
 
-
 class ImageSelectionController(Controller):
     """ Controller class to manage image selector screen """
     def __init__(self, screen):
@@ -25,6 +24,7 @@ class ImageSelectionController(Controller):
         self.context_menu.ids.view_taxon_ctx.bind(on_release=self.view_taxon)
         # self.context_menu.ids.view_observation_ctx.bind(on_release=self.view_observation)
         self.context_menu.ids.view_metadata_ctx.bind(on_release=self.view_metadata)
+        self.context_menu.ids.edit_fulltext_ctx.bind(on_release=self.edit_fulltext)
         self.context_menu.ids.copy_flickr_tags_ctx.bind(on_release=lambda x: x.selected_image.copy_flickr_tags())
         self.context_menu.ids.remove_ctx.bind(on_release=lambda x: self.remove_image(x.selected_image))
 
@@ -32,7 +32,7 @@ class ImageSelectionController(Controller):
         self.inputs.taxon_id_input.bind(on_text_validate=self.on_taxon_id)
         self.inputs.clear_button.bind(on_release=self.clear)
         self.inputs.load_button.bind(on_release=self.add_file_chooser_images)
-        self.inputs.recognize_button.bind(on_release=self.run)
+        #self.inputs.recognize_button.bind(on_release=self.run)
         self.file_chooser.bind(on_submit=self.add_file_chooser_images)
 
     def post_init(self):
@@ -145,6 +145,11 @@ class ImageSelectionController(Controller):
         get_app().switch_screen('metadata')
         get_app().select_metadata(instance.metadata)
 
+    @staticmethod
+    def edit_fulltext(instance):
+        get_app().switch_screen('fulltext')
+        get_app().select_fulltext(instance)
+
     def run(self, *args):
         """ Run image tagging for selected images and input """
         if not self.file_list:
@@ -161,9 +166,9 @@ class ImageSelectionController(Controller):
         alert(f'{len(self.file_list)} images recognized')
 
         # Update image previews with new metadata
-        #previews = {img.metadata.image_path: img for img in self.image_previews.children}
-        #for metadata in all_metadata:
-        #    previews[metadata.image_path].metadata = metadata
+        previews = {img.metadata.image_path: img for img in self.image_previews.children}
+        for metadata in all_metadata:
+            previews[metadata.image_path].metadata = metadata
 
     @staticmethod
     def on_taxon_id(input):

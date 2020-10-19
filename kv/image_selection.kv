@@ -31,12 +31,56 @@
                     # Text input fields
                     # TODO: Move input/search to a separate screen
                     MDBoxLayout:
-                        size_hint_y: .15
+                        size_hint_y: .50
                         size_hint_min_y: 120
 
                         MDGridLayout:
-                            cols: 2
+                            cols: 1
                             spacing: dp(4)
+
+                            MDLabel:
+                                text: "Settings"
+
+                            MDDropDownItem:
+                                id: model
+                                text: 'Select model (defautl:eng)'
+                                on_release: app.tesseract_controller.model_menu.open()
+
+                            MDDropDownItem:
+                                id: psm
+                                text: 'Select PSM (default:3)'
+                                on_release: app.tesseract_controller.psm_menu.open()
+
+                            MDDropDownItem:
+                                id: oem
+                                text: 'Select OEM (default:3)'
+                                on_release: app.tesseract_controller.oem_menu.open()
+
+                            MDDropDownItem:
+                                id: outputformat
+                                text: 'Select outputformat (default:txt)'
+                                on_release: app.tesseract_controller.outputformat_menu.open()
+
+                            MDRoundFlatIconButton:
+                                id: output
+                                text: "Select output folder (default:inputfolder)"
+                                width: dp(400)
+                                icon: 'folder'
+                                pos_hint:{'center_x':0.5,'center_y':0.7}
+                                on_release: app.tesseract_controller.select_output_folder()
+
+
+
+                            MDRoundFlatIconButton:
+                                text: 'Find a Species'
+                                icon: 'ladybug'
+                                width: dp(200)
+                                on_press:
+                                    app.switch_screen('taxon')
+                            IntField:
+                                id: taxon_id_input
+                                hint_text: 'Taxon ID'
+                                helper_text: 'Enter an iNaturalist taxon ID'
                             MDRoundFlatIconButton:
                                 disabled: True  # TODO: Remove once implemented
                                 text: 'Find an Observation'
@@ -48,16 +92,6 @@
                                 id: observation_id_input
                                 hint_text: 'Observation ID'
                                 helper_text: 'Enter an iNaturalist observation ID'
-                            MDRoundFlatIconButton:
-                                text: 'Find a Species'
-                                icon: 'ladybug'
-                                width: dp(200)
-                                on_press:
-                                    app.switch_screen('taxon')
-                            IntField:
-                                id: taxon_id_input
-                                hint_text: 'Taxon ID'
-                                helper_text: 'Enter an iNaturalist taxon ID'
 
                     # File Chooser
                     MDBoxLayout:

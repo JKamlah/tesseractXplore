@@ -12,13 +12,13 @@ PKG_DIR = dirname(dirname(__file__))
 ASSETS_DIR = join(PKG_DIR, 'assets', '')
 KV_SRC_DIR = join(PKG_DIR, 'kv')
 ICONS_DIR = join(ASSETS_DIR, 'iconic_taxa')
-DATA_DIR = join(user_data_dir(), 'Naturtag')
+DATA_DIR = join(user_data_dir(), 'TesseractXplore')
 
 # TODO: These may be useful as user-configurable settings
 TRIGGER_DELAY = 0.1
 AUTOCOMPLETE_DELAY = 0.5
 AUTOCOMPLETE_MIN_CHARS = 3
-IMAGE_FILETYPES = ['*.jpg', '*.jpeg', '*.png', '*.gif']
+IMAGE_FILETYPES = ['*ppm', '*.jpg', '*.jpeg', '*.png', '*.gif', '*.tif', '*.tiff']
 
 # Thumnbnail & cache settings
 EXIF_ORIENTATION_ID = '0x0112'
@@ -58,7 +58,7 @@ MAX_DISPLAY_HISTORY = 50  # Max number of history items to display at a time
 TAXON_BASE_URL = 'https://www.inaturalist.org/taxa'
 OBSERVATION_BASE_URL = 'https://www.inaturalist.org/observations'
 PLACES_BASE_URL = 'https://www.inaturalist.org/places'
-USER_AGENT = f'tesseractXplore/{__version__}; {DEFAULT_USER_AGENT}'.lower()
+USER_AGENT = f'tesseract-xplore/{__version__}; {DEFAULT_USER_AGENT}'.lower()
 
 # Theme/window settings
 INIT_WINDOW_POSITION = ('custom', 100, 100)

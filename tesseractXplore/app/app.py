@@ -32,11 +32,13 @@ from tesseractXplore.constants import (
 )
 from tesseractXplore.controllers import (
     ImageSelectionController,
+    FulltextViewController,
     MetadataViewController,
     SettingsController,
     TaxonSearchController,
     TaxonSelectionController,
     TaxonViewController,
+    TesseractController,
 )
 from tesseractXplore.inat_metadata import strip_url_by_type
 from tesseractXplore.widgets import TaxonListItem
@@ -51,6 +53,7 @@ class ControllerProxy:
     """
     image_selection_controller = ObjectProperty()
     metadata_view_controller = ObjectProperty()
+    fulltext_view_controller = ObjectProperty()
     taxon_search_controller = ObjectProperty()
     taxon_selection_controller = ObjectProperty()
     taxon_view_controller = ObjectProperty()
@@ -59,7 +62,9 @@ class ControllerProxy:
     def init_controllers(self, screens):
         # Init controllers with references to nested screen objects
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
+        self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
         self.metadata_view_controller = MetadataViewController(screens['metadata'].ids)
+        self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.taxon_selection_controller = TaxonSelectionController(screens['taxon'].ids)
         self.taxon_view_controller = TaxonViewController(screens['taxon'].ids)
@@ -70,6 +75,7 @@ class ControllerProxy:
         self.is_starred = self.taxon_selection_controller.is_starred
         self.add_star = self.taxon_selection_controller.add_star
         self.select_metadata = self.metadata_view_controller.select_metadata
+        self.select_fulltext = self.fulltext_view_controller.select_fulltext
         self.remove_star = self.taxon_selection_controller.remove_star
         self.select_taxon = self.taxon_view_controller.select_taxon
         self.select_taxon_from_photo = self.image_selection_controller.select_taxon_from_photo
@@ -109,10 +115,10 @@ class TesseractXplore(MDApp, ControllerProxy):
         self.nav_drawer = None
         self.screen_manager = None
         self.toolbar = None
-
         # Buffer + delayed trigger For collecting multiple files dropped at once
         self.dropped_files = []
         self.drop_trigger = Clock.create_trigger(self.process_dropped_files, TRIGGER_DELAY)
+
 
     def build(self):
         # Create an event loop to be used by background loaders
@@ -133,6 +139,7 @@ class TesseractXplore(MDApp, ControllerProxy):
             self.screen_manager.add_widget(screen)
         self.set_theme_mode()
         self.home()
+
         # self.switch_screen('taxon')
 
         # Set Window and theme settings
@@ -271,7 +278,6 @@ class TesseractXplore(MDApp, ControllerProxy):
 
 def main():
     TesseractXplore().run()
-
 
 if __name__ == '__main__':
     main()

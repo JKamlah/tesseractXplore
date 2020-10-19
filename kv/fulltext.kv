@@ -1,0 +1,45 @@
+<FulltextViewScreen>:
+    name: 'fulltext'
+
+    BoxLayout:
+        orientation: 'vertical'
+        MDTabs:
+            id: fulltext_tabs
+            background_color: app.theme_cls.primary_color
+
+            Tab:
+                text: 'Image'
+                ScrollViewY:
+                    MDGridLayout:
+                        id: image
+                        adaptive_height: True
+                        cols: 1
+                        padding: dp(4), dp(4)
+                        spacing: dp(4)
+
+            Tab:
+                text: 'Text'
+                TextInput:
+                    id: text
+                    readonly: True
+                    multiline: True
+            Tab:
+                text: 'ALTO'
+                TextInput:
+                    id: alto
+                    readonly: True
+                    multiline: True
+            Tab:
+                text: 'hOCR'
+                TextInput:
+                    id: hocr
+                    readonly: True
+                    multiline: True
+            Tab:
+                text: 'TSV'
+                TextInput:
+                    id: tsv
+                    readonly: True
+                    multiline: True
+        StatusBar:
+            id: status_bar
