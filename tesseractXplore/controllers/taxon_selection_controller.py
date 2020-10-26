@@ -4,11 +4,11 @@ from logging import getLogger
 
 from kivy.clock import Clock
 
-from tesseractXplore.app import get_app, alert
-from tesseractXplore.constants import MAX_DISPLAY_HISTORY
-from tesseractXplore.controllers import Controller, TaxonBatchLoader
-from tesseractXplore.inat_metadata import get_user_taxa
-from tesseractXplore.widgets import StarButton, TaxonListItem
+from tesseractXplor.app import get_app, alert
+from tesseractXplor.constants import MAX_DISPLAY_HISTORY
+from tesseractXplor.controllers import Controller, TaxonBatchLoader
+from tesseractXplor.inat_metadata import get_user_taxa
+from tesseractXplor.widgets import StarButton, TaxonListItem
 
 logger = getLogger().getChild(__name__)
 

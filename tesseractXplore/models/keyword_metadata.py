@@ -2,7 +2,7 @@ from itertools import chain
 from logging import getLogger
 from typing import Any, Dict, List
 
-from tesseractXplore.inat_metadata import sort_taxonomy_keywords, quote
+from tesseractXplor.inat_metadata import sort_taxonomy_keywords, quote
 
 # All tags that support regular and hierarchical keyword lists
 KEYWORD_TAGS = [

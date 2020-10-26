@@ -2,11 +2,11 @@ import asyncio
 from logging import getLogger
 
 from pyinaturalist.node_api import get_taxa
-from tesseractXplore.constants import ICONIC_TAXA, RANKS
-from tesseractXplore.controllers import Controller, TaxonBatchLoader
-from tesseractXplore.models import Taxon
-from tesseractXplore.app import get_app
-from tesseractXplore.widgets import DropdownTextField, IconicTaxaIcon
+from tesseractXplor.constants import ICONIC_TAXA, RANKS
+from tesseractXplor.controllers import Controller, TaxonBatchLoader
+from tesseractXplor.models import Taxon
+from tesseractXplor.app import get_app
+from tesseractXplor.widgets import DropdownTextField, IconicTaxaIcon
 
 logger = getLogger().getChild(__name__)
 

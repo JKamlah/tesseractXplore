@@ -3,7 +3,7 @@ from os.path import dirname, join
 from typing import Optional, Tuple
 
 from appdirs import user_data_dir
-from tesseractXplore import __version__
+from tesseractXplor import __version__
 from pyinaturalist import DEFAULT_USER_AGENT
 from pyinaturalist.request_params import RANKS
 

@@ -1,11 +1,11 @@
 import asyncio
 from logging import getLogger
 
-from tesseractXplore.app import alert, get_app
-from tesseractXplore.controllers import Controller, ImageBatchLoader
-from tesseractXplore.image_glob import get_images_from_paths
-from tesseractXplore.recognizer import recognize
-from tesseractXplore.widgets import ImageMetaTile
+from tesseractXplor.app import alert, get_app
+from tesseractXplor.controllers import Controller, ImageBatchLoader
+from tesseractXplor.image_glob import get_images_from_paths
+from tesseractXplor.recognizer import recognize
+from tesseractXplor.widgets import ImageMetaTile
 
 logger = getLogger().getChild(__name__)
 

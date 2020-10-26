@@ -4,7 +4,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.tab import MDTabsBase, MDTabsLabel
 from kivymd.uix.tooltip import MDTooltip
 
-from tesseractXplore.widgets import truncate
+from tesseractXplor.widgets import truncate
 
 
 class Tab(MDBoxLayout, MDTabsBase):

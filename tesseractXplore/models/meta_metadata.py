@@ -2,9 +2,9 @@ from logging import getLogger
 from os.path import basename
 from typing import Dict, List, Optional
 
-from tesseractXplore.constants import StrTuple, IntTuple
-from tesseractXplore.inat_metadata import get_inaturalist_ids, get_min_rank
-from tesseractXplore.models import ImageMetadata, KeywordMetadata, KEYWORD_TAGS, HIER_KEYWORD_TAGS
+from tesseractXplor.constants import StrTuple, IntTuple
+from tesseractXplor.inat_metadata import get_inaturalist_ids, get_min_rank
+from tesseractXplor.models import ImageMetadata, KeywordMetadata, KEYWORD_TAGS, HIER_KEYWORD_TAGS
 
 logger = getLogger().getChild(__name__)
 

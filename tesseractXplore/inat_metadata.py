@@ -14,7 +14,7 @@ from pyinaturalist.node_api import (
     get_taxa_by_id,
 )
 from pyinaturalist.rest_api import get_observations
-from tesseractXplore.constants import (
+from tesseractXplor.constants import (
     CACHE_BACKEND,
     CACHE_PATH,
     COMMON_NAME_IGNORE_TERMS,

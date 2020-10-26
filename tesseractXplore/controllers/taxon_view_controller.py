@@ -4,11 +4,11 @@ import webbrowser
 from typing import List
 
 from kivymd.uix.list import OneLineListItem, ThreeLineAvatarIconListItem, ImageLeftWidget
-from tesseractXplore.controllers import Controller, TaxonBatchLoader
+from tesseractXplor.controllers import Controller, TaxonBatchLoader
 
-from tesseractXplore.models import Taxon, get_icon_path
-from tesseractXplore.app import get_app
-from tesseractXplore.widgets import StarButton
+from tesseractXplor.models import Taxon, get_icon_path
+from tesseractXplor.app import get_app
+from tesseractXplor.widgets import StarButton
 
 logger = getLogger().getChild(__name__)
 

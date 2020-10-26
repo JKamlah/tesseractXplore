@@ -1,6 +1,6 @@
-from tesseractXplore.app import get_app
-from tesseractXplore.controllers import BatchLoader
-from tesseractXplore.widgets import LoaderProgressBar
+from tesseractXplor.app import get_app
+from tesseractXplor.controllers import BatchLoader
+from tesseractXplor.widgets import LoaderProgressBar
 
 
 class Controller:

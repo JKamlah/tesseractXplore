@@ -2,7 +2,7 @@ import attr
 from typing import List, Dict
 
 from pyinaturalist.node_api import get_observation
-from tesseractXplore.constants import OBSERVATION_BASE_URL
+from tesseractXplor.constants import OBSERVATION_BASE_URL
 
 kwarg = attr.ib(default=None)
 

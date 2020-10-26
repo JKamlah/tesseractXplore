@@ -9,7 +9,7 @@ from typing import Dict, Any
 import json
 import yaml
 
-from tesseractXplore.constants import DATA_DIR, CONFIG_PATH, DEFAULT_CONFIG_PATH, STORED_TAXA_PATH
+from tesseractXplor.constants import DATA_DIR, CONFIG_PATH, DEFAULT_CONFIG_PATH, STORED_TAXA_PATH
 
 logger = getLogger().getChild(__name__)
 

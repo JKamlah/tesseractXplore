@@ -2,8 +2,8 @@ import attr
 from typing import List, Dict, Optional
 
 from pyinaturalist.node_api import get_taxa_by_id
-from tesseractXplore.inat_metadata import get_rank_idx
-from tesseractXplore.constants import TAXON_BASE_URL, ICONISH_TAXA, ATLAS_APP_ICONS, CC_LICENSES
+from tesseractXplor.inat_metadata import get_rank_idx
+from tesseractXplor.constants import TAXON_BASE_URL, ICONISH_TAXA, ATLAS_APP_ICONS, CC_LICENSES
 
 kwarg = attr.ib(default=None)
 

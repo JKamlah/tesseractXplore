@@ -29,9 +29,9 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 
-from tesseractXplore.app.screens import load_kv
-from tesseractXplore.constants import AUTOCOMPLETE_DELAY, AUTOCOMPLETE_MIN_CHARS
-from tesseractXplore.widgets import TextFieldWrapper
+from tesseractXplor.app.screens import load_kv
+from tesseractXplor.constants import AUTOCOMPLETE_DELAY, AUTOCOMPLETE_MIN_CHARS
+from tesseractXplor.widgets import TextFieldWrapper
 
 PADDING = dp(50)
 ROW_SIZE = dp(22)

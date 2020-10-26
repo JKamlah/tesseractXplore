@@ -6,10 +6,10 @@ import webbrowser
 from kivy.uix.widget import Widget
 
 from kivymd.app import MDApp
-from tesseractXplore.app import alert
+from tesseractXplor.app import alert
 
-from tesseractXplore.constants import PLACES_BASE_URL
-from tesseractXplore.settings import (
+from tesseractXplor.constants import PLACES_BASE_URL
+from tesseractXplor.settings import (
     read_settings,
     write_settings,
     read_stored_taxa,

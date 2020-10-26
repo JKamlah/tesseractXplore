@@ -4,7 +4,7 @@ import glob
 from pathlib import Path
 
 from kivy.properties import StringProperty
-from tesseractXplore.app import alert, get_app
+from tesseractXplor.app import alert, get_app
 
 
 

@@ -1,5 +1,5 @@
 from pyinaturalist.node_api import get_taxa_autocomplete
-from tesseractXplore.widgets import AutocompleteSearch
+from tesseractXplor.widgets import AutocompleteSearch
 
 
 class TaxonAutocompleteSearch(AutocompleteSearch):

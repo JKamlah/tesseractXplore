@@ -18,6 +18,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.image import Image
 from kivymd.app import MDApp
 
+from tesseractXplore.recognizer import tag_image
 from tesseractXplore.app import alert
 from tesseractXplore.app.screens import HOME_SCREEN, Root, load_screens
 from tesseractXplore.constants import (
