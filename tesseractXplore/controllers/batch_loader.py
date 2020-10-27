@@ -8,8 +8,8 @@ from kivy.clock import mainthread, Clock
 from kivy.event import EventDispatcher
 from kivy.uix.widget import Widget
 
-from tesseractXplor.app import get_app
-from tesseractXplor.widgets import TaxonListItem, ImageMetaTile
+from tesseractXplore.app import get_app
+from tesseractXplore.widgets import TaxonListItem, ImageMetaTile
 
 REPORT_RATE = 1/30  # Report progress to UI at 30 FPS
 logger = getLogger().getChild(__name__)

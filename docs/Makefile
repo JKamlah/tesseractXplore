@@ -3,7 +3,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 AUTOSOURCEDIR = $(SOURCEDIR)/modules
-PACKAGEDIR    = ../naturtag
+PACKAGEDIR    = ../tesseractXplore
 BUILDDIR      = _build
 
 

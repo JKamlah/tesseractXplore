@@ -7,9 +7,9 @@ sys.path.insert(0, os.path.abspath('..'))
 from tesseractXplore import __version__
 
 # Basic config
-project = 'Naturtag'
-copyright = '2020, Jordan Cook'
-author = 'Jordan Cook'
+project = 'tesseractXplore'
+copyright = '2020, Jan Kamlah'
+author = 'Jan Kamlah'
 version = __version__
 html_static_path = ['_static']
 templates_path = ['_templates']
@@ -30,7 +30,6 @@ intersphinx_mapping = {
     'kivy': ('https://kivy.org/doc/stable', None),
     'kivymd': ('https://kivymd.readthedocs.io/en/latest', None),
     'pillow': ('https://pillow.readthedocs.io/en/stable', None),
-    'pyinaturalist': ('https://pyinaturalist.readthedocs.io/en/latest/', None),
 }
 intersphinx_timeout = 30
 

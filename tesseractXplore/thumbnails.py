@@ -11,7 +11,7 @@ from PIL import Image
 from PIL.ImageOps import exif_transpose, flip
 import requests
 
-from tesseractXplor.constants import (
+from tesseractXplore.constants import (
     EXIF_ORIENTATION_ID,
     THUMBNAILS_DIR,
     THUMBNAIL_SIZE_DEFAULT,
@@ -198,7 +198,7 @@ def get_orientated_image(source, default_flip: bool=True) -> Image:
 
 def flip_all(path: str):
     """ Vertically flip all images in a directory. Mainly for debugging purposes. """
-    from tesseractXplor.image_glob import get_images_from_dir
+    from tesseractXplore.image_glob import get_images_from_dir
     for source in get_images_from_dir(path):
         image = Image.open(source)
         image = flip(image)

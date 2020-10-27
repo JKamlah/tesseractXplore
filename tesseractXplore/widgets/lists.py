@@ -6,9 +6,9 @@ from kivymd.uix.list import ThreeLineAvatarIconListItem
 from kivymd.uix.selectioncontrol import MDSwitch
 from kivymd.uix.textfield import MDTextFieldRound
 
-from tesseractXplor.app import alert
-from tesseractXplor.models import Taxon
-from tesseractXplor.widgets import CachedAsyncImage, Tab
+from tesseractXplore.app import alert
+from tesseractXplore.models import Taxon
+from tesseractXplore.widgets import CachedAsyncImage, Tab
 
 
 class SortableList(MDList):
