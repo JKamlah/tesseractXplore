@@ -36,5 +36,5 @@ class ListContextMenuItem(AutoHideMenuItem):
         return self.parent.ref
 
     @property
-    def taxon_id(self):
-        return self.parent.ref.taxon.id
+    def model_id(self):
+        return self.parent.ref.model.id

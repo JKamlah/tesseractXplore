@@ -3,29 +3,29 @@
 #:import RANKS tesseractXplore.constants.RANKS
 
 
-<TaxonScreen>:
-    name: 'taxon'
+<ModelScreen>:
+    name: 'model'
     FloatLayout:
         id: layout
         # Right-click context menu for images
-        StarredTaxonContextMenu:
+        StarredModelContextMenu:
             id: context_menu
             cancel_handler_widget: layout
         BoxLayout:
             orientation: 'vertical'
             BoxLayout:
-                # Taxon selection: search, history, etc.
+                # Model selection: search, history, etc.
                 MDTabs:
-                    id: taxon_selection_tabs
+                    id: model_selection_tabs
                     background_color: app.theme_cls.primary_color
                     size_hint_x: .4
                     size_hint_min_x: dp(500)
                     size_hint_max_x: dp(700)
-                    TaxonSearchTab:
+                    ModelSearchTab:
                         id: search_tab
-                    TaxonSearchResultsTab:
+                    ModelSearchResultsTab:
                         id: search_results_tab
-                    TaxonHistoryTab:
+                    ModelHistoryTab:
                         id: history_tab
                     FrequentTaxaTab:
                         id: frequent_tab
@@ -34,7 +34,7 @@
                     StarredTaxaTab:
                         id: starred_tab
 
-                # Info display for selected taxon
+                # Info display for selected model
                 MDBoxLayout:
                     orientation: 'vertical'
                     padding: dp(20)
@@ -50,7 +50,7 @@
                             spacing: dp(10)
                             size_hint_max_x: dp(500)
                             CachedAsyncImage:
-                                id: selected_taxon_photo
+                                id: selected_model_photo
                                 size_hint_max_y: dp(500)
                                 source: PLACEHOLDER_ICON
                         MDBoxLayout:
@@ -60,45 +60,45 @@
                                 MDList:
                                     id: basic_info_section
                             LinksSection:
-                                id: taxon_links
-                    TaxonomySection:
-                        id: taxonomy_section
+                                id: model_links
+                    ModelomySection:
+                        id: model_section
             StatusBar:
                 id: status_bar
 
-# Taxon links
+# Model links
 <LinksSection@MDBoxLayout>:
     size_hint_max_y: dp(50)
     spacing: dp(10)
     TooltipIconButton:
-        id: taxon_parent_button
+        id: model_parent_button
         icon: 'arrow-up-circle-outline'
         text: 'View parent'
         width: dp(220)
         disabled: True
     TooltipIconButton:
-        id: selected_taxon_link_button
+        id: selected_model_link_button
         icon: 'link-variant'
         text: 'View on iNaturalist'
         width: dp(220)
         disabled: True
 
-# Taxon ancestors & children
-<TaxonomySection@MDGridLayout>:
+# Model ancestors & children
+<ModelomySection@MDGridLayout>:
     cols: 2
     # Labels: These will be updated with # of ancestors & children
     OneLineListItem:
-        id: taxon_ancestors_label
+        id: model_ancestors_label
         font_style: 'H5'
     OneLineListItem:
-        id: taxon_children_label
+        id: model_children_label
         font_style: 'H5'
     # Result lists
     ScrollViewY:
         size_hint_max_x: dp(500)
         MDList:
-            id: taxon_ancestors
+            id: model_ancestors
     ScrollViewY:
         size_hint_max_x: dp(500)
         MDList:
-            id: taxon_children
+            id: model_children

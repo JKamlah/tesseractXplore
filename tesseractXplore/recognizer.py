@@ -8,7 +8,7 @@ from kivymd.toast import toast
 
 def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputformat="stdout"):
     """
-    Get taxonomy tags from an iNaturalist observation or taxon, and write them to local image
+    Get model tags from an iNaturalist gt or model, and write them to local image
     metadata. See :py:func:`~tesseractXplore.cli.tag` for details.
     """
     # TODO: Simplify this a bit

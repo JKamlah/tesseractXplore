@@ -18,7 +18,7 @@ from tesseractXplore.constants import (
 )
 from tesseractXplore.image_glob import get_images_from_paths
 from tesseractXplore.constants import ICONIC_TAXA
-from tesseractXplore.models import Taxon
+from tesseractXplore.models import Model
 from tesseractXplore.thumbnails import generate_thumbnail_from_url, get_thumbnail_if_exists
 
 # Current organization of altas files by thumb size; this may change in the future
@@ -62,14 +62,14 @@ def get_atlas(atlas_path):
     return atlas
 
 
-def build_taxon_icon_atlas(dir=THUMBNAILS_DIR):
-    build_atlas(dir, *THUMBNAIL_SIZE_SM, 'taxon_icons', max_size=ATLAS_MAX_SIZE)
+def build_model_icon_atlas(dir=THUMBNAILS_DIR):
+    build_atlas(dir, *THUMBNAIL_SIZE_SM, 'model_icons', max_size=ATLAS_MAX_SIZE)
 
 
 # TODO: Aspect ratios vary quite a bit for these. Should divide (or sort?) them by square-ish, landscape, and portrait.
 # Or Maybe just crop them all to be square? (or at most 4:3?)
-def build_taxon_photo_atlas(dir=THUMBNAILS_DIR):
-    build_atlas(dir, *THUMBNAIL_SIZE_LG, 'taxon_photos', max_size=ATLAS_MAX_SIZE * 2)
+def build_model_photo_atlas(dir=THUMBNAILS_DIR):
+    build_atlas(dir, *THUMBNAIL_SIZE_LG, 'model_photos', max_size=ATLAS_MAX_SIZE * 2)
 
 
 def build_local_photo_atlas(dir=THUMBNAILS_DIR):
@@ -186,30 +186,30 @@ def _largest_factor_pair(n):
 
 
 def preload_iconic_taxa_thumbnails():
-    """ Pre-download taxon thumbnails for iconic taxa and descendants down to 2 ranks below """
+    """ Pre-download model thumbnails for iconic taxa and descendants down to 2 ranks below """
     for id, name in list(PRELOAD_TAXA.items()):
         min_rank = 'family'
         if name == 'mammalia':
             min_rank = 'genus'
         if name in ['chromista', 'animalia']:
             min_rank = 'class'
-        logger.info(f'Processing iconic taxon: {name} down to {min_rank} level')
-        preload_thumnails(Taxon(id=id), min_rank=min_rank)
+        logger.info(f'Processing iconic model: {name} down to {min_rank} level')
+        preload_thumnails(Model(id=id), min_rank=min_rank)
 
 
-def preload_thumnails(taxon, min_rank='family', depth=0):
-    logger.info(f'Processing: {taxon.rank} {taxon.name} at depth {depth}')
-    thumnail_exists = taxon.photo_url and get_thumbnail_if_exists(taxon.photo_url)
+def preload_thumnails(model, min_rank='family', depth=0):
+    logger.info(f'Processing: {model.rank} {model.name} at depth {depth}')
+    thumnail_exists = model.photo_url and get_thumbnail_if_exists(model.photo_url)
 
     # Only preload images that can be redistributed under Creative Commons
-    if taxon.has_cc_photo and not thumnail_exists:
-        generate_thumbnail_from_url(taxon.photo_url, 'large')
-        generate_thumbnail_from_url(taxon.thumbnail_url, 'small')
+    if model.has_cc_photo and not thumnail_exists:
+        generate_thumbnail_from_url(model.photo_url, 'large')
+        generate_thumbnail_from_url(model.thumbnail_url, 'small')
         sleep(IMAGE_DOWNLOAD_DELAY)
 
-    if taxon.rank not in [min_rank, 'species', 'subspecies']:
-        n_children = len(taxon.child_taxa)
-        for i, child in enumerate(taxon.child_taxa):
+    if model.rank not in [min_rank, 'species', 'subspecies']:
+        n_children = len(model.child_taxa)
+        for i, child in enumerate(model.child_taxa):
             # Skip child if it's already loaded in another category
             if child.id not in PRELOAD_TAXA:
                 logger.info(f'Child {i}/{n_children}')
@@ -218,6 +218,6 @@ def preload_thumnails(taxon, min_rank='family', depth=0):
 
 if __name__ == '__main__':
     # preload_iconic_taxa_thumbnails()
-    build_taxon_icon_atlas()
-    build_taxon_photo_atlas()
+    build_model_icon_atlas()
+    build_model_photo_atlas()
     build_local_photo_atlas()

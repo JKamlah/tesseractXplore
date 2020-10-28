@@ -34,15 +34,14 @@ from tesseractXplore.constants import (
 from tesseractXplore.controllers import (
     ImageSelectionController,
     FulltextViewController,
-    MetadataViewController,
     SettingsController,
-    TaxonSearchController,
-    TaxonSelectionController,
-    TaxonViewController,
+    ModelSearchController,
+    ModelSelectionController,
+    ModelViewController,
     TesseractController,
 )
 from tesseractXplore.inat_metadata import strip_url_by_type
-from tesseractXplore.widgets import TaxonListItem
+from tesseractXplore.widgets import ModelListItem
 
 logger = getLogger().getChild(__name__)
 
@@ -53,34 +52,31 @@ class ControllerProxy:
     This also just serves as documentation for these interactions so I don't lose track of them.
     """
     image_selection_controller = ObjectProperty()
-    metadata_view_controller = ObjectProperty()
     fulltext_view_controller = ObjectProperty()
-    taxon_search_controller = ObjectProperty()
-    taxon_selection_controller = ObjectProperty()
-    taxon_view_controller = ObjectProperty()
+    model_search_controller = ObjectProperty()
+    model_selection_controller = ObjectProperty()
+    model_view_controller = ObjectProperty()
     settings_controller = ObjectProperty()
 
     def init_controllers(self, screens):
         # Init controllers with references to nested screen objects
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
         self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
-        self.metadata_view_controller = MetadataViewController(screens['metadata'].ids)
         self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)
         self.settings_controller = SettingsController(screens['settings'].ids)
-        self.taxon_selection_controller = TaxonSelectionController(screens['taxon'].ids)
-        self.taxon_view_controller = TaxonViewController(screens['taxon'].ids)
-        #self.taxon_search_controller = TaxonSearchController(screens['taxon'].ids)
-        # observation_search_controller = ObservationSearchController(screens['observation'].ids)
+        self.model_selection_controller = ModelSelectionController(screens['model'].ids)
+        self.model_view_controller = ModelViewController(screens['model'].ids)
+        #self.model_search_controller = ModelSearchController(screens['model'].ids)
+        # gt_search_controller = GTSearchController(screens['gt'].ids)
 
         # Proxy methods
-        self.is_starred = self.taxon_selection_controller.is_starred
-        self.add_star = self.taxon_selection_controller.add_star
-        self.select_metadata = self.metadata_view_controller.select_metadata
+        self.is_starred = self.model_selection_controller.is_starred
+        self.add_star = self.model_selection_controller.add_star
         self.select_fulltext = self.fulltext_view_controller.select_fulltext
-        self.remove_star = self.taxon_selection_controller.remove_star
-        self.select_taxon = self.taxon_view_controller.select_taxon
-        self.select_taxon_from_photo = self.image_selection_controller.select_taxon_from_photo
-        self.update_history = self.taxon_selection_controller.update_history
+        self.remove_star = self.model_selection_controller.remove_star
+        self.select_model = self.model_view_controller.select_model
+        self.select_model_from_photo = self.image_selection_controller.select_model_from_photo
+        self.update_history = self.model_selection_controller.update_history
         self.add_control_widget = self.settings_controller.add_control_widget
 
         # Proxy properties
@@ -91,18 +87,18 @@ class ControllerProxy:
         self.preferred_place_id = self.settings_controller.preferred_place_id
 
         self.image_selection_controller.post_init()
-        self.taxon_selection_controller.post_init()
+        self.model_selection_controller.post_init()
 
-    def get_taxon_list_item(self, *args, **kwargs):
-        """ Get a new :py:class:`.TaxonListItem with event binding """
-        item = TaxonListItem(*args, **kwargs)
-        self.bind_to_select_taxon(item)
+    def get_model_list_item(self, *args, **kwargs):
+        """ Get a new :py:class:`.ModelListItem with event binding """
+        item = ModelListItem(*args, **kwargs)
+        self.bind_to_select_model(item)
         return item
 
-    def bind_to_select_taxon(self, item):
-        # If TaxonListItem's disable_button is set, don't set button action
+    def bind_to_select_model(self, item):
+        # If ModelListItem's disable_button is set, don't set button action
         if not item.disable_button:
-            item.bind(on_release=lambda x: self.taxon_view_controller.select_taxon(x.taxon))
+            item.bind(on_release=lambda x: self.model_view_controller.select_model(x.model))
 
 
 class TesseractXplore(MDApp, ControllerProxy):
@@ -141,7 +137,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         self.set_theme_mode()
         self.home()
 
-        # self.switch_screen('taxon')
+        # self.switch_screen('model')
 
         # Set Window and theme settings
         position, left, top = INIT_WINDOW_POSITION
@@ -208,7 +204,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         elif (modifier, codepoint) == (['ctrl'], 's'):
             self.switch_screen('settings')
         elif (modifier, codepoint) == (['ctrl'], 't'):
-            self.switch_screen('taxon')
+            self.switch_screen('model')
         elif (modifier, codepoint) == (['ctrl'], 'v'):
             self.current_screen_paste()
         elif key == F11:
@@ -219,34 +215,34 @@ class TesseractXplore(MDApp, ControllerProxy):
         """ Run the current screen's main action """
         if self.screen_manager.current == HOME_SCREEN:
             self.tesseract_controller.recognize(None)
-        elif self.screen_manager.current == 'taxon':
-            self.taxon_search_controller.search()
+        elif self.screen_manager.current == 'model':
+            self.model_search_controller.search()
 
     def current_screen_clear(self):
         """ Clear the settings on the current screen, if applicable """
         if self.screen_manager.current == HOME_SCREEN:
             self.image_selection_controller.clear()
-        elif self.screen_manager.current == 'taxon':
-            self.taxon_search_controller.reset_all_search_inputs()
+        elif self.screen_manager.current == 'model':
+            self.model_search_controller.reset_all_search_inputs()
 
     # TODO: Threw this together quickly, this could be cleaned up a lot
     def current_screen_paste(self):
         value = Clipboard.paste()
-        taxon_id, observation_id = strip_url_by_type(value)
-        if taxon_id:
-            self.select_taxon(id=taxon_id)
-            alert(f'Taxon {taxon_id} selected')
-        if observation_id:
-            # self.select_observation(id=observation_id)
-            alert(f'Observation {observation_id} selected')
+        model_id, gt_id = strip_url_by_type(value)
+        if model_id:
+            self.select_model(id=model_id)
+            alert(f'Model {model_id} selected')
+        if gt_id:
+            # self.select_gt(id=gt_id)
+            alert(f'GT {gt_id} selected')
 
         if self.screen_manager.current == HOME_SCREEN:
-            if observation_id:
-                self.image_selection_controller.inputs.observation_id_input.text = str(observation_id)
-                self.image_selection_controller.inputs.taxon_id_input.text = ''
-            elif taxon_id:
-                self.image_selection_controller.inputs.observation_id_input.text = ''
-                self.image_selection_controller.inputs.taxon_id_input.text = str(taxon_id)
+            if gt_id:
+                self.image_selection_controller.inputs.gt_id_input.text = str(gt_id)
+                self.image_selection_controller.inputs.model_id_input.text = ''
+            elif model_id:
+                self.image_selection_controller.inputs.gt_id_input.text = ''
+                self.image_selection_controller.inputs.model_id_input.text = str(model_id)
 
     def update_toolbar(self, screen_name: str):
         """ Modify toolbar in-place so it can be shared by all screens """

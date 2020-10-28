@@ -21,15 +21,15 @@ class ImageSelectionController(Controller):
         self.theme_cls = get_app().theme_cls
 
         # Context menu item events
-        self.context_menu.ids.view_taxon_ctx.bind(on_release=self.view_taxon)
-        # self.context_menu.ids.view_observation_ctx.bind(on_release=self.view_observation)
+        self.context_menu.ids.view_model_ctx.bind(on_release=self.view_model)
+        # self.context_menu.ids.view_gt_ctx.bind(on_release=self.view_gt)
         self.context_menu.ids.view_metadata_ctx.bind(on_release=self.view_metadata)
         self.context_menu.ids.edit_fulltext_ctx.bind(on_release=self.edit_fulltext)
         self.context_menu.ids.copy_flickr_tags_ctx.bind(on_release=lambda x: x.selected_image.copy_flickr_tags())
         self.context_menu.ids.remove_ctx.bind(on_release=lambda x: self.remove_image(x.selected_image))
 
         # Other widget events
-        self.inputs.taxon_id_input.bind(on_text_validate=self.on_taxon_id)
+        self.inputs.model_id_input.bind(on_text_validate=self.on_model_id)
         self.inputs.clear_button.bind(on_release=self.clear)
         self.inputs.load_button.bind(on_release=self.add_file_chooser_images)
         #self.inputs.recognize_button.bind(on_release=self.run)
@@ -78,11 +78,11 @@ class ImageSelectionController(Controller):
             paths = askopenfilenames(title='Choose images')
         self.add_images(paths)
 
-    def select_taxon_from_photo(self, taxon_id):
-        self.inputs.taxon_id_input.text = str(taxon_id)
+    def select_model_from_photo(self, model_id):
+        self.inputs.model_id_input.text = str(model_id)
 
-    def select_observation_from_photo(self, observation_id):
-        self.inputs.observation_id_input.text = str(observation_id)
+    def select_gt_from_photo(self, gt_id):
+        self.inputs.gt_id_input.text = str(gt_id)
 
     def remove_image(self, image):
         """ Remove an image from file list and image previews """
@@ -94,16 +94,16 @@ class ImageSelectionController(Controller):
         """ Clear all image selections (selected files, previews, and inputs) """
         logger.info('Main: Clearing image selections')
         self.file_list = []
-        self.inputs.observation_id_input.text = ''
-        self.inputs.taxon_id_input.text = ''
+        self.inputs.gt_id_input.text = ''
+        self.inputs.model_id_input.text = ''
         self.file_chooser.selection = []
         self.image_previews.clear_widgets()
 
     @property
     def input_dict(self):
         return {
-            "observation_id": int(self.inputs.observation_id_input.text or 0),
-            "taxon_id": int(self.inputs.taxon_id_input.text or 0),
+            "gt_id": int(self.inputs.gt_id_input.text or 0),
+            "model_id": int(self.inputs.model_id_input.text or 0),
             "recursive": self.inputs.recursive_chk.active,
         }
 
@@ -123,9 +123,9 @@ class ImageSelectionController(Controller):
         elif touch.button == 'right':
             self.context_menu.show(*get_app().root_window.mouse_pos)
             self.context_menu.ref = instance
-            # Enable 'view taxon/observation' menu items, if applicable
-            self.context_menu.ids.view_taxon_ctx.disabled = not instance.metadata.taxon_id
-            self.context_menu.ids.view_observation_ctx.disabled = not instance.metadata.observation_id
+            # Enable 'view model/gt' menu items, if applicable
+            self.context_menu.ids.view_model_ctx.disabled = not instance.metadata.model_id
+            self.context_menu.ids.view_gt_ctx.disabled = not instance.metadata.gt_id
             self.context_menu.ids.copy_flickr_tags_ctx.disabled = not instance.metadata.keyword_meta.flickr_tags
         # Middle-click: remove image
         elif touch.button == 'middle':
@@ -134,11 +134,11 @@ class ImageSelectionController(Controller):
         else:
             pass
 
-    # TODO: reuse Taxon object previously found by load_image; needs a bit of refactoring
+    # TODO: reuse Model object previously found by load_image; needs a bit of refactoring
     @staticmethod
-    def view_taxon(instance):
-        get_app().switch_screen('taxon')
-        get_app().select_taxon(id=instance.metadata.taxon_id)
+    def view_model(instance):
+        get_app().switch_screen('model')
+        get_app().select_model(id=instance.metadata.model_id)
 
     @staticmethod
     def view_metadata(instance):
@@ -151,7 +151,7 @@ class ImageSelectionController(Controller):
         get_app().select_fulltext(instance)
 
     @staticmethod
-    def on_taxon_id(input):
-        """ Handle entering a taxon ID and pressing Enter """
-        get_app().switch_screen('taxon')
-        get_app().select_taxon(id=int(input.text))
+    def on_model_id(input):
+        """ Handle entering a model ID and pressing Enter """
+        get_app().switch_screen('model')
+        get_app().select_model(id=int(input.text))

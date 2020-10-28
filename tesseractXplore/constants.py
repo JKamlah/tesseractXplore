@@ -36,9 +36,9 @@ CC_LICENSES = ['CC0', 'CC-BY', 'CC_BY_NC']
 # Atlas settings
 ATLAS_MAX_SIZE = 4096
 ATLAS_BASE = 'atlas://../../assets/atlas'  # Path is relative to Kivy app.py
-ATLAS_PATH = join(ASSETS_DIR, 'atlas', 'taxon_icons.atlas')
-ATLAS_TAXON_ICONS = f'{ATLAS_BASE}/taxon_icons'
-ATLAS_TAXON_PHOTOS = f'{ATLAS_BASE}/taxon_photos'
+ATLAS_PATH = join(ASSETS_DIR, 'atlas', 'model_icons.atlas')
+ATLAS_TAXON_ICONS = f'{ATLAS_BASE}/model_icons'
+ATLAS_TAXON_PHOTOS = f'{ATLAS_BASE}/model_photos'
 ATLAS_LOCAL_PHOTOS = f'{ATLAS_BASE}/local_photos'
 ATLAS_APP_ICONS = f'{ATLAS_BASE}/app_icons'
 ALL_ATLASES = [ATLAS_APP_ICONS, ATLAS_TAXON_ICONS, ATLAS_TAXON_PHOTOS, ATLAS_LOCAL_PHOTOS]
@@ -55,7 +55,7 @@ MAX_DISPLAY_HISTORY = 50  # Max number of history items to display at a time
 
 # URLs / API settings
 TAXON_BASE_URL = 'https://www.inaturalist.org/taxa'
-OBSERVATION_BASE_URL = 'https://www.inaturalist.org/observations'
+OBSERVATION_BASE_URL = 'https://www.inaturalist.org/gts'
 PLACES_BASE_URL = 'https://www.inaturalist.org/places'
 USER_AGENT = f'tesseract-xplore/{__version__};'.lower()
 
@@ -72,10 +72,10 @@ ENTER = 13
 F11 = 292
 
 # Simplified tags without formatting variations
-TAXON_KEYS = ['taxonid', 'dwc:taxonid']
-OBSERVATION_KEYS = ['observationid', 'catalognumber', 'dwc:catalognumber']
+TAXON_KEYS = ['modelid', 'dwc:modelid']
+OBSERVATION_KEYS = ['gtid', 'catalognumber', 'dwc:catalognumber']
 
-# Iconic taxa, aka common taxon search categories, in the same order as shown on the iNar web UI
+# Iconic taxa, aka common model search categories, in the same order as shown on the iNar web UI
 ICONIC_TAXA = OrderedDict([
     (3, 'aves'),
     (20978, 'amphibia'),
@@ -94,14 +94,14 @@ ICONIC_TAXA = OrderedDict([
 ICONISH_TAXA = {**ICONIC_TAXA, 1: 'animalia', 0: 'unknown'}
 PLACEHOLDER_ICON = f'{ATLAS_APP_ICONS}/unknown'
 
-# Specific XML namespaces to use terms from when processing DwC observation records
+# Specific XML namespaces to use terms from when processing DwC gt records
 # Note: exiv2 will automatically add recognized namespaces when adding properties
 DWC_NAMESPACES = {
     "dcterms": "http://purl.org/dc/terms/",
     "dwc": "http://rs.tdwg.org/dwc/terms/",
 }
 
-# Basic DwC fields that can be added for a taxon without an observation
+# Basic DwC fields that can be added for a model without an gt
 MINIMAL_DWC_TERMS = [
     'dwc:kingdom',
     'dwc:phylum',
@@ -111,8 +111,8 @@ MINIMAL_DWC_TERMS = [
     'dwc:genus',
     'dwc:species',
     'dwc:scientificName',
-    'dwc:taxonRank',
-    'dwc:taxonID',
+    'dwc:modelRank',
+    'dwc:modelID',
 ]
 
 COMMON_NAME_IGNORE_TERMS = [

@@ -14,7 +14,7 @@ Images can be loaded via a file chooser window or via drag-and-drop. The result 
     * [Installation](#gui-installation)
     * [Usage](#gui-usage)
     * [Image Selection and Tagging](#image-selection-and-tagging)
-    * [Taxon Search](#taxon-search)
+    * [Model Search](#model-search)
     * [Saved Species](#saved-species)
     * [Metadata](#metadata)
     * [Settings](#settings)
@@ -26,8 +26,8 @@ The purpose of this project is a simple application for user
 
 ### Tesseract 
 This can improve interoperability with other tools and systems that interact with biodiversity
-data. For example, in addition to iNaturalist you may submit observations of certain species to
-another biodiversity observation platform with a more specific focus, such as eBird, BugGuide, or
+data. For example, in addition to iNaturalist you may submit gts of certain species to
+another biodiversity gt platform with a more specific focus, such as eBird, BugGuide, or
 Mushroom Observer. For that use case, this tool supports
 [Simple Darwin Core](https://dwc.tdwg.org/simple).
 
@@ -72,7 +72,7 @@ The basic UI components are shown below:
 
 1. Drag & drop images or folders into the window.
 2. Or, select files via the file browser on the right
-3. Enter an iNaturalist observation ID or taxon ID
+3. Enter an iNaturalist gt ID or model ID
 4. Click the 'Run' button in the lower-left to tag the selected images
 
 Other things to do:
@@ -80,24 +80,24 @@ Other things to do:
 * **Right-click** an image for a menu of more actions
 * See [Metadata](#metadata) for more details
 
-### Taxon Search
-If you don't already know the taxon ID, click the 'Find a Species' button to go to the taxon
+### Model Search
+If you don't already know the model ID, click the 'Find a Species' button to go to the model
 search screen. You can start with searching by name, with autocompletion support:
 
-![Screenshot](assets/screenshots/gui-taxon-search.png)
+![Screenshot](assets/screenshots/gui-model-search.png)
 
 You can also run a full search using the additional filters. For example, to search for plants
 and fungi with 'goose' in either the species or genus name:
 
-![Screenshot](assets/screenshots/gui-taxon-search-results.png)
+![Screenshot](assets/screenshots/gui-model-search-results.png)
 
 ### Saved Species
-The additional tabs on the taxon screen contain:
+The additional tabs on the model screen contain:
 * History of recently viewed taxa
 * Most frequently viewed taxa
 * Starred taxa
 
-To save a particular taxon for future reference, click the ✩ icon in the top left of its info panel,
+To save a particular model for future reference, click the ✩ icon in the top left of its info panel,
 and it will be saved in the ★ tab. These items can be re-ordered via **Right-click** -> **Move to top**.
 (Unfortunately, drag-and-drop functionality is not currently possible for list items).
 
@@ -128,9 +128,9 @@ F11             | Toggle fullscreen         | All
 Ctrl+O          | Open file chooser         | Image selection
 Shift+Ctrl+O    | Open file chooser (dirs)  | Image selection
 Ctrl+Enter      | Run image tagger          | Image selection
-Ctrl+Enter      | Run taxon search          | Taxon search
+Ctrl+Enter      | Run model search          | Model search
 Shift+Ctrl+X    | Clear selected images     | Image selection
-Shift+Ctrl+X    | Clear search filters      | Taxon search
+Shift+Ctrl+X    | Clear search filters      | Model search
 Ctrl+S          | Open settings screen      | All
 Ctrl+Backspace  | Return to main screen     | All
 Ctrl+Q          | Quit                      | All

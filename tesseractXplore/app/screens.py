@@ -16,8 +16,8 @@ SCREEN_COMPONENTS = [
     'main',
     # 'autocomplete',
     'menus',
-    'taxon_search',
-    'taxon_selection',
+    'model_search',
+    'model_selection',
 ]
 
 logger = getLogger().getChild(__name__)
@@ -32,26 +32,22 @@ class ImageSelectionScreen(MDScreen):
 class SettingsScreen(MDScreen):
     pass
 
-class MetadataViewScreen(MDScreen):
-    pass
-
 class FulltextViewScreen(MDScreen):
     pass
 
-class TaxonScreen(MDScreen):
+class ModelScreen(MDScreen):
     pass
 
-class ObservationScreen(MDScreen):
+class GTScreen(MDScreen):
     pass
 
 
 SCREENS = {
     HOME_SCREEN: ImageSelectionScreen,
     'settings': SettingsScreen,
-    'metadata': MetadataViewScreen,
     'fulltext': FulltextViewScreen,
-    'taxon': TaxonScreen,
-    'observation': ObservationScreen,
+    'model': ModelScreen,
+    'groundtruth': GTScreen,
 }
 
 

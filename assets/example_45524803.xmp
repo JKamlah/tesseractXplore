@@ -5,13 +5,13 @@
     xmlns:dwc="http://rs.tdwg.org/dwc/index.htm/"
     xmlns:dcterms="http://purl.org/dc/terms/"
     xmlns:dc="http://purl.org/dc/elements/1.1/"
-   dwc:occurrenceID="https://www.inaturalist.org/observations/45524803"
-   dwc:basisOfRecord="HumanObservation"
+   dwc:occurrenceID="https://www.inaturalist.org/gts/45524803"
+   dwc:basisOfRecord="HumanGT"
    dwc:institutionCode="iNaturalist"
-   dwc:collectionCode="Observations"
-   dwc:datasetName="iNaturalist research-grade observations"
+   dwc:collectionCode="GTs"
+   dwc:datasetName="iNaturalist research-grade gts"
    dwc:catalogNumber="45524803"
-   dwc:occurrenceDetails="https://www.inaturalist.org/observations/45524803"
+   dwc:occurrenceDetails="https://www.inaturalist.org/gts/45524803"
    dwc:establishmentMeans="wild"
    dwc:eventDate="2020-05-09T06:01:00-07:00"
    dwc:eventTime="13:01:00Z"
@@ -23,9 +23,9 @@
    dwc:stateProvince="California"
    dwc:identificationID="102092369"
    dwc:dateIdentified="2020-05-10T20:42:12Z"
-   dwc:taxonID="48978"
+   dwc:modelID="48978"
    dwc:scientificName="Dirona picta"
-   dwc:taxonRank="species"
+   dwc:modelRank="species"
    dwc:kingdom="Animalia"
    dwc:phylum="Mollusca"
    dwc:class="Gastropoda"
@@ -44,7 +44,7 @@
    </dcterms:modified>
    <dcterms:references>
     <rdf:Bag>
-     <rdf:li>https://www.inaturalist.org/observations/45524803</rdf:li>
+     <rdf:li>https://www.inaturalist.org/gts/45524803</rdf:li>
     </rdf:Bag>
    </dcterms:references>
    <dcterms:license>
@@ -59,19 +59,19 @@
    </dcterms:rightsHolder>
    <dc:subject>
     <rdf:Bag>
-     <rdf:li>taxonomy:kingdom=Animalia</rdf:li>
-     <rdf:li>taxonomy:phylum=Mollusca</rdf:li>
-     <rdf:li>taxonomy:class=Gastropoda</rdf:li>
-     <rdf:li>taxonomy:subclass=Heterobranchia</rdf:li>
-     <rdf:li>taxonomy:infraclass=Euthyneura</rdf:li>
-     <rdf:li>taxonomy:subterclass=Ringipleura</rdf:li>
-     <rdf:li>taxonomy:superorder=Nudipleura</rdf:li>
-     <rdf:li>taxonomy:order=Nudibranchia</rdf:li>
-     <rdf:li>taxonomy:suborder=Cladobranchia</rdf:li>
-     <rdf:li>taxonomy:superfamily=Proctonotoidea</rdf:li>
-     <rdf:li>taxonomy:family=Dironidae</rdf:li>
-     <rdf:li>taxonomy:genus=Dirona</rdf:li>
-     <rdf:li>"taxonomy:species=Dirona picta"</rdf:li>
+     <rdf:li>model:kingdom=Animalia</rdf:li>
+     <rdf:li>model:phylum=Mollusca</rdf:li>
+     <rdf:li>model:class=Gastropoda</rdf:li>
+     <rdf:li>model:subclass=Heterobranchia</rdf:li>
+     <rdf:li>model:infraclass=Euthyneura</rdf:li>
+     <rdf:li>model:subterclass=Ringipleura</rdf:li>
+     <rdf:li>model:superorder=Nudipleura</rdf:li>
+     <rdf:li>model:order=Nudibranchia</rdf:li>
+     <rdf:li>model:suborder=Cladobranchia</rdf:li>
+     <rdf:li>model:superfamily=Proctonotoidea</rdf:li>
+     <rdf:li>model:family=Dironidae</rdf:li>
+     <rdf:li>model:genus=Dirona</rdf:li>
+     <rdf:li>"model:species=Dirona picta"</rdf:li>
      <rdf:li>Animals</rdf:li>
      <rdf:li>Molluscs</rdf:li>
      <rdf:li>Gastropods</rdf:li>
@@ -80,8 +80,8 @@
      <rdf:li>"Nudipleuran Slugs"</rdf:li>
      <rdf:li>Nudibranchs</rdf:li>
      <rdf:li>"Colorful Dirona"</rdf:li>
-     <rdf:li>inat:taxon_id=48978</rdf:li>
-     <rdf:li>inat:observation_id=45524803</rdf:li>
+     <rdf:li>inat:model_id=48978</rdf:li>
+     <rdf:li>inat:gt_id=45524803</rdf:li>
     </rdf:Bag>
    </dc:subject>
   </rdf:Description>

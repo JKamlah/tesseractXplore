@@ -1,15 +1,15 @@
 # Layout for models search & search results
 
 # Model search tab
-<TaxonSearchTab@Tab>:
+<ModelSearchTab@Tab>:
     text: 'magnify'
     # tooltip_text: 'Search'
     orientation: 'vertical'
     padding: dp(20)
     TabHeader:
         text: 'Search'
-    TaxonAutocompleteSearch:
-        id: taxon_search_input
+    ModelAutocompleteSearch:
+        id: model_search_input
         hint_text: 'Model name'
         helper_text: 'Enter a model name'
     ScrollViewY:
@@ -17,7 +17,7 @@
         MDBoxLayout:
             orientation: 'vertical'
             IntField:
-                id: taxon_id_input
+                id: model_id_input
                 hint_text: 'Model ID'
                 helper_text: 'Enter an tesseract model ID'
             SectionHeader:
@@ -48,7 +48,7 @@
             MDBoxLayout:
                 spacing: dp(10)
                 TooltipIconButton:
-                    id: taxon_search_button
+                    id: model_search_button
                     icon: 'magnify'
                     text: 'Search'
                     width: dp(220)
@@ -61,8 +61,8 @@
 #    MDBoxLayout:
 #        height: 300
 
-# Taxon search results tab
-<TaxonSearchResultsTab@Tab>:
+# Model search results tab
+<ModelSearchResultsTab@Tab>:
     text: 'layers-search'
     # tooltip_text: 'Search'
     orientation: 'vertical'

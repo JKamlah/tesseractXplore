@@ -60,14 +60,14 @@ class CachedAsyncImage(AsyncImage):
 
 
 class IconicTaxaIcon(SmartTile):
-    """ Icon for an iconic taxon """
+    """ Icon for an iconic model """
     is_selected = BooleanProperty()
 
-    def __init__(self, taxon_id, **kwargs):
-        super().__init__(source=get_icon_path(taxon_id), allow_stretch=False, **kwargs)
+    def __init__(self, model_id, **kwargs):
+        super().__init__(source=get_icon_path(model_id), allow_stretch=False, **kwargs)
         self.is_selected = False
         self.box_color = DESELECTED_COLOR
-        self.taxon_id = taxon_id
+        self.model_id = model_id
         self.bind(on_release=self.toggle_selection)
 
     def toggle_selection(self, *args):
@@ -105,9 +105,9 @@ class ImageMetaTile(SmartTileWithLabel):
         def set_alpha(rgba, alpha):
             return rgba[:3] + [alpha]
 
-        if self.metadata.observation_id:
+        if self.metadata.gt_id:
             self.box_color = set_alpha(self.theme_cls.accent_color, 0.6)
-        elif self.metadata.has_taxon:
+        elif self.metadata.has_model:
             self.box_color = set_alpha(self.theme_cls.primary_color, 0.5)
         else:
             self.box_color = (0, 0, 0, 0.5)

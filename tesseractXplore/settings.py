@@ -52,13 +52,13 @@ def reset_defaults():
     copyfile(DEFAULT_CONFIG_PATH, CONFIG_PATH)
 
 
-# TODO: Is there a better file format for taxon history than just a plain text file? JSON list? sqlite?
+# TODO: Is there a better file format for model history than just a plain text file? JSON list? sqlite?
 # TODO: Separately store loaded history, new history for session; only write (append) new history
 def read_stored_taxa() -> Dict:
-    """ Read taxon view history, starred, and frequency
+    """ Read model view history, starred, and frequency
 
     Returns:
-        Stored taxon view history, starred, and frequency
+        Stored model view history, starred, and frequency
     """
     if not isfile(STORED_TAXA_PATH):
         stored_taxa = {}
@@ -73,10 +73,10 @@ def read_stored_taxa() -> Dict:
 
 
 def write_stored_taxa(stored_taxa: Dict):
-    """ Write taxon view history to file, along with stats on most frequently viewed taxa
+    """ Write model view history to file, along with stats on most frequently viewed taxa
 
     Args:
-        Complete taxon history (including previously stored history)
+        Complete model history (including previously stored history)
     """
     # Do a recount/resort before writing
     stored_taxa["frequent"] = OrderedDict(Counter(stored_taxa["history"]).most_common())

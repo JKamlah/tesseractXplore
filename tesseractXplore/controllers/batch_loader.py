@@ -9,7 +9,7 @@ from kivy.event import EventDispatcher
 from kivy.uix.widget import Widget
 
 from tesseractXplore.app import get_app
-from tesseractXplore.widgets import TaxonListItem, ImageMetaTile
+from tesseractXplore.widgets import ModelListItem, ImageMetaTile
 
 REPORT_RATE = 1/30  # Report progress to UI at 30 FPS
 logger = getLogger().getChild(__name__)
@@ -172,15 +172,15 @@ class WidgetBatchLoader(BatchLoader):
             parent.add_widget(widget)
 
 
-class TaxonBatchLoader(WidgetBatchLoader):
-    """ Loads batches of TaxonListItems """
+class ModelBatchLoader(WidgetBatchLoader):
+    """ Loads batches of ModelListItems """
     def __init__(self, **kwargs):
-        super().__init__(widget_cls=TaxonListItem, **kwargs)
+        super().__init__(widget_cls=ModelListItem, **kwargs)
 
     def add_widget(self, widget: Widget, parent: Widget):
-        """ Add a TaxonListItem to its parent list and bind its click event """
+        """ Add a ModelListItem to its parent list and bind its click event """
         super().add_widget(widget, parent)
-        mainthread(get_app().bind_to_select_taxon)(widget)
+        mainthread(get_app().bind_to_select_model)(widget)
 
 
 class ImageBatchLoader(WidgetBatchLoader):

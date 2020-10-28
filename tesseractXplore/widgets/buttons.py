@@ -8,12 +8,12 @@ class StarButton(IconRightWidget):
     """
     Selectable icon button that optionally toggles between 'selected' and 'unselected' star icons
     """
-    taxon_id = NumericProperty()
+    model_id = NumericProperty()
     is_selected = BooleanProperty()
 
-    def __init__(self, taxon_id, is_selected=False, **kwargs):
+    def __init__(self, model_id, is_selected=False, **kwargs):
         super().__init__(**kwargs)
-        self.taxon_id = taxon_id
+        self.model_id = model_id
         self.is_selected = is_selected
         self.custom_icon = 'icon' in kwargs
         self.set_icon()

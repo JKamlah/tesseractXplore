@@ -6,12 +6,12 @@
 <PhotoContextMenu@ObjectContextMenu>:
     visible: False
     PhotoContextMenuItem:
-        id: view_taxon_ctx
-        text: "View taxon"
+        id: view_model_ctx
+        text: "View model"
         disabled: True
     PhotoContextMenuItem:
-        id: view_observation_ctx
-        text: "View observation"
+        id: view_gt_ctx
+        text: "View gt"
         disabled: True
     PhotoContextMenuItem:
         id: view_metadata_ctx
@@ -27,27 +27,27 @@
         text: "Remove from selection"
     # Just some ideas for future features
 #    ContextMenuDivider:
-#        text: "Taxon"
+#        text: "Model"
 #    PhotoContextMenuItem:
-#        id: view_taxon_ctx
-#        text: "View taxon"
+#        id: view_model_ctx
+#        text: "View model"
 #        disabled: True
 #    PhotoContextMenuItem:
-#        text: "View taxon on iNaturalist"
+#        text: "View model on iNaturalist"
 #        disabled: True
      # Or maybe nested menus:
 #    ContextMenuDivider:
 #        text: "More options"
 #    ContextMenuTextItem:
-#        text: "Taxon"
+#        text: "Model"
 #        ContextMenu:
 #            ContextMenuTextItem:
-#                text: "Search for observations of this taxon"
+#                text: "Search for gts of this model"
 #            ContextMenuTextItem:
 #                text: "Search for similar species"
 
 
-<StarredTaxonContextMenu@ObjectContextMenu>:
+<StarredModelContextMenu@ObjectContextMenu>:
     visible: False
     ListContextMenuItem:
         id: move_to_top_ctx

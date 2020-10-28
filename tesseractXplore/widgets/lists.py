@@ -7,7 +7,7 @@ from kivymd.uix.selectioncontrol import MDSwitch
 from kivymd.uix.textfield import MDTextFieldRound
 
 from tesseractXplore.app import alert
-from tesseractXplore.models import Taxon
+from tesseractXplore.models import Model
 from tesseractXplore.widgets import CachedAsyncImage, Tab
 
 
@@ -33,21 +33,21 @@ class TextInputListItem(OneLineListItem, MDTextFieldRound):
     """ Text input that works as a list item """
 
 
-class TaxonListItem(ThreeLineAvatarIconListItem):
-    """ Class that displays condensed taxon info as a list item """
+class ModelListItem(ThreeLineAvatarIconListItem):
+    """ Class that displays condensed model info as a list item """
     def __init__(
             self,
-            taxon: Union[Taxon, int, dict] = None,
+            model: Union[Model, int, dict] = None,
             disable_button: bool = False,
             **kwargs,
     ):
-        if not taxon:
-            raise ValueError('Must provide either a taxon object or ID')
-        if isinstance(taxon, int):
-            taxon = Taxon.from_id(taxon)
-        elif isinstance(taxon, dict):
-            taxon = Taxon.from_dict(taxon)
-        self.taxon = taxon
+        if not model:
+            raise ValueError('Must provide either a model object or ID')
+        if isinstance(model, int):
+            model = Model.from_id(model)
+        elif isinstance(model, dict):
+            model = Model.from_dict(model)
+        self.model = model
 
         # Set click event unless disabled
         if not disable_button:
@@ -56,14 +56,14 @@ class TaxonListItem(ThreeLineAvatarIconListItem):
 
         super().__init__(
             font_style='H6',
-            text=taxon.name,
-            secondary_text=taxon.rank,
-            tertiary_text=taxon.preferred_common_name,
+            text=model.name,
+            secondary_text=model.rank,
+            tertiary_text=model.preferred_common_name,
             **kwargs,
         )
 
-        # Select the associated taxon when this list item is pressed
-        self.add_widget(ThumbnailListItem(source=taxon.thumbnail_url or taxon.icon_path))
+        # Select the associated model when this list item is pressed
+        self.add_widget(ThumbnailListItem(source=model.thumbnail_url or model.icon_path))
 
     def _on_touch_down(self, instance, touch):
         """ Copy text on right-click """
@@ -77,6 +77,6 @@ class TaxonListItem(ThreeLineAvatarIconListItem):
 
 
 class ThumbnailListItem(CachedAsyncImage, ILeftBody):
-    """ Class that contains a taxon thumbnail to be used in a list item """
+    """ Class that contains a model thumbnail to be used in a list item """
     def __init__(self, **kwargs):
         super().__init__(thumbnail_size='small', **kwargs)

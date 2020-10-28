@@ -75,28 +75,28 @@
 
                             MDRoundFlatIconButton:
                                 text: 'Find a new model'
-                                disabled: True
+                                disabled: False
                                 icon: 'find'
                                 width: dp(200)
                                 on_press:
-                                    app.switch_screen('taxon')
+                                    app.switch_screen('model')
                             MDLabel:
-                                id: taxon_id_input
+                                id: model_id_input
                                 disabled: True
-                                hint_text: 'Taxon ID'
-                                helper_text: 'Enter an iNaturalist taxon ID'
+                                hint_text: 'Model ID'
+                                helper_text: 'Enter an iNaturalist model ID'
                             #MDRoundFlatIconButton:
                             #    disabled: True  # TODO: Remove once implemented
-                            #    text: 'Find an Observation'
+                            #    text: 'Find an GT'
                             #    icon: 'crosshairs-gps'
                             #    width: dp(200)
                             #    on_press:
-                            #       app.switch_screen('observation')
+                            #       app.switch_screen('gt')
                             MDLabel:
-                                id: observation_id_input
+                                id: gt_id_input
                                 disabled: True
-                                hint_text: 'Observation ID'
-                                helper_text: 'Enter an iNaturalist observation ID'
+                                hint_text: 'GT ID'
+                                helper_text: 'Enter an iNaturalist gt ID'
 
 
 
