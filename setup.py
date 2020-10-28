@@ -1,5 +1,7 @@
 from itertools import chain
+
 from setuptools import setup, find_packages
+
 from tesseractXplore import __version__
 
 extras_require = {
@@ -29,7 +31,6 @@ setup(
     install_requires=[
         'appdirs',
         'attrs',
-        'Click>=7.0',
         'click-help-colors',
         'pillow>=7.0',
         'pyexiv2',
@@ -40,10 +41,6 @@ setup(
     ],
     extras_require=extras_require,
     entry_points={
-        'console_scripts': [
-            'tesseractXplore=tesseractXplore.cli:main',
-            'nt=tesseractXplore.cli:main',
-        ],
         'gui_scripts': [
             'tesseractXplore-app=tesseractXplore.app.app:main',
         ],

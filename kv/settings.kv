@@ -9,11 +9,11 @@
                 size_hint_max_x: 700
                 OneLineListItem:
                     font_style: 'H5'
-                    text: 'iNaturalist settings'
+                    text: 'TesseractXplore settings'
                 TwoLineListItem:
                     font_style: 'H6'
                     text: 'Username'
-                    secondary_text: 'iNaturalist username used to filter observations'
+                    secondary_text: 'Username (not necessary atm)'
                 TextInputListItem:
                     id: username_input
                     icon_right: 'account'
@@ -34,14 +34,13 @@
                     id: preferred_place_id_input
                     icon_right: 'city'
                     input_filter: 'int'
-
                 OneLineListItem:
                 OneLineListItem:
                     font_style: 'H5'
-                    text: 'Metadata settings'
+                    text: 'Output Settings'
                 TwoLineAvatarIconListItem:
                     font_style: 'H6'
-                    text: 'Common names'
+                    text: 'Regex'
                     secondary_text: 'Include common names in taxonomy keywords'
                     SwitchListItem:
                         id: common_names_chk

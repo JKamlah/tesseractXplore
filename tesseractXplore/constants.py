@@ -3,8 +3,7 @@ from os.path import dirname, join
 from typing import Optional, Tuple
 
 from appdirs import user_data_dir
-from tesseractXplor import __version__
-from pyinaturalist import DEFAULT_USER_AGENT
+from tesseractXplore import __version__
 from pyinaturalist.request_params import RANKS
 
 # Resource directories
@@ -45,7 +44,7 @@ ATLAS_APP_ICONS = f'{ATLAS_BASE}/app_icons'
 ALL_ATLASES = [ATLAS_APP_ICONS, ATLAS_TAXON_ICONS, ATLAS_TAXON_PHOTOS, ATLAS_LOCAL_PHOTOS]
 
 # Cache settings
-CACHE_PATH = join(DATA_DIR, 'inaturalist_api_cache')
+CACHE_PATH = join(DATA_DIR, 'tesseractXplore_api_cache')
 CACHE_BACKEND = 'sqlite'
 
 # Config files
@@ -58,7 +57,7 @@ MAX_DISPLAY_HISTORY = 50  # Max number of history items to display at a time
 TAXON_BASE_URL = 'https://www.inaturalist.org/taxa'
 OBSERVATION_BASE_URL = 'https://www.inaturalist.org/observations'
 PLACES_BASE_URL = 'https://www.inaturalist.org/places'
-USER_AGENT = f'tesseract-xplore/{__version__}; {DEFAULT_USER_AGENT}'.lower()
+USER_AGENT = f'tesseract-xplore/{__version__};'.lower()
 
 # Theme/window settings
 INIT_WINDOW_POSITION = ('custom', 100, 100)

@@ -1,15 +1,16 @@
 import asyncio
 from logging import getLogger
 
-from tesseractXplor.app import alert, get_app
-from tesseractXplor.controllers import Controller, ImageBatchLoader
-from tesseractXplor.image_glob import get_images_from_paths
-from tesseractXplor.recognizer import recognize
-from tesseractXplor.widgets import ImageMetaTile
+from tesseractXplore.app import alert, get_app
+from tesseractXplore.controllers import Controller, ImageBatchLoader
+from tesseractXplore.image_glob import get_images_from_paths
+from tesseractXplore.recognizer import recognize
+from tesseractXplore.widgets import ImageMetaTile
 
 from subprocess import check_output
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.filemanager import MDFileManager
+import time
 
 logger = getLogger().getChild(__name__)
 
@@ -19,6 +20,28 @@ class TesseractController(Controller):
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
+        self.init_dropdown()
+        self.output_manager = MDFileManager(
+            exit_manager=self.exit_output_manager,
+            select_path=self.select_output,
+            ext=[""],
+        )
+        self.selected_output_folder = None
+        self.screen.recognize_button.bind(on_release=self.recognize_thread)
+        self.screen.recognize_button.bind(on_press=self.disable_rec)
+        self.screen.pause_button.bind(on_press=self.stop_rec)
+        self.ocr_event = None
+        self.ocr_stop = False
+        self.last_rec_time = time.time()
+
+    def stop_rec(self, instance):
+        """ Unschedule progress event and log total execution time """
+        if self.ocr_event:
+            self.ocr_stop = True
+            logger.info(f'Recognizer: Canceled!')
+
+    def init_dropdown(self):
+        screen = self.screen
         # Init dropdownmenus
         models = check_output(["tesseract", "--list-langs"]).decode('utf-8').splitlines()[1:]
         self.model_menu = self.create_dropdown(screen.model, [{'text': 'Model: ' + model} for model in models], self.set_model)
@@ -35,23 +58,30 @@ class TesseractController(Controller):
         self.outputformat_menu =  self.create_dropdown(screen.outputformat, [{'text': 'Outputformat: ' + outputformat} for outputformat in
                                                       outputformats], self.set_outputformat)
 
-        self.output_manager = MDFileManager(
-            exit_manager=self.exit_output_manager,
-            select_path=self.select_output,
-            ext=[""],
-        )
-        self.selected_output_folder = None
-        self.screen.recognize_button.bind(on_release=self.recognize)
+    def disable_rec(self, instance, *args):
+        instance.disabled = True
+        self.screen.pause_button.disabled = False
 
-    def recognize(self, *args):
+    def enable_rec(self, instance, *args):
+        instance.disabled = False
+        self.screen.pause_button.disabled = True
+
+    def recognize_thread(self,instance,*args):
+        import threading
+        self.ocr_event = threading.Thread(target=self.recognize, args=(instance,args))
+        self.ocr_event.start()
+
+    def recognize(self, instance, *args):
         """ Recognize image with tesseract """
         file_list = get_app().image_selection_controller.file_list
         if not file_list:
             alert(f'Select images to recognize')
+            self.enable_rec(instance)
             return
-        #if not self.input_dict['observation_id'] and not self.input_dict['taxon_id']:
-        #    alert(f'Select either an observation or an organism to tag images with')
-        #    return
+        if instance._ButtonBehavior__touch_time < self.last_rec_time:
+            self.enable_rec(instance)
+            return
+
         logger.info(f'Main: Recognize {len(file_list)} images')
 
         #metadata_settings = get_app().metadata
@@ -60,13 +90,35 @@ class TesseractController(Controller):
         psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
         oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
         outputformat = "txt" if self.screen.outputformat.current_item == '' else self.screen.outputformat.current_item.split(": ")[1].strip()
-        outputnames = recognize(file_list, model=model ,psm=psm, oem=oem, output_folder=self.selected_output_folder, outputformat=outputformat)
-        alert(f'{len(file_list)} images recognized')
+        proc_files, outputnames = recognize(file_list, model=model ,psm=psm, oem=oem, output_folder=self.selected_output_folder, outputformat=outputformat)
+        alert(f'{proc_files} images recognized')
+        self.last_rec_time = time.time()+2
+        self.enable_rec(instance)
 
         # Update image previews with new metadata
         #previews = {img.metadata.image_path: img for img in get_app().image_selection_controller.image_previews.children}
         #for metadata in all_metadata:
         #    previews[metadata.image_path].metadata = metadata
+
+
+    def reset_settings(self):
+        # TODO: Rework resetting
+        self.screen.model.text = self.screen.model.text+'!'
+        self.screen.model.set_item('')
+        self.screen.model.text = self.screen.model.text[:-1]
+        self.screen.psm.text = self.screen.psm.text + '!'
+        self.screen.psm.set_item('')
+        self.screen.psm.text = self.screen.psm.text[:-1]
+        self.screen.oem.text = self.screen.oem.text + '!'
+        self.screen.oem.set_item('')
+        self.screen.oem.text = self.screen.oem.text[:-1]
+        self.screen.outputformat.text = self.screen.outputformat.text + '!'
+        self.screen.outputformat.set_item('')
+        self.screen.outputformat.text = self.screen.outputformat.text[:-1]
+        self.screen.output.set_item('')
+        self.selected_output_folder = None
+        self.screen.output.text = f"Selected output folder: (default: inputfolder)"
+
 
     def create_dropdown(self, caller, item, callback):
         return MDDropdownMenu(caller=caller,

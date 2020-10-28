@@ -1,11 +1,11 @@
 import asyncio
 from logging import getLogger
 
-from tesseractXplor.app import alert, get_app
-from tesseractXplor.controllers import Controller, ImageBatchLoader
-from tesseractXplor.image_glob import get_images_from_paths
-from tesseractXplor.recognizer import recognize
-from tesseractXplor.widgets import ImageMetaTile
+from tesseractXplore.app import alert, get_app
+from tesseractXplore.controllers import Controller, ImageBatchLoader
+from tesseractXplore.image_glob import get_images_from_paths
+from tesseractXplore.recognizer import recognize
+from tesseractXplore.widgets import ImageMetaTile
 
 logger = getLogger().getChild(__name__)
 
@@ -149,26 +149,6 @@ class ImageSelectionController(Controller):
     def edit_fulltext(instance):
         get_app().switch_screen('fulltext')
         get_app().select_fulltext(instance)
-
-    def run(self, *args):
-        """ Run image tagging for selected images and input """
-        if not self.file_list:
-            alert(f'Select images to recognize')
-            return
-        #if not self.input_dict['observation_id'] and not self.input_dict['taxon_id']:
-        #    alert(f'Select either an observation or an organism to tag images with')
-        #    return
-        logger.info(f'Main: Recognize {len(self.file_list)} images')
-
-        #metadata_settings = get_app().metadata
-        # TODO: Handle write errors (like file locked) and show dialog
-        text, all_metadata = recognize(self.file_list)
-        alert(f'{len(self.file_list)} images recognized')
-
-        # Update image previews with new metadata
-        previews = {img.metadata.image_path: img for img in self.image_previews.children}
-        for metadata in all_metadata:
-            previews[metadata.image_path].metadata = metadata
 
     @staticmethod
     def on_taxon_id(input):

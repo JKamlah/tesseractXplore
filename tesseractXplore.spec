@@ -3,7 +3,7 @@ from kivy_deps import sdl2, angle
 from kivymd import hooks_path as kivymd_hooks_path
 from PyInstaller.compat import is_win, is_linux, is_darwin
 
-PROJECT_NAME = 'naturtag'
+PROJECT_NAME = 'tesseractXplore'
 
 # Define platform-specific dependencies
 binaries = []

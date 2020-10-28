@@ -1,2 +1,2 @@
 garden install --app contextmenu
-pyinstaller -y naturtag.spec
+pyinstaller -y tesseractXplore.spec

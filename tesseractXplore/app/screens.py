@@ -9,7 +9,7 @@ from kivy.uix.boxlayout import BoxLayout
 
 from tesseractXplore.constants import KV_SRC_DIR
 
-HOME_SCREEN = 'image_selection'
+HOME_SCREEN = 'tesseract_xplore'
 # TODO: Load kv files in corresponding widget modules instead?
 SCREEN_COMPONENTS = [
     'widgets',

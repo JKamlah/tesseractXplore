@@ -9,20 +9,28 @@
 
             Tab:
                 text: 'Image'
-                ScrollViewY:
-                    MDGridLayout:
+                ScatterLayout:
+                    Image:
                         id: image
-                        adaptive_height: True
-                        cols: 1
-                        padding: dp(4), dp(4)
-                        spacing: dp(4)
+                        allow_stretch: True
+                        keep_ratio: True
+                        size: self.parent.size
+                        do_rotation: False
 
             Tab:
                 text: 'Text'
+                cols: 2
                 TextInput:
                     id: text
-                    readonly: True
+                    readonly: False
                     multiline: True
+                ScatterLayout:
+                    Image:
+                        id: image_text
+                        allow_stretch: True
+                        keep_ratio: True
+                        size: self.parent.size
+                        do_rotation: False
             Tab:
                 text: 'ALTO'
                 TextInput:

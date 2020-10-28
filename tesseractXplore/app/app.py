@@ -69,7 +69,7 @@ class ControllerProxy:
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.taxon_selection_controller = TaxonSelectionController(screens['taxon'].ids)
         self.taxon_view_controller = TaxonViewController(screens['taxon'].ids)
-        self.taxon_search_controller = TaxonSearchController(screens['taxon'].ids)
+        #self.taxon_search_controller = TaxonSearchController(screens['taxon'].ids)
         # observation_search_controller = ObservationSearchController(screens['observation'].ids)
 
         # Proxy methods
@@ -218,7 +218,7 @@ class TesseractXplore(MDApp, ControllerProxy):
     def current_screen_action(self):
         """ Run the current screen's main action """
         if self.screen_manager.current == HOME_SCREEN:
-            self.image_selection_controller.run()
+            self.tesseract_controller.recognize(None)
         elif self.screen_manager.current == 'taxon':
             self.taxon_search_controller.search()
 

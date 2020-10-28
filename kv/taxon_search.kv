@@ -1,6 +1,6 @@
-# Layout for taxon search & search results
+# Layout for models search & search results
 
-# Taxon search tab
+# Model search tab
 <TaxonSearchTab@Tab>:
     text: 'magnify'
     # tooltip_text: 'Search'
@@ -10,19 +10,19 @@
         text: 'Search'
     TaxonAutocompleteSearch:
         id: taxon_search_input
-        hint_text: 'Taxon name'
-        helper_text: 'Enter a scientific or common name'
+        hint_text: 'Model name'
+        helper_text: 'Enter a model name'
     ScrollViewY:
         size_hint_min_y: 500
         MDBoxLayout:
             orientation: 'vertical'
             IntField:
                 id: taxon_id_input
-                hint_text: 'Taxon ID'
-                helper_text: 'Enter an iNaturalist taxon ID'
+                hint_text: 'Model ID'
+                helper_text: 'Enter an tesseract model ID'
             SectionHeader:
                 text: 'Categories'
-                tooltip_text: 'Iconic taxa categories to browse or filter searches with'
+                tooltip_text: 'Categories to browse model, best or fast'
             IconicTaxaLayout:
                 id: iconic_taxa
             SectionHeader:
