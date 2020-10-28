@@ -1,5 +1,6 @@
 <ImageSelectionScreen>:
-    name: 'image_selection'
+    name: 'tesseract_xplore'
+    #name: 'image_selection'
 
     FloatLayout:
         id: layout
@@ -38,8 +39,11 @@
                             cols: 1
                             spacing: dp(4)
 
-                            MDLabel:
-                                text: "Settings"
+                            OneLineListItem:
+                                font_style: 'H5'
+                                markup: True
+                                text: '[size=21]Tesseract [b]Settings[/b][/size]'
+                                on_release: app.tesseract_controller.reset_settings()
 
                             MDDropDownItem:
                                 id: model
@@ -61,7 +65,7 @@
                                 text: 'Select outputformat (default:txt)'
                                 on_release: app.tesseract_controller.outputformat_menu.open()
 
-                            MDRoundFlatIconButton:
+                            MDDropDownItem:
                                 id: output
                                 text: "Select output folder (default:inputfolder)"
                                 width: dp(400)
@@ -69,34 +73,43 @@
                                 pos_hint:{'center_x':0.5,'center_y':0.7}
                                 on_release: app.tesseract_controller.select_output_folder()
 
-
-
                             MDRoundFlatIconButton:
                                 text: 'Find a Species'
+                                disabled: True
                                 icon: 'ladybug'
                                 width: dp(200)
                                 on_press:
                                     app.switch_screen('taxon')
-                            IntField:
+                            MDLabel:
                                 id: taxon_id_input
+                                disabled: True
                                 hint_text: 'Taxon ID'
                                 helper_text: 'Enter an iNaturalist taxon ID'
-                            MDRoundFlatIconButton:
-                                disabled: True  # TODO: Remove once implemented
-                                text: 'Find an Observation'
-                                icon: 'crosshairs-gps'
-                                width: dp(200)
-                                on_press:
-                                    app.switch_screen('observation')
-                            IntField:
+                            #MDRoundFlatIconButton:
+                            #    disabled: True  # TODO: Remove once implemented
+                            #    text: 'Find an Observation'
+                            #    icon: 'crosshairs-gps'
+                            #    width: dp(200)
+                            #    on_press:
+                            #       app.switch_screen('observation')
+                            MDLabel:
                                 id: observation_id_input
+                                disabled: True
                                 hint_text: 'Observation ID'
                                 helper_text: 'Enter an iNaturalist observation ID'
+
+
 
                     # File Chooser
                     MDBoxLayout:
                         orientation: 'vertical'
                         md_bg_color: .1, .1, .1, .75
+
+                        OneLineListItem:
+                            font_style: 'H5'
+                            markup: True
+                            text: '[size=21]Image [b]Selection[/b][/size]'
+
                         FileChooserListView:
                             id: file_chooser
                             dirselect: True
@@ -113,19 +126,19 @@
                                 text: 'Clear'
                                 height: dp(50)
                                 theme_text_color: 'Primary'
-                                md_bg_color: app.theme_cls.accent_color
-    #                            MDRaisedButton:
-    #                                id: debug_button
-    #                                text: 'Debug'
-    #                                md_bg_color: app.theme_cls.accent_color
+                                md_bg_color: app.theme_cls.primary_dark
+                            #MDRaisedButton:
+                            #    id: debug_button
+                            #    text: 'Debug'
+                            #    md_bg_color: app.theme_cls.primary_dark
                             MDRaisedButton:
                                 id: load_button
                                 text: 'Load Selected File/Folder'
                                 height: dp(50)
                                 theme_text_color: 'Primary'
-                                md_bg_color: app.theme_cls.accent_color
+                                md_bg_color: app.theme_cls.primary_dark
                             MDBoxLayout:
-                                md_bg_color: app.theme_cls.accent_color
+                                md_bg_color: app.theme_cls.primary_dark
                                 adaptive_height: True
                                 padding: dp(10), dp(0)
                                 MDSwitch:
@@ -138,7 +151,24 @@
             StatusBar:
                 id: status_bar
 
-        MDFloatingActionButton:
-            id: recognize_button
-            icon: 'play'
-            elevation_normal: 8
+
+        MDGridLayout:
+            cols: 2
+            spacing: dp(4)
+            padding: dp(4)
+
+            MDFloatingActionButton:
+                id: recognize_button
+                icon: 'play'
+                elevation_normal: 8
+                md_bg_color: app.theme_cls.primary_dark
+                halign: "bottom"
+            AnchorLayout:
+                anchor_y: 'bottom'
+                anchor_x: 'left'
+                MDFloatingActionButton:
+                    id: pause_button
+                    icon: 'pause'
+                    disabled: True
+                    elevation_normal: 8
+                    md_bg_color: app.theme_cls.primary_dark
