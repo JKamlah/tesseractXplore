@@ -4,8 +4,7 @@ from logging import getLogger
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller, ImageBatchLoader
 from tesseractXplore.image_glob import get_images_from_paths
-from tesseractXplore.recognizer import recognize
-from tesseractXplore.widgets import ImageMetaTile
+from tesseractXplore.controllers.fulltext_view_controller import find_file
 
 logger = getLogger().getChild(__name__)
 
@@ -21,17 +20,18 @@ class ImageSelectionController(Controller):
         self.theme_cls = get_app().theme_cls
 
         # Context menu item events
-        self.context_menu.ids.view_model_ctx.bind(on_release=self.view_model)
+        # For recgonize see tesseract_controller
+        #self.context_menu.ids.view_model_ctx.bind(on_release=self.view_model)
         # self.context_menu.ids.view_gt_ctx.bind(on_release=self.view_gt)
-        self.context_menu.ids.view_metadata_ctx.bind(on_release=self.view_metadata)
         self.context_menu.ids.edit_fulltext_ctx.bind(on_release=self.edit_fulltext)
-        self.context_menu.ids.copy_flickr_tags_ctx.bind(on_release=lambda x: x.selected_image.copy_flickr_tags())
         self.context_menu.ids.remove_ctx.bind(on_release=lambda x: self.remove_image(x.selected_image))
+        self.context_menu.ids.show_pdf_ctx.bind(on_release=self.show_pdf)
 
         # Other widget events
         self.inputs.model_id_input.bind(on_text_validate=self.on_model_id)
         self.inputs.clear_button.bind(on_release=self.clear)
         self.inputs.load_button.bind(on_release=self.add_file_chooser_images)
+        # Instead see tesseract_controller
         #self.inputs.recognize_button.bind(on_release=self.run)
         self.file_chooser.bind(on_submit=self.add_file_chooser_images)
 
@@ -65,6 +65,16 @@ class ImageSelectionController(Controller):
         self.start_progress(len(new_images), loader)
         loader.add_batch(new_images, parent=self.image_previews)
         loader.start_thread()
+
+    def show_pdf(self, instance, *args):
+        import webbrowser
+        from pathlib import Path
+        fname = Path(instance.selected_image.original_source)
+        pdf = find_file(fname.parent.joinpath(fname.name.rsplit(".",1)[0]+".pdf"))
+        if pdf:
+            alert(f"Couldn't find any matching pdf to {fname.name}")
+        else:
+            webbrowser.open(str(pdf.absolute()))
 
     def open_native_file_chooser(self, dirs=False):
         """ A bit of a hack; uses a hidden tkinter window to open a native file chooser dialog """
@@ -124,9 +134,9 @@ class ImageSelectionController(Controller):
             self.context_menu.show(*get_app().root_window.mouse_pos)
             self.context_menu.ref = instance
             # Enable 'view model/gt' menu items, if applicable
-            self.context_menu.ids.view_model_ctx.disabled = not instance.metadata.model_id
-            self.context_menu.ids.view_gt_ctx.disabled = not instance.metadata.gt_id
-            self.context_menu.ids.copy_flickr_tags_ctx.disabled = not instance.metadata.keyword_meta.flickr_tags
+            #self.context_menu.ids.view_model_ctx.disabled = not instance.metadata.model_id
+            #self.context_menu.ids.view_gt_ctx.disabled = not instance.metadata.gt_id
+            #self.context_menu.ids.copy_flickr_tags_ctx.disabled = not instance.metadata.keyword_meta.flickr_tags
         # Middle-click: remove image
         elif touch.button == 'middle':
             self.remove_image(instance)

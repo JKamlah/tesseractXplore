@@ -44,23 +44,10 @@ class FulltextViewController:
         fdir = fpath.parent
         fname = fpath.name.rsplit(".",1)[0]
         self.image_text.source = fulltext.selected_image.original_source
-        self.text.text = self.read_file(fdir.joinpath(fname+'.txt'))
-        self.alto.text = self.read_file(fdir.joinpath(fname+'.xml'))
-        self.hocr.text = self.read_file(fdir.joinpath(fname+'.hocr'))
-        self.tsv.text = self.read_file(fdir.joinpath(fname+'.tsv'))
-
-    def read_file(self, fname):
-        app = get_app()
-        #if outputfolder
-        if app.tesseract_controller.selected_output_folder and Path(app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
-            return "\n".join(open(os.path.join(app.tesseract_controller.selected_output_foldier,fname)).readlines())
-        # else check cwd folder
-        if fname.is_file():
-            return "\n".join(open(fname).readlines())
-        # else check cwd subfolder
-        elif glob.glob(str(fname.parent.joinpath('**').joinpath(fname.name))):
-            return "\n".join(open(glob.glob(str(fname.parent.joinpath('**').joinpath(fname.name)))[0]).readlines())
-        return ""
+        self.text.text = read_file(fdir.joinpath(fname+'.txt'))
+        self.alto.text = read_file(fdir.joinpath(fname+'.xml'))
+        self.hocr.text = read_file(fdir.joinpath(fname+'.hocr'))
+        self.tsv.text = read_file(fdir.joinpath(fname+'.tsv'))
 
     def on_touch_down(self, touch):
         # Override Scatter's `on_touch_down` behavior for mouse scrolli
@@ -88,3 +75,25 @@ class FulltextViewController:
             self.image.scale = self.image.scale * 1.1
         except StopIteration:
             pass
+
+
+def read_file(fname):
+    res = find_file(fname)
+    if res:
+        return "\n".join(open(res).readlines())
+    else:
+        return ""
+
+def find_file(fname):
+    app = get_app()
+    #if outputfolder
+    if app.tesseract_controller.selected_output_folder and Path(app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
+        return os.path.join(app.tesseract_controller.selected_output_foldier,fname)
+    # else check cwd folder
+    elif fname.is_file():
+        return fname
+    # else check cwd subfolder
+    subfoldermatch = glob.glob(str(fname.parent.joinpath('**').joinpath(fname.name)))
+    if subfoldermatch:
+        return subfoldermatch[0]
+    return None

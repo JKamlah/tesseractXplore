@@ -6,36 +6,22 @@
 <PhotoContextMenu@ObjectContextMenu>:
     visible: False
     PhotoContextMenuItem:
-        id: view_model_ctx
-        text: "View model"
-        disabled: True
-    PhotoContextMenuItem:
-        id: view_gt_ctx
-        text: "View gt"
-        disabled: True
-    PhotoContextMenuItem:
-        id: view_metadata_ctx
-        text: "View metadata"
+        id: recognize_ctx
+        text: "Recognize"
     PhotoContextMenuItem:
         id: edit_fulltext_ctx
         text: "Edit fulltext"
     PhotoContextMenuItem:
-        id: copy_flickr_tags_ctx
-        text: "Copy Flickr tags"
+        id: show_pdf_ctx
+        text: "Show PDF"
+    PhotoContextMenuItem:
+        id: compare_gt_ctx
+        text: "Compare with GT"
+        disabled: True
     PhotoContextMenuItem:
         id: remove_ctx
         text: "Remove from selection"
     # Just some ideas for future features
-#    ContextMenuDivider:
-#        text: "Model"
-#    PhotoContextMenuItem:
-#        id: view_model_ctx
-#        text: "View model"
-#        disabled: True
-#    PhotoContextMenuItem:
-#        text: "View model on iNaturalist"
-#        disabled: True
-     # Or maybe nested menus:
 #    ContextMenuDivider:
 #        text: "More options"
 #    ContextMenuTextItem:

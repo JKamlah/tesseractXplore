@@ -47,27 +47,27 @@
 
                             MDDropDownItem:
                                 id: model
-                                text: 'Select model (defautl:eng)'
+                                text: 'Select model (default: eng)'
                                 on_release: app.tesseract_controller.model_menu.open()
 
                             MDDropDownItem:
                                 id: psm
-                                text: 'Select PSM (default:3)'
+                                text: 'Select PSM (default: 3)'
                                 on_release: app.tesseract_controller.psm_menu.open()
 
                             MDDropDownItem:
                                 id: oem
-                                text: 'Select OEM (default:3)'
+                                text: 'Select OEM (default: 3)'
                                 on_release: app.tesseract_controller.oem_menu.open()
 
                             MDDropDownItem:
                                 id: outputformat
-                                text: 'Select outputformat (default:txt)'
+                                text: 'Select outputformat (default: txt)'
                                 on_release: app.tesseract_controller.outputformat_menu.open()
 
                             MDDropDownItem:
                                 id: output
-                                text: "Select output folder (default:inputfolder)"
+                                text: "Select output folder (default: input folder)"
                                 width: dp(400)
                                 icon: 'folder'
                                 pos_hint:{'center_x':0.5,'center_y':0.7}
