@@ -29,12 +29,12 @@ class SettingsController:
         self._stored_taxa = read_stored_taxa()
 
         # Set default locale if it's unset
-        if self.inaturalist['locale'] is None:
-            self.inaturalist['locale'] = getdefaultlocale()[0]
+        if self.account['locale'] is None:
+            self.account['locale'] = getdefaultlocale()[0]
 
-        self.screen.preferred_place_id_label.bind(
-            on_release=lambda *x: webbrowser.open(PLACES_BASE_URL)
-        )
+        #self.screen.preferred_place_id_label.bind(
+        #    on_release=lambda *x: webbrowser.open(PLACES_BASE_URL)
+        #)
         self.screen.dark_mode_chk.bind(active=MDApp.get_running_app().set_theme_mode)
 
         # Control widget ids should match the options in the settings file (with suffixes)
@@ -109,23 +109,19 @@ class SettingsController:
 
     @property
     def locale(self):
-        return self.inaturalist.get('locale')
+        return self.account.get('locale')
 
     @property
     def username(self):
-        return self.inaturalist.get('username')
+        return self.account.get('username')
 
     @property
-    def preferred_place_id(self):
-        return self.inaturalist.get('preferred_place_id')
+    def password(self):
+        return self.account.get('preferred_place_id')
 
     @property
-    def inaturalist(self):
-        return self.settings_dict['inaturalist']
-
-    @property
-    def metadata(self):
-        return self.settings_dict['metadata']
+    def account(self):
+        return self.settings_dict['account']
 
     @property
     def display(self):
@@ -134,3 +130,12 @@ class SettingsController:
     @property
     def tesseract(self):
         return self.settings_dict['tesseract']
+
+    @property
+    def viewer(self):
+        return self.settings_dict['viewer']
+
+    @property
+    def pdfviewer(self):
+        return self.viewer['pdfviewer']
+

@@ -10,67 +10,69 @@
                 OneLineListItem:
                     font_style: 'H5'
                     text: 'TesseractXplore settings'
-                TwoLineListItem:
+                OneLineListItem:
                     font_style: 'H6'
                     text: 'Username'
-                    secondary_text: 'Username (not necessary atm)'
-                TextInputListItem:
+                MDTextField:
+                    mode: "rectangle"
                     id: username_input
-                    icon_right: 'account'
-                TwoLineListItem:
+                    size_hint_min_x: 100
+                    #icon_left: 'account'
+                    #hint_text: 'Username'
+                OneLineListItem:
                     font_style: 'H6'
-                    text: 'Locale'
-                    secondary_text: 'Locale preference for model common names'
-                TextInputListItem:
-                    id: locale_input
-                    icon_right: 'earth'
-                ThreeLineListItem:
-                    id: preferred_place_id_label
-                    font_style: 'H6'
-                    text: 'Preferred place ID'
-                    secondary_text: 'Place preference for regional model common names'
-                    tertiary_text: 'See [b][color=#00BED4]https://www.inaturalist.org/places[/color][/b] to search for your region'
-                TextInputListItem:
-                    id: preferred_place_id_input
-                    icon_right: 'city'
-                    input_filter: 'int'
+                    text: 'Password'
+                MDTextField:
+                    id: password
+                    mode: "rectangle"
+                    password: True
+                    hint_text: 'Password'
                 OneLineListItem:
                 OneLineListItem:
                     font_style: 'H5'
-                    text: 'Output Settings'
-                TwoLineAvatarIconListItem:
+                    text: 'I/O Settings'
+                OneLineListItem:
+                    font_style: 'H6'
+                    text: 'Image filetypes'
+                MDTextField:
+                    id: filetypes
+                    mode: "rectangle"
+                    hint_text: 'Set filetypes'
+                OneLineListItem:
                     font_style: 'H6'
                     text: 'Regex'
-                    secondary_text: 'Include common names in model keywords'
-                    SwitchListItem:
-                        id: common_names_chk
-                    IconRight:
-                        icon: 'cat'
-                TwoLineAvatarIconListItem:
+                MDTextField:
+                    id: regex
+                    mode: "rectangle"
+                    hint_text: 'Set Regex to find files'
+                TwoLineListItem:
                     font_style: 'H6'
-                    text: 'Hierarchical Keywords'
-                    secondary_text: 'Generate pipe-delimited hierarchical keywords'
-                    SwitchListItem:
-                        id: hierarchical_keywords_chk
-                    IconRight:
-                        icon: 'file-tree'
-                TwoLineAvatarIconListItem:
+                    text: 'PDF-Viewer'
+                    secondary_text: 'Default: webbrowser'
+                MDTextField:
+                    id: pdfviewer
+                    mode: "rectangle"
+                    hint_text: 'Set path or cli-cmd to pdfviewer'
+                OneLineListItem:
+                OneLineListItem:
+                    font_style: 'H5'
+                    text: 'Extra Tesseract-Settings'
+                OneLineListItem:
                     font_style: 'H6'
-                    text: 'Darwin Core Metadata'
-                    secondary_text: 'Convert model/gt metadata into XMP Darwin Core metadata'
-                    SwitchListItem:
-                        id: darwin_core_chk
-                    IconRight:
-                        icon: 'xml'
-                TwoLineAvatarIconListItem:
+                    text: 'DPI'
+                MDTextField:
+                    id: dpi
+                    mode: "rectangle"
+                    hint_text: 'Set DPI (default: auto)'
+                    #on_release: app.tesseract_controller.dpi_menu.open()
+                OneLineListItem:
                     font_style: 'H6'
-                    text: 'Create XMP Files'
-                    secondary_text: "Create XMP sidecar files if they don't already exist"
-                    SwitchListItem:
-                        id: create_xmp_chk
-                    IconRight:
-                        icon: 'file-multiple'
-
+                    text: 'Extra parameter'
+                MDTextField:
+                    id: param
+                    mode: "rectangle"
+                    hint_text: 'Set parameter (e.g. load_system_dawg=1)'
+                    #on_release: app.tesseract_controller.dpi_menu.open()
                 OneLineListItem:
                 OneLineListItem:
                     font_style: 'H6'
