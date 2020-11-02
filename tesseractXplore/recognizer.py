@@ -37,7 +37,7 @@ def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputf
         else:
             output = Path(image_path).parent.joinpath(Path(image_path).name.rsplit(".",1)[0]) \
                 if output_folder is None else Path(output_folder).joinpath(Path(image_path).name)
-            fname_out = str(output.absolute()) + {'txt': '.txt', 'hocr': '.hocr', 'alto': '.xml', 'tsv': '.tsv'}.get(
+            fname_out = str(output.absolute()) + {'txt': '.txt', 'hocr': '.hocr', 'alto': '.xml', 'tsv': '.tsv', 'pdf': '.pdf'}.get(
                 outputformat, ".txt")
             p1 = Popen(["tesseract", *params, image_path, output, outputformat], stdout=PIPE)
         stdout, stderr = p1.communicate()
