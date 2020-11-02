@@ -6,10 +6,10 @@
         MDTabs:
             id: fulltext_tabs
             background_color: app.theme_cls.primary_color
-
+            lock_swiping: True
             Tab:
                 text: 'Image'
-                ScatterLayout:
+                Zoom:
                     Image:
                         id: image
                         allow_stretch: True
@@ -20,17 +20,17 @@
             Tab:
                 text: 'Text'
                 cols: 2
-                TextInput:
-                    id: text
-                    readonly: False
-                    multiline: True
-                ScatterLayout:
+                Zoom:
                     Image:
                         id: image_text
                         allow_stretch: True
                         keep_ratio: True
                         size: self.parent.size
-                        do_rotation: False
+                TextInput:
+                    id: text
+                    readonly: False
+                    multiline: True
+
             Tab:
                 text: 'ALTO'
                 TextInput:
