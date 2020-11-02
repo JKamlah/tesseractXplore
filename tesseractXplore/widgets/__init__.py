@@ -22,3 +22,4 @@ from tesseractXplore.widgets.lists import SortableList, SwitchListItem, TextInpu
 from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, PhotoContextMenuItem, ListContextMenuItem
 from tesseractXplore.widgets.progress_bar import LoaderProgressBar
 from tesseractXplore.widgets.model_autocomplete import ModelAutocompleteSearch
+from tesseractXplore.widgets.zoom import Zoom
