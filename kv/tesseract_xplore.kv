@@ -32,7 +32,7 @@
                     # Text input fields
                     # TODO: Move input/search to a separate screen
                     MDBoxLayout:
-                        size_hint_y: .50
+                        size_hint_y: .70
                         size_hint_min_y: 120
 
                         MDGridLayout:
@@ -40,10 +40,12 @@
                             spacing: dp(4)
 
                             OneLineListItem:
+                                id: settings_menu
                                 font_style: 'H5'
                                 markup: True
                                 text: '[size=21]Tesseract [b]Settings[/b][/size]'
                                 on_release: app.tesseract_controller.reset_settings()
+                                #settings_menu()
 
                             MDDropDownItem:
                                 id: model
