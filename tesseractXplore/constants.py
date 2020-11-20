@@ -24,8 +24,8 @@ EXIF_ORIENTATION_ID = '0x0112'
 THUMBNAILS_DIR = join(DATA_DIR, 'thumbnails')
 THUMBNAIL_DEFAULT_FORMAT = 'png'
 THUMBNAIL_SIZE_SM = (75, 75)
-THUMBNAIL_SIZE_DEFAULT = (200, 200)
-THUMBNAIL_SIZE_LG = (500, 500)
+THUMBNAIL_SIZE_DEFAULT = (400, 400)
+THUMBNAIL_SIZE_LG = (600, 600)
 THUMBNAIL_SIZES = {
     'small': THUMBNAIL_SIZE_SM,
     'medium': THUMBNAIL_SIZE_DEFAULT,
@@ -52,6 +52,9 @@ CONFIG_PATH = join(DATA_DIR, 'settings.yml')
 DEFAULT_CONFIG_PATH = join(PKG_DIR, 'default_settings.yml')
 STORED_TAXA_PATH = join(DATA_DIR, 'stored_taxa.json')
 MAX_DISPLAY_HISTORY = 50  # Max number of history items to display at a time
+
+# Model file
+DEFAULT_MODEL_PATH = join(PKG_DIR, 'model_metadata.yml')
 
 # URLs / API settings
 TAXON_BASE_URL = 'https://www.inaturalist.org/taxa'

@@ -5,6 +5,8 @@ from kivymd.uix.list import MDList, ILeftBody, ILeftBodyTouch, OneLineListItem
 from kivymd.uix.list import ThreeLineAvatarIconListItem
 from kivymd.uix.selectioncontrol import MDSwitch
 from kivymd.uix.textfield import MDTextFieldRound
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
+from kivymd.uix.selectioncontrol import MDCheckbox
 
 from tesseractXplore.app import alert
 from tesseractXplore.models import Model
@@ -28,10 +30,14 @@ class SortableList(MDList):
 class SwitchListItem(ILeftBodyTouch, MDSwitch):
     """ Switch that works as a list item """
 
+class ListItemWithCheckbox(OneLineAvatarIconListItem):
+    '''Custom list item.'''
+
+class RightCheckbox(IRightBodyTouch, MDCheckbox):
+    '''Custom right container.'''
 
 class TextInputListItem(OneLineListItem, MDTextFieldRound):
     """ Text input that works as a list item """
-
 
 class ModelListItem(ThreeLineAvatarIconListItem):
     """ Class that displays condensed model info as a list item """

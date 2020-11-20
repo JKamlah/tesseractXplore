@@ -1,20 +1,22 @@
 import asyncio
 from logging import getLogger
 
-from pyinaturalist.node_api import get_taxa
 from tesseractXplore.constants import ICONIC_TAXA
 from tesseractXplore.controllers import Controller, ModelBatchLoader
-from tesseractXplore.models import Model
 from tesseractXplore.app import get_app
 from tesseractXplore.widgets import DropdownTextField, IconicTaxaIcon
 
-logger = getLogger().getChild(__name__)
+from tesseractXplore.metamodels import read_metamodels
 
+logger = getLogger().getChild(__name__)
 
 class ModelSearchController(Controller):
     """ Controller class to manage model search """
     def __init__(self, screen):
         super().__init__(screen)
+        self.screen = settings_screen
+        self.metamodels = read_metamodels()
+
         self.search_tab = screen.search_tab
         self.search_results_tab = screen.search_results_tab
 
@@ -66,8 +68,7 @@ class ModelSearchController(Controller):
 
         params = self.get_search_parameters()
         logger.info(f'Searching taxa with parameters: {params}')
-        # results = await _get_taxa(params)
-        results = get_taxa(**params)['results']
+        results = self.get_models(**params)
         logger.info(f'Found {len(results)} search results')
         await self.update_search_results(results)
 
@@ -85,6 +86,9 @@ class ModelSearchController(Controller):
         }
         return {k: v for k, v in params.items() if v}
 
+    def get_models(self, **params):
+        return
+
     async def update_search_results(self, results):
         """ Add model info from response to search results tab """
         loader = ModelBatchLoader()
@@ -100,14 +104,14 @@ class ModelSearchController(Controller):
     def reset_all_search_inputs(self, *args):
         logger.info('Resetting search filters')
         self.model_search_input.reset()
-        for t in self.selected_iconic_taxa:
+        for t in self.selected_model:
             t.toggle_selection()
         self.exact_rank_input.text = ''
         self.min_rank_input.text = ''
         self.max_rank_input.text = ''
 
     @staticmethod
-    def on_select_iconic_model(button):
+    def on_select_model(button):
         """ Handle clicking an iconic model; don't re-select the model if we're de-selecting it """
         if not button.is_selected:  # Note: this is the state *after* the click event
             get_app().select_model(id=button.model_id)

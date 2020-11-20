@@ -5,6 +5,7 @@ from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller, ImageBatchLoader
 from tesseractXplore.image_glob import get_images_from_paths
 from tesseractXplore.controllers.fulltext_view_controller import find_file
+from kivy.core.window import Window
 
 logger = getLogger().getChild(__name__)
 
@@ -13,7 +14,7 @@ class ImageSelectionController(Controller):
     def __init__(self, screen):
         super().__init__(screen)
         self.context_menu = screen.context_menu
-        self.inputs = screen
+        self.screen = screen
         self.image_previews = screen.image_previews
         self.file_chooser = screen.file_chooser
         self.file_list = []
@@ -24,16 +25,62 @@ class ImageSelectionController(Controller):
         #self.context_menu.ids.view_model_ctx.bind(on_release=self.view_model)
         # self.context_menu.ids.view_gt_ctx.bind(on_release=self.view_gt)
         self.context_menu.ids.edit_fulltext_ctx.bind(on_release=self.edit_fulltext)
+        self.context_menu.ids.edit_image_ctx.bind(on_release=self.edit_image)
         self.context_menu.ids.remove_ctx.bind(on_release=lambda x: self.remove_image(x.selected_image))
-        self.context_menu.ids.show_pdf_ctx.bind(on_release=self.show_pdf)
+        self.context_menu.ids.open_pdf_ctx.bind(on_release=self.open_pdf)
 
         # Other widget events
-        self.inputs.model_id_input.bind(on_text_validate=self.on_model_id)
-        self.inputs.clear_button.bind(on_release=self.clear)
-        self.inputs.load_button.bind(on_release=self.add_file_chooser_images)
+        self.screen.model_id_input.bind(on_text_validate=self.on_model_id)
+        self.screen.clear_button.bind(on_release=self.clear)
+        self.screen.load_button.bind(on_release=self.add_file_chooser_images)
+        self.screen.sort_button.bind(on_release=self.sort_previews)
+        self.screen.zoomin_button.bind(on_release=self.zoomin)
+        self.screen.zoomout_button.bind(on_release=self.zoomout)
+
         # Instead see tesseract_controller
         #self.inputs.recognize_button.bind(on_release=self.run)
         self.file_chooser.bind(on_submit=self.add_file_chooser_images)
+        self.screen.image_scrollview.bind(on_touch_down=self.on_touch_down)
+
+        # TODO: Not working atm only on main window atm (see app.py)
+        #self.screen.image_scrollview.bind(on_keyboard=self.on_keyboard)
+
+    def zoomin(self, instance, *args):
+        currentvalue = self.screen.image_previews.row_default_height
+        zoom = currentvalue + 100 if currentvalue < 400 else currentvalue
+        self.zoom(self.screen.image_previews, zoom)
+
+    def zoomout(self, instance, *args):
+        currentvalue = self.screen.image_previews.row_default_height
+        zoom = currentvalue - 100 if currentvalue > 100 else currentvalue
+        self.zoom(self.screen.image_previews, zoom)
+
+    def zoom(self, instance, zoom):
+        instance.cols = max(int(self.screen.image_previews.width / zoom), 1)
+        instance.row_default_height = zoom
+        instance.col_default_width = zoom
+
+    def on_touch_down(self, instance, touch):
+        if touch.osx < 0.7 and len(self.image_previews.children) > 0:
+            if touch.is_mouse_scrolling:
+                if touch.button == 'scrolldown':
+                    self.zoomout(instance, None)
+                elif touch.button == 'scrollup':
+                    self.zoomin(instance, None)
+
+    def sort_previews(self, instance, *args):
+        if instance.text == 'Sort Up':
+            self.file_list = list(sorted(self.file_list))
+            instance.text = 'Sort Down'
+        elif instance.text == 'Sort Down':
+            self.file_list = list(reversed(self.file_list))
+            instance.text = 'Sort Up'
+        children = self.image_previews.children[:]
+        self.image_previews.clear_widgets()
+        for fname in self.file_list:
+            for child in children:
+                if child.original_source == fname:
+                    self.image_previews.add_widget(child)
 
     def post_init(self):
         # Load and save start dir from file chooser with the rest of the app settings
@@ -66,15 +113,25 @@ class ImageSelectionController(Controller):
         loader.add_batch(new_images, parent=self.image_previews)
         loader.start_thread()
 
-    def show_pdf(self, instance, *args):
-        import webbrowser
+
+    def open_pdf(self, instance, *args):
+        """ Open a pdf via webbrowser or another external software """
         from pathlib import Path
+        pdfviewer = get_app().settings_controller.pdfviewer
         fname = Path(instance.selected_image.original_source)
         pdf = find_file(fname.parent.joinpath(fname.name.rsplit(".",1)[0]+".pdf"))
-        if pdf:
+        if pdf is None:
             alert(f"Couldn't find any matching pdf to {fname.name}")
-        else:
+        elif pdfviewer == 'webbrowser':
+            import webbrowser
             webbrowser.open(str(pdf.absolute()))
+        else:
+            import subprocess
+            try:
+                subprocess.run([pdfviewer, str(pdf.absolute())])
+            except:
+                alert(f"Couldn't find: {pdfviewer}")
+                pass
 
     def open_native_file_chooser(self, dirs=False):
         """ A bit of a hack; uses a hidden tkinter window to open a native file chooser dialog """
@@ -89,10 +146,10 @@ class ImageSelectionController(Controller):
         self.add_images(paths)
 
     def select_model_from_photo(self, model_id):
-        self.inputs.model_id_input.text = str(model_id)
+        self.screen.model_id_input.text = str(model_id)
 
     def select_gt_from_photo(self, gt_id):
-        self.inputs.gt_id_input.text = str(gt_id)
+        self.screen.gt_id_input.text = str(gt_id)
 
     def remove_image(self, image):
         """ Remove an image from file list and image previews """
@@ -104,17 +161,17 @@ class ImageSelectionController(Controller):
         """ Clear all image selections (selected files, previews, and inputs) """
         logger.info('Main: Clearing image selections')
         self.file_list = []
-        self.inputs.gt_id_input.text = ''
-        self.inputs.model_id_input.text = ''
+        self.screen.gt_id_input.text = ''
+        self.screen.model_id_input.text = ''
         self.file_chooser.selection = []
         self.image_previews.clear_widgets()
 
     @property
     def input_dict(self):
         return {
-            "gt_id": int(self.inputs.gt_id_input.text or 0),
-            "model_id": int(self.inputs.model_id_input.text or 0),
-            "recursive": self.inputs.recursive_chk.active,
+            "gt_id": int(self.screen.gt_id_input.text or 0),
+            "model_id": int(self.screen.model_id_input.text or 0),
+            "recursive": self.screen.recursive_chk.active,
         }
 
     def get_state(self, *args):
@@ -161,7 +218,22 @@ class ImageSelectionController(Controller):
         get_app().select_fulltext(instance)
 
     @staticmethod
+    def edit_image(instance):
+        get_app().switch_screen('image')
+        get_app().select_image(instance)
+
+    @staticmethod
     def on_model_id(input):
         """ Handle entering a model ID and pressing Enter """
         get_app().switch_screen('model')
         get_app().select_model(id=int(input.text))
+
+    @staticmethod
+    def get_model(instance):
+        get_app().switch_screen('modellist')
+        get_app().modellist_controller.search = True
+        get_app().modellist_controller.set_list("")
+
+    @staticmethod
+    def tesseractxplore(instance):
+        get_app().switch_screen('tesseractxplore')

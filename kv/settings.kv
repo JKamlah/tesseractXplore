@@ -1,6 +1,5 @@
 <SettingsScreen>:
     name: 'settings'
-
     BoxLayout:
         orientation: 'vertical'
         ScrollViewY:
@@ -57,6 +56,15 @@
                 OneLineListItem:
                     font_style: 'H5'
                     text: 'Extra Tesseract-Settings'
+                OneLineAvatarListItem:
+                    text: 'Use Path to tesseract'
+                    SwitchListItem:
+                        id: tesseract_path_chk
+                MDTextField:
+                    mode: "rectangle"
+                    id: tesspath
+                    size_hint_min_x: 100
+                    #text: 'C:\\Program Files\\Tesseract-OCR\\tesserac.exe'
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'DPI'
@@ -84,5 +92,14 @@
                         id: dark_mode_chk
                     IconRight:
                         icon: 'theme-light-dark'
+                OneLineListItem:
+                    font_style: 'H6'
+                    font_style: 'H5'
+                    text: 'Control settings'
+                OneLineAvatarIconListItem:
+                    id: reset_default_button
+                    text: 'Reset to defaults'
+                    IconLeft:
+                        icon: 'backup-restore'
         StatusBar:
             id: status_bar

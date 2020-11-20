@@ -35,6 +35,12 @@ class SettingsScreen(MDScreen):
 class FulltextViewScreen(MDScreen):
     pass
 
+class ModelListScreen(MDScreen):
+    pass
+
+class ImageEditorScreen(MDScreen):
+    pass
+
 class ModelScreen(MDScreen):
     pass
 
@@ -46,7 +52,9 @@ SCREENS = {
     HOME_SCREEN: ImageSelectionScreen,
     'settings': SettingsScreen,
     'fulltext': FulltextViewScreen,
+    'imageeditor': ImageEditorScreen,
     'model': ModelScreen,
+    'modellist': ModelListScreen,
     'groundtruth': GTScreen,
 }
 

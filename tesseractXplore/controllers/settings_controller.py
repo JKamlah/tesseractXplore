@@ -1,7 +1,6 @@
 from locale import locale_alias, getdefaultlocale
 from logging import getLogger
 from typing import Tuple, List, Dict
-import webbrowser
 
 from kivy.uix.widget import Widget
 
@@ -23,6 +22,7 @@ logger = getLogger().getChild(__name__)
 # TODO: Track whether state changed since last write; if not, don't write on close
 class SettingsController:
     """ Controller class to manage Settings screen, and reading from and writing to settings file """
+
     def __init__(self, settings_screen):
         self.screen = settings_screen
         self.settings_dict = read_settings()
@@ -32,10 +32,13 @@ class SettingsController:
         if self.account['locale'] is None:
             self.account['locale'] = getdefaultlocale()[0]
 
-        #self.screen.preferred_place_id_label.bind(
+        # self.screen.preferred_place_id_label.bind(
         #    on_release=lambda *x: webbrowser.open(PLACES_BASE_URL)
-        #)
+        # )
         self.screen.dark_mode_chk.bind(active=MDApp.get_running_app().set_theme_mode)
+
+        # Bind buttons (with no persisted value)
+        self.screen.reset_default_button.bind(on_release=self.clear_settings)
 
         # Control widget ids should match the options in the settings file (with suffixes)
         self.controls = {
@@ -107,6 +110,11 @@ class SettingsController:
         else:
             logger.warning(f'Could not detect type for {control_widget}')
 
+    def clear_settings(self, *args):
+        reset_defaults()
+        self.update_control_widgets()
+        alert('Settings have been reset to defaults')
+
     @property
     def locale(self):
         return self.account.get('locale')
@@ -138,4 +146,3 @@ class SettingsController:
     @property
     def pdfviewer(self):
         return self.viewer['pdfviewer']
-

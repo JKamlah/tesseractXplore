@@ -5,23 +5,21 @@ display:
   # Not yet configurable
   md_primary_palette: 'Teal'
   md_accent_palette: 'Cyan'
-inaturalist:
-  locale: null
-  preferred_place_id: 1
+account:
   username: null
-metadata:
-  common_names: true
-  create_xmp: true
-  darwin_core: true
-  hierarchical_keywords: true
+  password: null
+  locale: null
 photos:
   start_dir: '/'
   # Not yet configurable
   filetypes: ['jpg', 'jpeg', 'png', 'ppm', 'gif', 'tif', 'tiff']
+viewer:
+  pdfviewer: 'webbrowser'
 tesseract:
   model: null
   psm: null
   oem: null
+  tesspath: 'C:\\Program Files\\Tesseract-OCR\\tesserac.exe'
 # Not yet configurable
 search:
   autocomplete_delay: 0.5

@@ -18,8 +18,9 @@ from tesseractXplore.widgets.buttons import StarButton, TooltipFloatingButton, T
 from tesseractXplore.widgets.images import CachedAsyncImage, IconicTaxaIcon, ImageMetaTile
 from tesseractXplore.widgets.labels import HideableTooltip, TooltipLabel
 from tesseractXplore.widgets.tabs import Tab
-from tesseractXplore.widgets.lists import SortableList, SwitchListItem, TextInputListItem, ModelListItem, ThumbnailListItem
+from tesseractXplore.widgets.lists import SortableList, SwitchListItem, TextInputListItem, ModelListItem, ThumbnailListItem, ListItemWithCheckbox
 from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, PhotoContextMenuItem, ListContextMenuItem
 from tesseractXplore.widgets.progress_bar import LoaderProgressBar
 from tesseractXplore.widgets.model_autocomplete import ModelAutocompleteSearch
 from tesseractXplore.widgets.zoom import Zoom
+from tesseractXplore.widgets.text import TextInputOCR

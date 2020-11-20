@@ -5,15 +5,15 @@ from tesseractXplore.app import alert, get_app
 
 from pathlib import Path
 from subprocess import PIPE, Popen
+from shutil import move
 from kivymd.toast import toast
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivy.uix.textinput import TextInput
 
-def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputformat="stdout"):
+def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputformats=None, subfolder=False, groupfolder=""):
     """
-    Get model tags from an iNaturalist gt or model, and write them to local image
-    metadata. See :py:func:`~tesseractXplore.cli.tag` for details.
+    OCR with tesseract on images
     """
     # TODO: Simplify this a bit
     all_metadata = []
@@ -26,25 +26,22 @@ def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputf
     status_bar = app.image_selection_controller.status_bar
     status_bar.clear_widgets()
     status_bar.add_widget(pb)
-    for idx,image_path in enumerate(images):
+    for idx,image in enumerate(images):
         if app.tesseract_controller.ocr_stop: break
         pb.update(None, idx+1)
         output = None
-        fname_out = None
         params = ["-l", model, "--psm", psm, "--oem", oem]
-        if outputformat == "stdout":
-            p1 = Popen(["tesseract", *params, image_path, outputformat], stdout=PIPE)
+        if not outputformats:
+            p1 = Popen(["tesseract", *params, image, 'stdout'], stdout=PIPE)
         else:
-            output = Path(image_path).parent.joinpath(Path(image_path).name.rsplit(".",1)[0]) \
-                if output_folder is None else Path(output_folder).joinpath(Path(image_path).name)
-            fname_out = str(output.absolute()) + {'txt': '.txt', 'hocr': '.hocr', 'alto': '.xml', 'tsv': '.tsv', 'pdf': '.pdf'}.get(
-                outputformat, ".txt")
-            p1 = Popen(["tesseract", *params, image_path, output, outputformat], stdout=PIPE)
+            image_path = Path(image)
+            output = image_path.parent.joinpath(image_path.name.rsplit(".",1)[0]) \
+                if output_folder is None else Path(output_folder).joinpath(image_path.name)
+            p1 = Popen(["tesseract", *params, image_path, output, *outputformats], stdout=PIPE)
         stdout, stderr = p1.communicate()
         stdout = str(stdout.decode("utf-8"))
-        if outputformat == "stdout":
-
-            dialog = MDDialog(title=Path(image_path).name,
+        if not outputformats:
+            dialog = MDDialog(title=output.name,
                      type='custom',
                      content_cls=TextInput(text=stdout, height=400, cursor=(0,0),focus= True, readonly=True),
                      buttons=[
@@ -54,10 +51,26 @@ def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputf
                     ],
                 )
             dialog.open()
-            #toast(stdout)
         else:
-            toast(fname_out)
-        outputs.append(fname_out)
+            # TODO: Make it less ugly
+            new_path = image_path.parent
+            if groupfolder != "":
+                new_path = new_path.joinpath(groupfolder)
+                if not new_path.exists(): new_path.mkdir()
+            for outputformat in outputformats:
+                out_path = new_path
+                if subfolder:
+                    out_path = out_path.joinpath(outputformat.upper())
+                    if not out_path.exists(): out_path.mkdir()
+                if out_path != image_path.parent:
+                    if outputformat == "alto": outputformat = "xml"
+                    print(str(image_path.parent.joinpath(output.name+"."+outputformat)))
+                    print(str(out_path.joinpath(output.name+"."+outputformat)))
+                    move(str(image_path.parent.joinpath(output.name+"."+outputformat).absolute()),
+                             str(out_path.joinpath(output.name+"."+outputformat).absolute()))
+
+            toast(output.name)
+        outputs.append(output)
         # TODO: Storing stdout to metadata?
         #keywords = {stdout:True}
         #all_metadata.append(tag_image(image_path, keywords))
@@ -67,7 +80,6 @@ def recognize(images, model="eng", psm="4", oem="3", output_folder=None, outputf
 
 def close_dialog(instance, *args):
     instance.dismiss()
-
 
 def tag_image(image_path, keywords):
     metadata = MetaMetadata(image_path)

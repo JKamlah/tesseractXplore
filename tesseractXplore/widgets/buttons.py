@@ -1,7 +1,10 @@
 from kivy.properties import NumericProperty, BooleanProperty
 from kivymd.uix.button import MDFloatingActionButton, MDRoundFlatIconButton
 from kivymd.uix.list import IconRightWidget
-from kivymd.uix.tooltip import MDTooltip
+from tesseractXplore.widgets.tooltip import MDTooltip
+from kivy.properties import (
+    NumericProperty,
+)
 
 
 class StarButton(IconRightWidget):
@@ -25,7 +28,6 @@ class StarButton(IconRightWidget):
     def set_icon(self):
         if not self.custom_icon:
             self.icon = 'star' if self.is_selected else 'star-outline'
-
 
 class TooltipFloatingButton(MDFloatingActionButton, MDTooltip):
     """ Floating action button class with tooltip behavior """

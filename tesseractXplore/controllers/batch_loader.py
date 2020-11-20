@@ -63,7 +63,10 @@ class BatchRunner(EventDispatcher):
         """ Start the background loader event loop in a new thread """
         def _start():
             asyncio.run_coroutine_threadsafe(self.start(), self.loop)
-        Thread(target=_start).start()
+        tbatch = Thread(target=_start)
+        # Need this to get killed when app closes
+        tbatch.setDaemon(True)
+        tbatch.start()
 
     async def start(self):
         """ Start the background loader event loop """

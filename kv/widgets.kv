@@ -19,8 +19,16 @@
     theme_text_color: 'Primary'
     size_hint_max_y: dp(60)
 
+<ItemLabel@MDLabel>:
+    theme_text_color: 'Primary'
+    halign: 'right'
+
 <TooltipIconButton>:
     padding: 0, 0, 0, 0
+
+<ControlTooltipButton@TooltipFloatingButton>:
+    tooltip_display_delay: 1
+    shift_y: 100
 
 # Images
 # ------------------------------
@@ -46,6 +54,9 @@
 # ------------------------------
 
 <IconRight@IconRightWidget>:
+    md_bg_color: app.theme_cls.accent_color
+
+<IconLeft@IconLeftWidget>:
     md_bg_color: app.theme_cls.accent_color
 
 <TextInputListItem>:

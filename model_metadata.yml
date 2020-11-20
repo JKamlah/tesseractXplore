@@ -1,0 +1,50 @@
+# Metadata to models
+# ------------------
+#maincategory:
+#  # Supported modeltypes: fast, best, old
+#  types:
+#    fast:
+#      url: XXX
+#  If scrape true and models are empty, the models get scraped from the urls
+#  scrape: boolean
+#  model:
+#    eng:
+#      # name + typeurl can be used to curl the model
+#      name: 'eng.traineddata'
+#      # Alias or Tags
+#      alias: ['englisch','Englisch','english']
+#      # Information about
+#      description: ''
+#      # Categories: Language, Script, Mixed and Custom
+#      category: 'Language'
+#      # Model types (url+name)
+#      type: [fast,best]
+#      # Supported fonts: Modern Antiqua,..
+#      fonts: []
+#      # Problematic Unicodesymbols (missing, false recognition, low rate of recognition)
+#      unicode:
+#        false: []
+#        low: []
+#        missing: []
+#      # Dataset used to generate the model
+#      dataset:
+#        name: ''
+#        description: ''
+#    latin:
+#      name: Script/latin.traineddata
+#      category: 'Script'
+#      ...
+tessdata:
+    types:
+      fast:
+        url: 'https://github.com/tesseract-ocr/tessdata_fast/raw/master/'
+      best:
+        url: 'https://github.com/tesseract-ocr/tessdata_best/raw/master/'
+    models:
+      deu:
+        name: 'deu.traineddata'
+        alias: ['deutsch','german']
+        description: 'Recognize german language for modern typefonts'
+        category: 'Language'
+        type: ['fast','best']
+        fonts: ['modern antiqua']

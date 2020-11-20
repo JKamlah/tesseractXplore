@@ -1,0 +1,100 @@
+<ImageEditorScreen>:
+    name: 'image'
+    MDBoxLayout:
+        orientation: 'horizontal'
+        col: 2
+        BoxLayout:
+            orientation:"vertical"
+            #size_hint: (1, 5)
+            Zoom:
+                Image:
+                    id: image
+                    allow_stretch: True
+                    keep_ratio: True
+                    size: self.parent.size
+        MDBoxLayout:
+            orientation:"vertical"
+            padding: "8dp"
+            orientation: 'vertical'
+            size_hint_x: .4
+            size_hint_min_x: 450
+            md_bg_color: .1, .1, .1, .9
+            MDLabel:
+                text: 'Brightness [b][color=b39ddb]' + str(round(root.ids.brightness.value)) + '[/color][/b]'
+                markup: True
+                halign: "center"
+                theme_text_color: 'Primary'
+                #pos_hint: {'center_x':0.1, 'center_y': 0.2}
+            MDSlider:
+                id: brightness
+                min: 0
+                max: 200
+                value: 100
+                size_hint_x: 0.75
+                size_hint_y: 0.1
+                hint: False
+                #pos_hint: {'center_x':0.1, 'center_y': 0.2}
+            MDLabel:
+                text: 'Contrast [b][color=b39ddb]' + str(round(root.ids.contrast.value)) + '[/color][/b]'
+                markup: True
+                halign: "center"
+                theme_text_color: 'Primary'
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+            MDSlider:
+                id: contrast
+                min: 0
+                max: 200
+                value: 100
+                size_hint_x: 0.75
+                size_hint_y: 0.1
+                hint: False
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+
+            MDLabel:
+                text: 'Sharpness [b][color=b39ddb]' + str(round(root.ids.sharpness.value)) + '[/color][/b]'
+                markup: True
+                halign: "center"
+                theme_text_color: 'Primary'
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+            MDSlider:
+                id: sharpness
+                min: -5
+                max: 5
+                value: 0
+                size_hint_x: 0.75
+                size_hint_y: 0.1
+                hint: False
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+            OneLineAvatarIconListItem:
+                text: 'Autocontrast'
+                SwitchListItem:
+                    id: autocontrast_chk
+            OneLineAvatarIconListItem:
+                text: 'Equalize'
+                SwitchListItem:
+                    id: equalize_chk
+
+            MDBoxLayout:
+                size_hint_y: None
+                height: dp(50)
+                spacing: dp(5)
+                MDRaisedButton:
+                    id: preview_button
+                    text: 'Adjust image'
+                    height: dp(50)
+                    theme_text_color: 'Primary'
+                    md_bg_color: app.theme_cls.primary_dark
+                MDRaisedButton:
+                    id: save_button
+                    text: 'Save image'
+                    height: dp(50)
+                    theme_text_color: 'Primary'
+                    md_bg_color: app.theme_cls.primary_dark
+                MDTextField:
+                    id: imagename
+                    hint_text: 'Imagename'
+
+
+
+
+

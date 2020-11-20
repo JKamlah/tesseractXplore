@@ -28,14 +28,15 @@ class TesseractController(Controller):
         )
         self.selected_output_folder = None
         self.screen.recognize_button.bind(on_release=self.recognize_thread)
-        self.screen.recognize_button.bind(on_press=self.disable_rec)
         self.screen.pause_button.bind(on_press=self.stop_rec)
+        self.screen.model.bind(on_release=get_app().image_selection_controller.get_model)
+        self.models = check_output(["tesseract", "--list-langs"]).decode('utf-8').splitlines()[1:]
         self.ocr_event = None
         self.ocr_stop = False
         self.last_rec_time = time.time()
         # Context menu
         self.screen.context_menu.ids.recognize_ctx.bind(on_release=self.recognize_single_thread)
-
+        # Settings menu
 
     def stop_rec(self, instance):
         """ Unschedule progress event and log total execution time """
@@ -45,21 +46,29 @@ class TesseractController(Controller):
 
     def init_dropdown(self):
         screen = self.screen
-        # Init dropdownmenus
-        models = check_output(["tesseract", "--list-langs"]).decode('utf-8').splitlines()[1:]
-        self.model_menu = self.create_dropdown(screen.model, [{'text': 'Model: ' + model} for model in models], self.set_model)
 
-        psms = [line for line in check_output(["tesseract", "--help-psm"]).decode('utf-8').splitlines()[1:] if
-                line.strip() != ""]
+        # Init dropdownsettingsmenu
+        # TODO: Rework this mess
+        menu_items = [
+            {
+                "icon": "git",
+                "text": f"Item {i}",
+            }
+            for i in range(5)
+        ]
+        self.settings_menu = MDDropdownMenu(
+            caller=screen.settings_menu, items=menu_items, width_mult=4
+        )
+        # Init dropdownmenu
+        #psms = [line for line in check_output(["tesseract", "--help-psm"]).decode('utf-8').splitlines()[1:] if
+        #        line.strip() != ""]
+        psms = ['  0    Orientation and script detection (OSD) only.', '  1    Automatic page segmentation with OSD.', '  2    Automatic page segmentation, but no OSD, or OCR. (not implemented)', '  3    Fully automatic page segmentation, but no OSD. (Default)', '  4    Assume a single column of text of variable sizes.', '  5    Assume a single uniform block of vertically aligned text.', '  6    Assume a single uniform block of text.', '  7    Treat the image as a single text line.', '  8    Treat the image as a single word.', '  9    Treat the image as a single word in a circle.', ' 10    Treat the image as a single character.', ' 11    Sparse text. Find as much text as possible in no particular order.', ' 12    Sparse text with OSD.', ' 13    Raw line. Treat the image as a single text line, bypassing hacks that are Tesseract-specific.']
         self.psm_menu = self.create_dropdown(screen.psm, [{'text': 'PSM: ' + psm} for psm in psms], self.set_psm)
 
-        oems = [line for line in check_output(["tesseract", "--help-oem"]).decode('utf-8').splitlines()[1:] if
-                line.strip() != ""]
+        #oems = [line for line in check_output(["tesseract", "--help-oem"]).decode('utf-8').splitlines()[1:] if
+        #        line.strip() != ""]
+        oems = ['  0    Legacy engine only.', '  1    Neural nets LSTM engine only.', '  2    Legacy + LSTM engines.', '  3    Default, based on what is available.']
         self.oem_menu = self.create_dropdown(screen.oem, [{'text': 'OEM: ' + oem} for oem in oems], self.set_oem)
-
-        outputformats = ["txt", "alto", "hocr", "tsv", "pdf", "stdout"]
-        self.outputformat_menu =  self.create_dropdown(screen.outputformat, [{'text': 'Outputformat: ' + outputformat} for outputformat in
-                                                      outputformats], self.set_outputformat)
 
     def disable_rec(self, instance, *args):
         self.screen.recognize_button.disabled = True
@@ -70,11 +79,12 @@ class TesseractController(Controller):
         self.screen.pause_button.disabled = True
 
     def recognize_thread(self,instance,*args):
+        self.disable_rec(instance, *args)
         self.ocr_event = threading.Thread(target=self.recognize, args=(instance,args))
         self.ocr_event.start()
 
     def recognize_single_thread(self,instance,*args):
-        threading.Thread(self.disable_rec(instance,*args)).start()
+        self.disable_rec(instance,*args)
         threading.Thread(target=self.recognize,args=(instance,args),kwargs={'file_list':[instance.selected_image.original_source]}).start()
 
     def recognize(self, instance, *args, file_list=None):
@@ -96,8 +106,10 @@ class TesseractController(Controller):
         model = "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip()
         psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
         oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
-        outputformat = "txt" if self.screen.outputformat.current_item == '' else self.screen.outputformat.current_item.split(": ")[1].strip()
-        proc_files, outputnames = recognize(file_list, model=model ,psm=psm, oem=oem, output_folder=self.selected_output_folder, outputformat=outputformat)
+        outputformats = [format for format in ['txt','hocr','alto','pdf','tsv'] if self.screen[format].active]
+        groupfolder = self.screen.groupfolder.text
+        subfolder = self.screen.subfolder_chk.active
+        proc_files, outputnames = recognize(file_list, model=model ,psm=psm, oem=oem, output_folder=self.selected_output_folder, outputformats=outputformats, subfolder=subfolder,groupfolder=groupfolder)
         toast(f'{proc_files} images recognized')
         self.last_rec_time = time.time()+2
         self.enable_rec(instance)
@@ -165,3 +177,13 @@ class TesseractController(Controller):
     def exit_output_manager(self):
         '''Called when the user reaches the root of the directory tree.'''
         self.output_manager.close()
+
+    def show_example_grid_bottom_sheet(self):
+        from kivymd.uix.bottomsheet import MDGridBottomSheet
+
+        bs_menu = MDGridBottomSheet()
+        bs_menu.add_item(
+            "Facebook",
+            icon_src="play",
+            callback=self.set_model
+        )

@@ -7,6 +7,7 @@ from threading import Thread
 # Set GL backend before any kivy modules are imported
 from kivy.clock import Clock
 os.environ['KIVY_GL_BACKEND'] = 'sdl2'
+#os.environ['KIVY_TEXT'] = 'pango'
 
 # Disable multitouch emulation before any other kivy modules are imported
 from kivy.config import Config
@@ -34,7 +35,9 @@ from tesseractXplore.constants import (
 from tesseractXplore.controllers import (
     ImageSelectionController,
     FulltextViewController,
+    ImageEditorController,
     SettingsController,
+    ModelListController,
     ModelSearchController,
     ModelSelectionController,
     ModelViewController,
@@ -53,9 +56,11 @@ class ControllerProxy:
     """
     image_selection_controller = ObjectProperty()
     fulltext_view_controller = ObjectProperty()
+    image_edit_controller = ObjectProperty()
     model_search_controller = ObjectProperty()
     model_selection_controller = ObjectProperty()
     model_view_controller = ObjectProperty()
+    modellist_controller = ObjectProperty()
     settings_controller = ObjectProperty()
 
     def init_controllers(self, screens):
@@ -63,9 +68,11 @@ class ControllerProxy:
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
         self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
         self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)
+        self.image_editor_controller = ImageEditorController(screens['imageeditor'].ids)
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.model_selection_controller = ModelSelectionController(screens['model'].ids)
         self.model_view_controller = ModelViewController(screens['model'].ids)
+        self.modellist_controller = ModelListController(screens['modellist'].ids)
         #self.model_search_controller = ModelSearchController(screens['model'].ids)
         # gt_search_controller = GTSearchController(screens['gt'].ids)
 
@@ -73,6 +80,7 @@ class ControllerProxy:
         self.is_starred = self.model_selection_controller.is_starred
         self.add_star = self.model_selection_controller.add_star
         self.select_fulltext = self.fulltext_view_controller.select_fulltext
+        self.select_image = self.image_editor_controller.select_image
         self.remove_star = self.model_selection_controller.remove_star
         self.select_model = self.model_view_controller.select_model
         self.select_model_from_photo = self.image_selection_controller.select_model_from_photo
@@ -83,8 +91,7 @@ class ControllerProxy:
         self.stored_taxa = self.settings_controller.stored_taxa
         self.locale = self.settings_controller.locale
         self.username = self.settings_controller.username
-        self.metadata = self.settings_controller.metadata
-        self.preferred_place_id = self.settings_controller.preferred_place_id
+        self.password = self.settings_controller.password
 
         self.image_selection_controller.post_init()
         self.model_selection_controller.post_init()
@@ -120,7 +127,10 @@ class TesseractXplore(MDApp, ControllerProxy):
     def build(self):
         # Create an event loop to be used by background loaders
         self.bg_loop = asyncio.new_event_loop()
-        Thread(target=self.bg_loop.run_forever).start()
+        # Need this to get killed when app closes
+        tmain = Thread(target=self.bg_loop.run_forever)
+        tmain.setDaemon(True)
+        tmain.start()
 
         # Init screens and store references to them
         screens = load_screens()
@@ -207,6 +217,11 @@ class TesseractXplore(MDApp, ControllerProxy):
             self.switch_screen('model')
         elif (modifier, codepoint) == (['ctrl'], 'v'):
             self.current_screen_paste()
+        elif self.screen_manager.current == HOME_SCREEN:
+            if (modifier, codepoint) == (['ctrl'], '+'):
+                self.image_selection_controller.zoomin(None, None)
+            elif (modifier, codepoint) == (['ctrl'], '-'):
+                self.image_selection_controller.zoomout(None, None)
         elif key == F11:
             self.toggle_fullscreen()
 
@@ -238,11 +253,11 @@ class TesseractXplore(MDApp, ControllerProxy):
 
         if self.screen_manager.current == HOME_SCREEN:
             if gt_id:
-                self.image_selection_controller.inputs.gt_id_input.text = str(gt_id)
-                self.image_selection_controller.inputs.model_id_input.text = ''
+                self.image_selection_controller.screen.gt_id_input.text = str(gt_id)
+                self.image_selection_controller.screen.model_id_input.text = ''
             elif model_id:
-                self.image_selection_controller.inputs.gt_id_input.text = ''
-                self.image_selection_controller.inputs.model_id_input.text = str(model_id)
+                self.image_selection_controller.screen.gt_id_input.text = ''
+                self.image_selection_controller.screen.model_id_input.text = str(model_id)
 
     def update_toolbar(self, screen_name: str):
         """ Modify toolbar in-place so it can be shared by all screens """
