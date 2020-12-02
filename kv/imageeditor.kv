@@ -4,7 +4,7 @@
         orientation: 'horizontal'
         col: 2
         BoxLayout:
-            orientation:"vertical"
+            orientation: 'vertical'
             #size_hint: (1, 5)
             Zoom:
                 Image:
@@ -13,8 +13,8 @@
                     keep_ratio: True
                     size: self.parent.size
         MDBoxLayout:
-            orientation:"vertical"
-            padding: "8dp"
+            orientation: 'vertical'
+            padding: '8dp'
             orientation: 'vertical'
             size_hint_x: .4
             size_hint_min_x: 450
@@ -22,7 +22,7 @@
             MDLabel:
                 text: 'Brightness [b][color=b39ddb]' + str(round(root.ids.brightness.value)) + '[/color][/b]'
                 markup: True
-                halign: "center"
+                halign: 'center'
                 theme_text_color: 'Primary'
                 #pos_hint: {'center_x':0.1, 'center_y': 0.2}
             MDSlider:
@@ -37,7 +37,7 @@
             MDLabel:
                 text: 'Contrast [b][color=b39ddb]' + str(round(root.ids.contrast.value)) + '[/color][/b]'
                 markup: True
-                halign: "center"
+                halign: 'center'
                 theme_text_color: 'Primary'
                 #pos_hint: {'center_x':0.1, 'center_y': 0.3}
             MDSlider:
@@ -53,7 +53,7 @@
             MDLabel:
                 text: 'Sharpness [b][color=b39ddb]' + str(round(root.ids.sharpness.value)) + '[/color][/b]'
                 markup: True
-                halign: "center"
+                halign: 'center'
                 theme_text_color: 'Primary'
                 #pos_hint: {'center_x':0.1, 'center_y': 0.3}
             MDSlider:
@@ -65,6 +65,26 @@
                 size_hint_y: 0.1
                 hint: False
                 #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+
+            MDLabel:
+                text: 'Angle of rotation [b][color=b39ddb]' + root.ids.rotate.text + '°[/color][/b]'
+                markup: True
+                halign: 'center'
+                theme_text_color: 'Primary'
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+            MDTextField:
+                id: rotate
+                input_filter: 'float'
+                text: '0.0'
+                hint_text: 'Angle of rotation'
+
+            MDTextField:
+                id: crop
+                input_filter: 'int'
+                text: '0'
+                hint_text: 'Remove border from image'
+
+
             OneLineAvatarIconListItem:
                 text: 'Autocontrast'
                 SwitchListItem:
@@ -73,20 +93,49 @@
                 text: 'Equalize'
                 SwitchListItem:
                     id: equalize_chk
+            OneLineAvatarIconListItem:
+                text: 'Stack actions'
+                SwitchListItem:
+                    id: stack_chk
+
+
+
+            OneLineAvatarIconListItem:
+                text: 'Apply to all selected images (if no output folder is set, images get overwritten!)'
+                height: dp(50)
+                #width: dp(400)
+                SwitchListItem:
+                    id: apply_to_selected_chk
+
+            MDTextField:
+                id: outputfolder
+                hint_text: 'Create outputfolder'
 
             MDBoxLayout:
                 size_hint_y: None
                 height: dp(50)
                 spacing: dp(5)
-                MDRaisedButton:
-                    id: preview_button
+                ControlTooltipButton:
+                    id: adjust_button
                     text: 'Adjust image'
+                    tooltip_text: 'Adjust image'
+                    icon: 'play'
                     height: dp(50)
                     theme_text_color: 'Primary'
                     md_bg_color: app.theme_cls.primary_dark
-                MDRaisedButton:
+                ControlTooltipButton:
+                    id: reset_button
+                    text: 'Reset'
+                    tooltip_text: 'Reset'
+                    icon: 'restore'
+                    height: dp(50)
+                    theme_text_color: 'Primary'
+                    md_bg_color: app.theme_cls.primary_dark
+                ControlTooltipButton:
                     id: save_button
                     text: 'Save image'
+                    tooltip_text: 'Save image'
+                    icon: 'content-save'
                     height: dp(50)
                     theme_text_color: 'Primary'
                     md_bg_color: app.theme_cls.primary_dark

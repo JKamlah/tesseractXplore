@@ -10,47 +10,70 @@
         text: 'Search'
     ModelAutocompleteSearch:
         id: model_search_input
-        hint_text: 'Model name'
-        helper_text: 'Enter a model name'
+        hint_text: 'Model search'
+        helper_text: 'Enter a search term'
     ScrollViewY:
         size_hint_min_y: 500
         MDBoxLayout:
             orientation: 'vertical'
-            IntField:
-                id: model_id_input
-                hint_text: 'Model ID'
-                helper_text: 'Enter an tesseract model ID'
             SectionHeader:
-                text: 'Categories'
-                tooltip_text: 'Categories to browse model, best or fast'
-            IconicTaxaLayout:
-                id: iconic_taxa
+                text: 'Selection filter'
+            MDTextField:
+                id: modelgroup_input
+                hint_text: 'Group filter (commonfilter: tessdata)'
+                helper_text: 'Group filter (commonfilter: tessdata)'
+            MDTextField:
+                id: model_tagfilter_input
+                hint_text: 'Tag filter'
+                helper_text: 'Filter selection by tags with search term'
             SectionHeader:
-                text: 'Rank'
-            MDGridLayout:
-                cols: 2
-                InputLabel:
-                    text: 'Exact'
-                MDTextField:
-                    id: exact_rank_input
-                    readonly: True
-                    hint_text: 'Exact rank'
-                InputLabel:
-                    text: 'Minimum'
-                MDTextField:
-                    id: min_rank_input
-                    hint_text: 'Min rank'
-                InputLabel:
-                    text: 'Maximum'
-                MDTextField:
-                    id: max_rank_input
-                    hint_text: 'Max rank'
+                text: 'Model type'
+                tooltip_text: 'Type to browse model best, fast'
+            MDBoxLayout:
+                orientation: 'horizontal'
+                adaptive_height: True
+                col: 3
+                OneLineAvatarIconListItem:
+                    text: 'Fast'
+                    height: dp(50)
+                    #width: dp(400)
+                    SwitchListItem:
+                        id: fastmodel_chk
+                        active: True
+                OneLineAvatarIconListItem:
+                    text: 'Best'
+                    height: dp(50)
+                    #width: dp(400)
+                    SwitchListItem:
+                        id: bestmodel_chk
+                        active: True
+            SectionHeader:
+                text: 'Model categories'
+                tooltip_text: 'Categories to browse model language or script'
+            MDBoxLayout:
+                orientation: 'horizontal'
+                adaptive_height: True
+                col: 3
+                OneLineAvatarIconListItem:
+                    text: 'Language'
+                    height: dp(50)
+                    #width: dp(400)
+                    SwitchListItem:
+                        id: languagemodel_chk
+                        active: True
+                OneLineAvatarIconListItem:
+                    text: 'Script'
+                    height: dp(50)
+                    #width: dp(400)
+                    SwitchListItem:
+                        id: scriptmodel_chk
+                        active: True
             MDBoxLayout:
                 spacing: dp(10)
                 TooltipIconButton:
                     id: model_search_button
                     icon: 'magnify'
-                    text: 'Search'
+                    text: 'Apply filter'
                     width: dp(220)
                 TooltipIconButton:
                     id: reset_search_button
@@ -74,14 +97,4 @@
             id: search_results_list
 
 
- # Iconic taxa 'Categories' selector
-<IconicTaxaLayout@MDGridLayout>:
-    adaptive_size: True
-    md_bg_color: app.theme_cls.bg_dark
-    cols: 6
-    padding: dp(10), dp(10)
-    spacing: dp(20)
-    row_default_height: dp(40)
-    row_force_default: True
-    col_default_width: dp(40)
-    col_force_default: True
+

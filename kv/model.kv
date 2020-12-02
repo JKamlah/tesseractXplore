@@ -1,6 +1,4 @@
 #:import CachedAsyncImage tesseractXplore.widgets.CachedAsyncImage
-#:import PLACEHOLDER_ICON tesseractXplore.constants.PLACEHOLDER_ICON
-#:import RANKS tesseractXplore.constants.RANKS
 
 
 <ModelScreen>:
@@ -23,82 +21,128 @@
                     size_hint_max_x: dp(700)
                     ModelSearchTab:
                         id: search_tab
-                    ModelSearchResultsTab:
-                        id: search_results_tab
-                    ModelHistoryTab:
-                        id: history_tab
-                    FrequentTaxaTab:
-                        id: frequent_tab
-                    UserTaxaTab:
-                        id: user_tab
-                    StarredTaxaTab:
-                        id: starred_tab
+                    #ModelSearchResultsTab:
+                    #    id: search_results_tab
+                    #ModelHistoryTab:
+                    #    id: history_tab
+                    #FrequentTaxaTab:
+                    #    id: frequent_tab
+                    #UserTaxaTab:
+                    #    id: user_tab
+                    #StarredTaxaTab:
+                    #    id: starred_tab
 
                 # Info display for selected model
                 MDBoxLayout:
                     orientation: 'vertical'
                     padding: dp(20)
                     md_bg_color: app.theme_cls.bg_dark
-                    MDGridLayout:
-                        cols: 2
-                        spacing: dp(10)
-                        size_hint_y: .7
-                        size_hint_min_y: dp(300)
-                        size_hint_max_y: dp(650)
-                        MDBoxLayout:
-                            orientation: 'vertical'
-                            spacing: dp(10)
-                            size_hint_max_x: dp(500)
-                            CachedAsyncImage:
-                                id: selected_model_photo
-                                size_hint_max_y: dp(500)
-                                source: PLACEHOLDER_ICON
-                        MDBoxLayout:
-                            size_hint_max_x:  dp(500)
-                            orientation: 'vertical'
-                            ScrollViewY:
-                                MDList:
-                                    id: basic_info_section
-                            LinksSection:
-                                id: model_links
-                    ModelomySection:
-                        id: model_section
+                  # MDBoxLayout:
+                  #     orientation: 'vertical'
+                  #     spacing: dp(10)
+                  #     size_hint_max_x: dp(50)
+                  #     CachedAsyncImage:
+                  #         id: selected_model_photo
+                  #         size_hint_max_y: dp(50)
+                  #         source: PLACEHOLDER_ICON
+                    SectionHeader:
+                        text: 'Model'
+                        tooltip_text: 'Type to browse model best, fast'
+
+                    TwoLineListItem:
+                        id: basic_info
+                        text: ''
+                        secondary_text: ''
+
+                    SectionHeader:
+                        text: 'Information'
+                        tooltip_text: 'Type to browse model best, fast'
+
+                    TwoLineListItem:
+                        text: 'Description'
+                        id: info_description
+                        secondary_text: ''
+
+                    TwoLineListItem:
+                        text: 'Category'
+                        id: info_category
+                        secondary_text: ''
+
+
+                    OneLineListItem:
+                        text: 'Tags'
+                    MDBoxLayout:
+                        size_hint_max_x:  dp(500)
+                        orientation: 'vertical'
+                        ScrollViewY:
+                            MDList:
+                                id: info_tags
+
+
+
+               #    TwoLineListItem:
+               #        text: 'Supported Fonts'
+               #        id: info_fonts
+               #        secondary_text: ''
+
+               #    TwoLineListItem:
+               #        text: 'Based on dataset'
+               #        id: info_dataset
+               #        secondary_text: ''
+
+                    SectionHeader:
+                        text: 'Download settings'
+                        tooltip_text: 'Download settings'
+
+                    MDTextField:
+                        adaptive_size: True
+                        #pos_hint: {"center_y": .5}
+                        size_hint: None, None
+                        width: dp(400)
+                        height: dp(40)
+                        id: tessdatadir
+                        hint_text: 'Tessdata'
+
+                    MDTextField:
+                        adaptive_size: True
+                        pos_hint_x: 10
+                        size_hint: None, None
+                        width: dp(400)
+                        height: dp(40)
+                        id: filename
+                        hint_text: 'Filename'
+
+
+                    MDBoxLayout:
+                        adaptive_size: True
+                        #pos_hint: {"center_x": .1, "center_y": .5}
+
+                        MyToggleButton:
+                            id: best_toggle
+                            text: "Best"
+                            allow_no_selection: False
+                            state: 'down'
+                            group: "Category"
+                        MyToggleButton:
+                            id: fast_toggle
+                            text: "Fast"
+                            allow_no_selection: False
+                            group: "Category"
+
+                    LinksSection:
+                        id: model_links
+
+
             StatusBar:
                 id: status_bar
 
 # Model links
 <LinksSection@MDBoxLayout>:
-    size_hint_max_y: dp(50)
+    #size_hint_max_y: dp(50)
     spacing: dp(10)
     TooltipIconButton:
-        id: model_parent_button
-        icon: 'arrow-up-circle-outline'
-        text: 'View parent'
-        width: dp(220)
+        id: download_button
+        icon: 'arrow-down-circle-outline'
+        text: 'Download'
+        width: dp(300)
         disabled: True
-    TooltipIconButton:
-        id: selected_model_link_button
-        icon: 'link-variant'
-        text: 'View on iNaturalist'
-        width: dp(220)
-        disabled: True
-
-# Model ancestors & children
-<ModelomySection@MDGridLayout>:
-    cols: 2
-    # Labels: These will be updated with # of ancestors & children
-    OneLineListItem:
-        id: model_ancestors_label
-        font_style: 'H5'
-    OneLineListItem:
-        id: model_children_label
-        font_style: 'H5'
-    # Result lists
-    ScrollViewY:
-        size_hint_max_x: dp(500)
-        MDList:
-            id: model_ancestors
-    ScrollViewY:
-        size_hint_max_x: dp(500)
-        MDList:
-            id: model_children

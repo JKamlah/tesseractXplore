@@ -13,6 +13,10 @@
         PhotoContextMenu:
             id: context_menu
             cancel_handler_widget: layout
+        # Right-click context menu on tesseract-settings
+        TessprofileContextMenu:
+            id: tessprofile_menu
+            cancel_handler_widget: layout
         BoxLayout:
             orientation: 'vertical'
             BoxLayout:
@@ -49,14 +53,11 @@
                                 font_style: 'H5'
                                 markup: True
                                 text: '[size=21]Tesseract [b]Settings[/b][/size]'
-                                on_release: app.tesseract_controller.reset_settings()
-                                #settings_menu()
+                                on_release: app.tesseract_controller.on_tesssettings_click()
 
                             MDDropDownItem:
                                 id: model
                                 text: 'Select model (default: eng)'
-                                #on_release: app.tesseract_controller.show_example_grid_bottom_sheet()
-                                #app.tesseract_controller.model_menu.open()
 
                             MDDropDownItem:
                                 id: psm
@@ -111,29 +112,29 @@
                                         width: dp(8)
                                     ItemLabel:
                                         text: ''
-
-                            MDBoxLayout:
-                                orientation: 'horizontal'
-                                adaptive_height: True
-                                col: 2
-                                OneLineAvatarIconListItem:
-                                    text: 'Subfolder'
-                                    height: dp(50)
-                                    width: dp(400)
-                                    SwitchListItem:
-                                        id: subfolder_chk
-                                MDTextField:
-                                    id: groupfolder
-                                    hint_text: 'Groupfolder'
-
                             MDDropDownItem:
                                 id: output
-                                text: 'Select output folder (default: input folder)'
+                                text: 'Select output directoy (default: input directory)'
                                 width: dp(400)
 
                                 icon: 'folder'
                                 #pos_hint:{'center_x':0.5,'center_y':0.7}
                                 on_release: app.tesseract_controller.select_output_folder()
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                adaptive_height: True
+                                col: 2
+                                MDTextField:
+                                    id: groupfolder
+                                    hint_text: 'Create groupfolder'
+                                    size_hint: None, 1
+                                    width: dp(150)
+                                OneLineAvatarIconListItem:
+                                    text: 'Create subfolder'
+                                    height: dp(50)
+                                    #width: dp(400)
+                                    SwitchListItem:
+                                        id: subfolder_chk
                             MDGridLayout:
                                 orientation: 'horizontal'
                                 cols: 2
@@ -144,18 +145,13 @@
                                     width: dp(200)
                                     on_press:
                                         app.switch_screen('model')
-                                MDRoundFlatIconButton:
-                                    text: 'Train a model'
-                                    disabled: True
-                                    icon: 'find'
-                                    width: dp(200)
-                                    on_press:
-                                        app.switch_screen('model')
-                            MDLabel:
-                                id: model_id_input
-                                disabled: True
-                                hint_text: 'Model ID'
-                                helper_text: 'Enter an iNaturalist model ID'
+                               # MDRoundFlatIconButton:
+                               #    text: 'Train a model'
+                               #    disabled: True
+                               #     icon: 'find'
+                               #     width: dp(200)
+                                #    on_press:
+                                #        app.switch_screen('model')
                             #MDRoundFlatIconButton:
                             #    disabled: True  # TODO: Remove once implemented
                             #    text: 'Find an GT'
@@ -163,11 +159,6 @@
                             #    width: dp(200)
                             #    on_press:
                             #       app.switch_screen('gt')
-                            MDLabel:
-                                id: gt_id_input
-                                disabled: True
-                                hint_text: 'GT ID'
-                                helper_text: 'Enter an iNaturalist gt ID'
 
 
 
@@ -212,6 +203,13 @@
                                     halign: 'center'
                                     font_style: 'Button'
                                     theme_text_color: 'ContrastParentBackground'
+                            MDIconButton:
+                                id: delete_button
+                                icon: 'trash-can'
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Delete Selected File/Folder'
+                                halign: 'bottom'
+
             StatusBar:
                 id: status_bar
 
@@ -220,7 +218,7 @@
             cols: 4
             spacing: dp(4)
             padding: dp(4)
-
+            pos_hint: {'y':0.02}
 
             ControlTooltipButton:
                 id: recognize_button

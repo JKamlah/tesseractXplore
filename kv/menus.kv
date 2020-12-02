@@ -1,5 +1,6 @@
 #: import ObjectContextMenu tesseractXplore.widgets.ObjectContextMenu
 #: import PhotoContextMenuItem tesseractXplore.widgets.PhotoContextMenuItem
+#: import PhotoContextMenuItem tesseractXplore.widgets.TessprofileContextMenuItem
 #: import ListContextMenuItem tesseractXplore.widgets.ListContextMenuItem
 
 
@@ -34,6 +35,22 @@
 #                text: "Search for gts of this model"
 #            ContextMenuTextItem:
 #                text: "Search for similar species"
+
+
+<TessprofileContextMenu@ObjectContextMenu>:
+    visible: False
+    TessprofileContextMenuItem:
+        id: load_tessprofile_ctx
+        text: "Load profile"
+        on_release: app.tesseract_controller.search_tessprofile()
+    TessprofileContextMenuItem:
+        id: save_tessprofile_ctx
+        text: "Save profile"
+        on_release: app.tesseract_controller.save_tessprofile_dialog()
+    TessprofileContextMenuItem:
+        id: reset_settings_ctx
+        text: "Reset"
+        on_release: app.tesseract_controller.reset_settings()
 
 
 <StarredModelContextMenu@ObjectContextMenu>:

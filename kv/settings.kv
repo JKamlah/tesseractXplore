@@ -13,7 +13,7 @@
                     font_style: 'H6'
                     text: 'Username'
                 MDTextField:
-                    mode: "rectangle"
+                    mode: 'rectangle'
                     id: username_input
                     size_hint_min_x: 100
                     #icon_left: 'account'
@@ -23,7 +23,7 @@
                     text: 'Password'
                 MDTextField:
                     id: password
-                    mode: "rectangle"
+                    mode: 'rectangle'
                     password: True
                     hint_text: 'Password'
                 OneLineListItem:
@@ -35,50 +35,95 @@
                     text: 'Image filetypes'
                 MDTextField:
                     id: filetypes
-                    mode: "rectangle"
+                    mode: 'rectangle'
                     hint_text: 'Set filetypes'
-                OneLineListItem:
+             # TODO: ATM not used
+             #  OneLineListItem:
+             #      font_style: 'H6'
+             #      text: 'Regex'
+             #  MDTextField:
+             #      id: regex
+             #      mode: 'rectangle'
+             #      hint_text: 'Set Regex to find files'
+                TwoLineListItem:
                     font_style: 'H6'
-                    text: 'Regex'
-                MDTextField:
-                    id: regex
-                    mode: "rectangle"
-                    hint_text: 'Set Regex to find files'
+                    text: 'Text Provider'
+                    secondary_text: 'Needs a restart. See documentation for further information.'
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    MyToggleButton
+                        text: 'sdl '
+                        id: sdl_textprovider_chk
+                        group: 'textprovider'
+                        width: dp(8)
+                    MyToggleButton:
+                        text: 'pil '
+                        id: pil_textprovider_chk
+                        group: 'textprovider'
+                        width: dp(8)
+                    MyToggleButton:
+                        text: 'pygame '
+                        id: pygame_textprovider_chk
+                        group: 'textprovider'
+                        width: dp(8)
+                    MyToggleButton:
+                        text: 'pango '
+                        id: pango_textprovider_chk
+                        group: 'textprovider'
+                        width: dp(8)
                 TwoLineListItem:
                     font_style: 'H6'
                     text: 'PDF-Viewer'
                     secondary_text: 'Default: webbrowser'
                 MDTextField:
                     id: pdfviewer
-                    mode: "rectangle"
+                    mode: 'rectangle'
                     hint_text: 'Set path or cli-cmd to pdfviewer'
                 OneLineListItem:
                 OneLineListItem:
                     font_style: 'H5'
                     text: 'Extra Tesseract-Settings'
-                OneLineAvatarListItem:
-                    text: 'Use Path to tesseract'
-                    SwitchListItem:
-                        id: tesseract_path_chk
+                TwoLineListItem:
+                    text: 'Path to tesseract models (Tessdata)'
+                    secondary_text: 'This dir is automatically found, but can be set manually too'
+
                 MDTextField:
-                    mode: "rectangle"
-                    id: tesspath
-                    size_hint_min_x: 100
-                    #text: 'C:\\Program Files\\Tesseract-OCR\\tesserac.exe'
+                    mode: 'rectangle'
+                    id: tessdatadir
+
+                # TODO: ATM not used
+                #OneLineAvatarListItem:
+                #    text: 'Use Path to tesseract'
+                #    SwitchListItem:
+                #        id: tesseract_path_chk
+                #MDTextField:
+                #    mode: 'rectangle'
+                #   id: tesspath
+                #   size_hint_min_x: 100
+
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'DPI'
                 MDTextField:
                     id: dpi
-                    mode: "rectangle"
+                    mode: 'rectangle'
                     hint_text: 'Set DPI (default: auto)'
+                    input_filter: 'int'
                     #on_release: app.tesseract_controller.dpi_menu.open()
+                OneLineListItem:
+                    font_style: 'H6'
+                    text: 'Check for invert text'
+                OneLineAvatarListItem:
+                    text: 'Do invert (text recognition is faster when switched off)'
+                    SwitchListItem:
+                        id: do_invert_chk
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'Extra parameter'
                 MDTextField:
-                    id: param
-                    mode: "rectangle"
+                    id: extra_param
+                    mode: 'rectangle'
                     hint_text: 'Set parameter (e.g. load_system_dawg=1)'
                     #on_release: app.tesseract_controller.dpi_menu.open()
                 OneLineListItem:
@@ -92,6 +137,24 @@
                         id: dark_mode_chk
                     IconRight:
                         icon: 'theme-light-dark'
+                OneLineListItem:
+                    font_style: 'H6'
+                    font_style: 'H5'
+                    text: 'Cache settings'
+                TwoLineListItem:
+                    id: cache_size_output
+                    text: 'Calculating cache size...'
+                OneLineAvatarIconListItem:
+                    id: clear_stdout_cache_button
+                    text: 'Clear stdout cache'
+                    IconLeft:
+                        icon: 'delete'
+                ThreeLineAvatarListItem:
+                    id: clear_thumbnail_cache_button
+                    text: 'Clear thumbnail cache'
+                    secondary_text: 'Clear all cached thumbnails'
+                    IconLeft:
+                        icon: 'delete'
                 OneLineListItem:
                     font_style: 'H6'
                     font_style: 'H5'

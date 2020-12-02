@@ -4,8 +4,8 @@
     IconLeftWidget:
         icon: root.icon
 
-<ModellistScreen>:
-    name: 'modellist'
+<TessprofilesScreen>:
+    name: 'tessprofiles'
     BoxLayout:
         orientation: 'vertical'
         spacing: dp(10)
@@ -28,10 +28,10 @@
             MDTextField:
                 id: search_field
                 hint_text: 'Search icon'
-                on_text: app.modellist_controller.set_list(self.text, True)
+                on_text: app.tessprofiles_controller.set_profiles(self.text, True)
 
         RecycleView:
-            id: modellist
+            id: tessprofilelist
             key_viewclass: 'viewclass'
             key_size: 'height'
 

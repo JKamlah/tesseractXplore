@@ -44,13 +44,13 @@
                             height: dp(30)
                             theme_text_color: 'Primary'
                             md_bg_color:  app.theme_cls.primary_dark
-                            on_release: if root.ids.fontsize.text.replace(".","").isdigit(): root.ids.text.font_size = float(root.ids.fontsize.text)
+                            on_release: if root.ids.fontsize.text.replace('.','').isdigit(): root.ids.text.font_size = float(root.ids.fontsize.text)
                         MDTextFieldRect:
                             size_hint: None, None
-                            height: "30dp"
-                            width: "50dp"
+                            height: '30dp'
+                            width: '50dp'
                             id: fontsize
-                            mode: "rectangle"
+                            mode: 'rectangle'
                         MDRaisedButton:
                             id: replace_button
                             text: 'Replace'
@@ -61,17 +61,17 @@
                         MDTextFieldRect:
                             id: find
                             size_hint: None, None
-                            height: "30dp"
-                            width: "100dp"
-                            hint_text: "Find"
-                            mode: "rectangle"
+                            height: '30dp'
+                            width: '100dp'
+                            hint_text: 'Find'
+                            mode: 'rectangle'
                         MDTextFieldRect:
                             id: replace
                             size_hint: None, None
-                            height: "30dp"
-                            width: "100dp"
-                            hint_text: "Replace"
-                            mode: "rectangle"
+                            height: '30dp'
+                            width: '100dp'
+                            hint_text: 'Replace'
+                            mode: 'rectangle'
                     TextInput:
                         id: text
                         readonly: False
