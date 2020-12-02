@@ -1,0 +1,1016 @@
+# Metadata to models
+# ------------------
+#maincategory:
+#  # Supported modeltypes: fast, best, old
+#  types:
+#    fast:
+#      url: XXX
+#  If scrape true and models are empty, the models get scraped from the urls
+#  scrape: boolean
+#  model:
+#    eng:
+#      # name + typeurl can be used to curl the model
+#      name: 'eng.traineddata'
+#      # Alias or Tags
+#      alias: ['englisch','Englisch','english']
+#      # Information about
+#      description: ''
+#      # Categories: Language, Script, Mixed and Custom
+#      category: 'Language'
+#      # Model types (url+name)
+#      type: [fast,best]
+#      # Supported fonts: Modern Antiqua,..
+#      fonts: []
+#      # Problematic Unicodesymbols (missing, false recognition, low rate of recognition)
+#      unicode:
+#        false: []
+#        low: []
+#        missing: []
+#      # Dataset used to generate the model
+#      dataset:
+#        name: ''
+#        description: ''
+#    latin:
+#      name: Script/latin.traineddata
+#      category: 'Script'
+#      ...
+tessdata:
+    types:
+      fast:
+        url: 'https://github.com/tesseract-ocr/tessdata_fast/raw/master/'
+      best:
+        url: 'https://github.com/tesseract-ocr/tessdata_best/raw/master/'
+    models:
+        afr:
+            name: 'afr.traineddata'
+            tags: ['Afrikaans','Afrikáans']
+            description: 'Model for Afrikaans language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        amh:
+            name: 'amh.traineddata'
+            tags: ['Amharic','Amharisch','Amhárico','Amharique']
+            description: 'Model for Amharic language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ara:
+            name: 'ara.traineddata'
+            tags: ['Arabe','Árabe','Arabic','Arabisch']
+            description: 'Model for Arabic language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        asm:
+            name: 'asm.traineddata'
+            tags: ['Assamesisch','Assamese','Assamais','Asamés']
+            description: 'Model for Assamese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        aze:
+            name: 'aze.traineddata'
+            tags: ['Azerí','Azerbaijani','Azéri','Aserbaidschanisch']
+            description: 'Model for Azerbaijani language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        aze_cyrl:
+            name: 'aze_cyrl.traineddata'
+            tags: ['Azerbaijani - Cyrillic']
+            description: 'Model for Azerbaijani - Cyrillic language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        bel:
+            name: 'bel.traineddata'
+            tags: ['Belarusian','Belarussisch','Bielorruso','Biélorusse']
+            description: 'Model for Belarusian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ben:
+            name: 'ben.traineddata'
+            tags: ['Bengali','Bengalí']
+            description: 'Model for Bengali language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        bod:
+            name: 'bod.traineddata'
+            tags: ['Tibetisch','Tibetan','Tibetano','Tibétain standard']
+            description: 'Model for Tibetan language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        bos:
+            name: 'bos.traineddata'
+            tags: ['Bosnio','Bosnisch','Bosnien','Bosnian']
+            description: 'Model for Bosnian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        bul:
+            name: 'bul.traineddata'
+            tags: ['Bulgarian','Bulgarisch','Bulgare','Búlgaro']
+            description: 'Model for Bulgarian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        cat:
+            name: 'cat.traineddata'
+            tags: ['Catalan','Katalanisch','Valencian','Catalán']
+            description: 'Model for Catalan, Valencian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ceb:
+            name: 'ceb.traineddata'
+            tags: ['Cebuano']
+            description: 'Model for Cebuano language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ces:
+            name: 'ces.traineddata'
+            tags: ['Tschechisch','Tchèque','Czech','Checo']
+            description: 'Model for Czech language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        chi_sim:
+            name: 'chi_sim.traineddata'
+            tags: ['Chinese - Simplified']
+            description: 'Model for Chinese - Simplified language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        chi_tra:
+            name: 'chi_tra.traineddata'
+            tags: ['Chinese - Traditional']
+            description: 'Model for Chinese - Traditional language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        chr:
+            name: 'chr.traineddata'
+            tags: ['Cheroqui','Cherokee']
+            description: 'Model for Cherokee language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        cym:
+            name: 'cym.traineddata'
+            tags: ['Welsh','Walisisch','Galés','Gallois']
+            description: 'Model for Welsh language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        dan:
+            name: 'dan.traineddata'
+            tags: ['Danés','Danois','Danish','Dänisch','Late modern danish','Danés moderno tardío']
+            description: 'Model for Danish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        deu:
+            name: 'deu.traineddata'
+            tags: ['Alemán','Deutsch','German','Allemand']
+            description: 'Model for German language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        dzo:
+            name: 'dzo.traineddata'
+            tags: ['Dzongkha']
+            description: 'Model for Dzongkha language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ell:
+            name: 'ell.traineddata'
+            tags: ['Griego','Greek','Griechisch','Grec','Modern (1453-)']
+            description: 'Model for Greek, Modern (1453-) language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        eng:
+            name: 'eng.traineddata'
+            tags: ['Englisch','Anglais','English','Inglés']
+            description: 'Model for English language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        enm:
+            name: 'enm.traineddata'
+            tags: ['Englisch','Inglés','Middle (1100-1500)','English','Anglais']
+            description: 'Model for English, Middle (1100-1500) language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        epo:
+            name: 'epo.traineddata'
+            tags: ['Esperanto','Espéranto']
+            description: 'Model for Esperanto language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        est:
+            name: 'est.traineddata'
+            tags: ['Estnisch','Estonien','Estonio','Estonian']
+            description: 'Model for Estonian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        eus:
+            name: 'eus.traineddata'
+            tags: ['Basque', 'Baskisch']
+            description: 'Model for Basque language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        fas:
+            name: 'fas.traineddata'
+            tags: ['Persa','Persisch','Persan','Persian']
+            description: 'Model for Persian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        fin:
+            name: 'fin.traineddata'
+            tags: ['Finnisch','Finés','Finnois','Finnish']
+            description: 'Model for Finnish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        fra:
+            name: 'fra.traineddata'
+            tags: ['Francés','Français','French','Französisch']
+            description: 'Model for French language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        frk:
+            name: 'frk.traineddata'
+            tags: ['German Fraktur', 'Deutsch', 'Fraktur', 'Blackletter']
+            description: 'Model for German Fraktur language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        frm:
+            name: 'frm.traineddata'
+            tags: ['Französisch','Français','Francés','French','Middle (ca. 1400-1600)', 'Fraktur', 'Blackletter']
+            description: 'Model for French, Middle (ca. 1400-1600) language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        gle:
+            name: 'gle.traineddata'
+            tags: ['Irisch','Irlandais','Irlandés','Irish']
+            description: 'Model for Irish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        glg:
+            name: 'glg.traineddata'
+            tags: ['Galicisch','Gallego','Galician','Galicien']
+            description: 'Model for Galician language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        grc:
+            name: 'grc.traineddata'
+            tags: ['Ancient (-1453)','Griego','Greek','Griechisch','Grec']
+            description: 'Model for Greek, Ancient (-1453) language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        guj:
+            name: 'guj.traineddata'
+            tags: ['Guyaratí','Gujarati language','Gujarati']
+            description: 'Model for Gujarati language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        hat:
+            name: 'hat.traineddata'
+            tags: ['Haitian Creole','Haitian']
+            description: 'Model for Haitian, Haitian Creole language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        heb:
+            name: 'heb.traineddata'
+            tags: ['Hebräisch','Hébreu','Hebreo','Hebrew']
+            description: 'Model for Hebrew language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        hin:
+            name: 'hin.traineddata'
+            tags: ['Hindi']
+            description: 'Model for Hindi language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        hrv:
+            name: 'hrv.traineddata'
+            tags: ['Croata','Kroatisch','Croate','Croatian']
+            description: 'Model for Croatian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        hun:
+            name: 'hun.traineddata'
+            tags: ['Hungarian', 'Ungarisch', 'Hongrois']
+            description: 'Model for Hungarian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        iku:
+            name: 'iku.traineddata'
+            tags: ['Lenguas inuit','Inuktitut']
+            description: 'Model for Inuktitut language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ind:
+            name: 'ind.traineddata'
+            tags: ['Indonesisch','Indonesian','Indonésien','Indonesio']
+            description: 'Model for Indonesian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        isl:
+            name: 'isl.traineddata'
+            tags: ['Islandais','Islandés','Icelandic','Isländisch']
+            description: 'Model for Icelandic language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ita:
+            name: 'ita.traineddata'
+            tags: ['Italien','Italienisch','Italian','Italiano']
+            description: 'Model for Italian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ita_old:
+            name: 'ita_old.traineddata'
+            tags: ['Italian - Old', 'Italien','Italienisch','Italian','Italiano','Fraktur','Blackletter']
+            description: 'Model for Italian - Old language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        jav:
+            name: 'jav.traineddata'
+            tags: ['Javanese','Javanisch','Javanés','Javanais']
+            description: 'Model for Javanese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        jpn:
+            name: 'jpn.traineddata'
+            tags: ['Japanisch','Japanese','Japonés','Japonais']
+            description: 'Model for Japanese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kan:
+            name: 'kan.traineddata'
+            tags: ['Canarés','Kannada']
+            description: 'Model for Kannada language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kat:
+            name: 'kat.traineddata'
+            tags: ['Georgian','Géorgien','Georgiano','Georgisch']
+            description: 'Model for Georgian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kat_old:
+            name: 'kat_old.traineddata'
+            tags: ['Georgian - Old','Georgian','Géorgien','Georgiano','Georgisch']
+            description: 'Model for Georgian - Old language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kaz:
+            name: 'kaz.traineddata'
+            tags: ['Kasachisch','Kazakh','Kazajo']
+            description: 'Model for Kazakh language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        khm:
+            name: 'khm.traineddata'
+            tags: ['Central Khmer']
+            description: 'Model for Central Khmer language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kir:
+            name: 'kir.traineddata'
+            tags: ['Kirguís','Kirghiz','Kirgisisch','Kirghize','Kyrgyz']
+            description: 'Model for Kirghiz, Kyrgyz language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kor:
+            name: 'kor.traineddata'
+            tags: ['Coréen','Dialectos del coreano','Coreano','Koreanisch','Korean','Korean dialects']
+            description: 'Model for Korean language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        kur:
+            name: 'kur.traineddata'
+            tags: ['Kurde','Kurdish','Kurdo','Kurdische sprachen']
+            description: 'Model for Kurdish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        lao:
+            name: 'lao.traineddata'
+            tags: ['Lao','Laotisch']
+            description: 'Model for Lao language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        lat:
+            name: 'lat.traineddata'
+            tags: ['Latein','Latin','Latín']
+            description: 'Model for Latin language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        lav:
+            name: 'lav.traineddata'
+            tags: ['Lettisch','Letón','Latvian','Letton']
+            description: 'Model for Latvian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        lit:
+            name: 'lit.traineddata'
+            tags: ['Lituanien','Lituano','Lithuanian','Litauisch']
+            description: 'Model for Lithuanian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        mal:
+            name: 'mal.traineddata'
+            tags: ['Malayalam','Malabar']
+            description: 'Model for Malayalam language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        mar:
+            name: 'mar.traineddata'
+            tags: ['Marathi','Maratí']
+            description: 'Model for Marathi language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        mkd:
+            name: 'mkd.traineddata'
+            tags: ['Macédonien','Mazedonisch','Macedonio','Macedonian']
+            description: 'Model for Macedonian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        mlt:
+            name: 'mlt.traineddata'
+            tags: ['Maltese','Maltesisch','Maltais','Maltés']
+            description: 'Model for Maltese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        msa:
+            name: 'msa.traineddata'
+            tags: ['Malayo','Malaiisch','Malay','Malais']
+            description: 'Model for Malay language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        mya:
+            name: 'mya.traineddata'
+            tags: ['Birmanisch','Birmano','Burmese','Birman']
+            description: 'Model for Burmese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        nep:
+            name: 'nep.traineddata'
+            tags: ['Nepalí','Népalais','Nepali']
+            description: 'Model for Nepali language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        nld:
+            name: 'nld.traineddata'
+            tags: ['Niederländisch','Néerlandais','Neerlandés','Dutch','Flemish']
+            description: 'Model for Dutch, Flemish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        nor:
+            name: 'nor.traineddata'
+            tags: ['Norwegisch','Norvégien','Noruego','Norwegian']
+            description: 'Model for Norwegian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ori:
+            name: 'ori.traineddata'
+            tags: ['Odia','Oriya','Idioma oriya']
+            description: 'Model for Oriya language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        pan:
+            name: 'pan.traineddata'
+            tags: ['Westliches panjabi','Pendjabi','Pendjabi de l´ouest','Panyabí','Western punjabi','Panjabi','Punjabi']
+            description: 'Model for Panjabi, Punjabi language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        pol:
+            name: 'pol.traineddata'
+            tags: ['Polaco','Polonais','Polish','Polnisch']
+            description: 'Model for Polish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        por:
+            name: 'por.traineddata'
+            tags: ['Portugiesisch','Portuguese','Portugais','Portugués']
+            description: 'Model for Portuguese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        pus:
+            name: 'pus.traineddata'
+            tags: ['Pastún','Pachto','Pushto','Pashto','Paschtu']
+            description: 'Model for Pushto, Pashto language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ron:
+            name: 'ron.traineddata'
+            tags: ['Moldavian','Rumano','Romanian','Roumain','Moldovan','Rumänisch']
+            description: 'Model for Romanian, Moldavian, Moldovan language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        rus:
+            name: 'rus.traineddata'
+            tags: ['Russisch','Ruso','Russian','Russe']
+            description: 'Model for Russian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        san:
+            name: 'san.traineddata'
+            tags: ['Sanskrit','Sánscrito']
+            description: 'Model for Sanskrit language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        sin:
+            name: 'sin.traineddata'
+            tags: ['Sinhalese','Sinhala','Cingalais','Cingalés','Singhalesisch']
+            description: 'Model for Sinhala, Sinhalese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        slk:
+            name: 'slk.traineddata'
+            tags: ['Slowakisch','Slovaque','Eslovaco','Slovak']
+            description: 'Model for Slovak language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        slv:
+            name: 'slv.traineddata'
+            tags: ['Slovène','Esloveno','Slovene','Slovenian','Slowenisch']
+            description: 'Model for Slovenian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        spa:
+            name: 'spa.traineddata'
+            tags: ['Castilian','Spanisch','Espagnol','Español','Spanish']
+            description: 'Model for Spanish, Castilian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        spa_old:
+            name: 'spa_old.traineddata'
+            tags: ['Spanisch','Espagnol','Español','Spanish','Castilian - Old']
+            description: 'Model for Spanish, Castilian - Old language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        sqi:
+            name: 'sqi.traineddata'
+            tags: ['Albanais','Albanisch','Albanian','Albanés']
+            description: 'Model for Albanian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        srp:
+            name: 'srp.traineddata'
+            tags: ['Serbian','Serbio','Serbe','Serbisch']
+            description: 'Model for Serbian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        srp_latn:
+            name: 'srp_latn.traineddata'
+            tags: ['Serbian - Latin','Serbian','Serbio','Serbe','Serbisch']
+            description: 'Model for Serbian - Latin language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        swa:
+            name: 'swa.traineddata'
+            tags: ['Kiswahili','Suajili','Swahili']
+            description: 'Model for Swahili language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        swe:
+            name: 'swe.traineddata'
+            tags: ['Suédois','Swedish','Sueco','Schwedisch']
+            description: 'Model for Swedish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        syr:
+            name: 'syr.traineddata'
+            tags: ['Syriac','Assyrian neo-aramaic','Assyrisch-neuaramäisch','Syriaque','Soureth','Siríaco','Syrisch','Neoarameo asirio']
+            description: 'Model for Syriac language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tam:
+            name: 'tam.traineddata'
+            tags: ['Tamoul','Tamil']
+            description: 'Model for Tamil language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tel:
+            name: 'tel.traineddata'
+            tags: ['Télugu','Telugu','Télougou']
+            description: 'Model for Telugu language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tgk:
+            name: 'tgk.traineddata'
+            tags: ['Tajik','Tadjik','Tayiko','Tadschikisch']
+            description: 'Model for Tajik language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tgl:
+            name: 'tgl.traineddata'
+            tags: ['Tagalo','Tagalog']
+            description: 'Model for Tagalog language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tha:
+            name: 'tha.traineddata'
+            tags: ['Thailändisch','Tailandés','Thai','Thaï']
+            description: 'Model for Thai language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tir:
+            name: 'tir.traineddata'
+            tags: ['Idioma tigriña','Tigrinya','Tigrigna']
+            description: 'Model for Tigrinya language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        tur:
+            name: 'tur.traineddata'
+            tags: ['Turkish','Türkisch','Turco','Turc']
+            description: 'Model for Turkish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        uig:
+            name: 'uig.traineddata'
+            tags: ['Uigur','Ouïghour','Uigurisch','Uighur','Uyghur']
+            description: 'Model for Uighur, Uyghur language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        ukr:
+            name: 'ukr.traineddata'
+            tags: ['Ukrainien','Ukrainian','Ucraniano','Ukrainisch']
+            description: 'Model for Ukrainian language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        urd:
+            name: 'urd.traineddata'
+            tags: ['Urdu','Ourdou']
+            description: 'Model for Urdu language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        uzb:
+            name: 'uzb.traineddata'
+            tags: ['Usbekisch','Uzbeko','Ouzbek','Uzbek']
+            description: 'Model for Uzbek language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        uzb_cyrl:
+            name: 'uzb_cyrl.traineddata'
+            tags: ['Uzbek - Cyrillic','Usbekisch','Uzbeko','Ouzbek','Uzbek','Kyrillisch', 'Cyrillique']
+            description: 'Model for Uzbek - Cyrillic language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        vie:
+            name: 'vie.traineddata'
+            tags: ['Vietnamita','Vietnamesisch','Vietnamese','Vietnamien']
+            description: 'Model for Vietnamese language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        yid:
+            name: 'yid.traineddata'
+            tags: ['Yiddish','Yidis','Jiddisch']
+            description: 'Model for Yiddish language'
+            category: 'Language'
+            type: ['fast','best']
+            fonts: ['']
+        Arabic:
+            name: 'script/Arabic.traineddata'
+            tags: ['Arabic','Arabisch','Árabe','Arabe']
+            description: 'Model for Arabic script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Armenian:
+            name: 'script/Armenian.traineddata'
+            tags: ['Arménien','Armenisch','Armenian','Armenio']
+            description: 'Model for Armenian script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Bengali:
+            name: 'script/Bengali.traineddata'
+            tags: ['Bengalí','Bengali']
+            description: 'Model for Bengali script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Canadian_Aboriginal:
+            name: 'script/Canadian_Aboriginal.traineddata'
+            tags: ['Canadian_Aboriginal','Kanadisch','Indianer','Inuit']
+            description: 'Model for Canadian_Aboriginal script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Cherokee:
+            name: 'script/Cherokee.traineddata'
+            tags: ['Cheroqui','Cherokee']
+            description: 'Model for Cherokee script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Cyrillic:
+            name: 'script/Cyrillic.traineddata'
+            tags: ['Cyrillic script','Cyrillic','Kyrillisches alphabet','Alphabet cyrillique','Alfabeto cirílico']
+            description: 'Model for Cyrillic script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Devanagari:
+            name: 'script/Devanagari.traineddata'
+            tags: ['Devanagari']
+            description: 'Model for Devanagari script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Ethiopic:
+            name: 'script/Ethiopic.traineddata'
+            tags: ['Ethiopic']
+            description: 'Model for Ethiopic script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Fraktur:
+            name: 'script/Fraktur.traineddata'
+            tags: ['Fraktur','Blackletter','Gebrochene Schriften']
+            description: 'Model for Fraktur script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Georgian:
+            name: 'script/Georgian.traineddata'
+            tags: ['Géorgien','Georgiano','Georgian','Georgisch']
+            description: 'Model for Georgian script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Greek:
+            name: 'script/Greek.traineddata'
+            tags: ['Griego','Grec','Greek','Griechisch']
+            description: 'Model for Greek script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Gujarati:
+            name: 'script/Gujarati.traineddata'
+            tags: ['Gujarati language','Gujarati','Guyaratí']
+            description: 'Model for Gujarati script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Gurmukhi:
+            name: 'script/Gurmukhi.traineddata'
+            tags: ['Gurmukhi']
+            description: 'Model for Gurmukhi script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        HanS:
+            name: 'script/HanS.traineddata'
+            tags: ['Han','Simplified','Vereinfacht']
+            description: 'Model for HanS script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        HanS_vert:
+            name: 'script/HanS_vert.traineddata'
+            tags: ['Han','Vertical','Simplified','Vereinfacht']
+            description: 'Model for HanS_vert script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        HanT:
+            name: 'script/HanT.traineddata'
+            tags: ['Han', 'Traditionell']
+            description: 'Model for HanT script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        HanT_vert:
+            name: 'script/HanT_vert.traineddata'
+            tags: ['Han', 'Vertical,', 'Traditionell']
+            description: 'Model for HanT_vert script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Hangul:
+            name: 'script/Hangul.traineddata'
+            tags: ['Hangul']
+            description: 'Model for Hangul script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Hangul_vert:
+            name: 'script/Hangul_vert.traineddata'
+            tags: ['Hangul', 'Vertical']
+            description: 'Model for Hangul_vert script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Hebrew:
+            name: 'script/Hebrew.traineddata'
+            tags: ['Hebrew','Hébreu','Hebräisch','Hebreo']
+            description: 'Model for Hebrew script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Japanese:
+            name: 'script/Japanese.traineddata'
+            tags: ['Japanese','Japanisch','Japonais','Japonés']
+            description: 'Model for Japanese script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Japanese_vert:
+            name: 'script/Japanese_vert.traineddata'
+            tags: ['Japanese','Japanisch','Japonais','Japonés', 'Vertical']
+            description: 'Model for Japanese_vert script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Kannada:
+            name: 'script/Kannada.traineddata'
+            tags: ['Kannada','Canarés']
+            description: 'Model for Kannada script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Khmer:
+            name: 'script/Khmer.traineddata'
+            tags: ['Khmer','Camboyano']
+            description: 'Model for Khmer script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Lao:
+            name: 'script/Lao.traineddata'
+            tags: ['Laotisch','Lao']
+            description: 'Model for Lao script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Latin:
+            name: 'script/Latin.traineddata'
+            tags: ['Latin','Latín','Latein']
+            description: 'Model for Latin script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Malayalam:
+            name: 'script/Malayalam.traineddata'
+            tags: ['Malabar','Malayalam']
+            description: 'Model for Malayalam script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Myanmar:
+            name: 'script/Myanmar.traineddata'
+            tags: ['Myanmar']
+            description: 'Model for Myanmar script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Oriya:
+            name: 'script/Oriya.traineddata'
+            tags: ['Idioma oriya','Oriya','Odia']
+            description: 'Model for Oriya script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Sinhala:
+            name: 'script/Sinhala.traineddata'
+            tags: ['Sinhala','Singhalesisch','Cingalais','Cingalés']
+            description: 'Model for Sinhala script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Syriac:
+            name: 'script/Syriac.traineddata'
+            tags: ['Assyrisch-neuaramäisch','Syrisch','Soureth','Syriaque','Assyrian neo-aramaic','Neoarameo asirio','Syriac','Siríaco']
+            description: 'Model for Syriac script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Tamil:
+            name: 'script/Tamil.traineddata'
+            tags: ['Tamoul','Tamil']
+            description: 'Model for Tamil script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Telugu:
+            name: 'script/Telugu.traineddata'
+            tags: ['Télougou','Telugu','Télugu']
+            description: 'Model for Telugu script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Thaana:
+            name: 'script/Thaana.traineddata'
+            tags: ['Thaana']
+            description: 'Model for Thaana script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Thai:
+            name: 'script/Thai.traineddata'
+            tags: ['Thailändisch','Thai','Tailandés','Thaï']
+            description: 'Model for Thai script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Tibetan:
+            name: 'script/Tibetan.traineddata'
+            tags: ['Tibetisch','Tibétain standard','Tibetan','Tibetano']
+            description: 'Model for Tibetan script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        Vietnamese:
+            name: 'script/Vietnamese.traineddata'
+            tags: ['Vietnamesisch','Vietnamien','Vietnamese','Vietnamita']
+            description: 'Model for Vietnamese script'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
