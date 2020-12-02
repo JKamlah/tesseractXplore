@@ -2,6 +2,10 @@
 
 display:
   dark_mode: false
+  sdl_textprovider: 'down'
+  pil_textprovider: 'normal'
+  pygame_textprovider: 'normal'
+  pango_textprovider: 'normal'
   # Not yet configurable
   md_primary_palette: 'Teal'
   md_accent_palette: 'Cyan'
@@ -19,7 +23,8 @@ tesseract:
   model: null
   psm: null
   oem: null
-  tesspath: 'C:\\Program Files\\Tesseract-OCR\\tesserac.exe'
+  tessdatadir: ''
+  do_invert: true
 # Not yet configurable
 search:
   autocomplete_delay: 0.5
