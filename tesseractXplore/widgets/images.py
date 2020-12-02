@@ -91,10 +91,6 @@ class ImageMetaTile(SmartTileWithLabel):
         self.original_source = source
         self.metadata = MetaMetadata(source)
 
-    def copy_flickr_tags(self, *args):
-        Clipboard.copy(self.metadata.keyword_meta.flickr_tags)
-        alert('Tags copied to clipboard')
-
     def on_metadata(self, *args):
         """ Triggered whenever metadata changes """
         self.text = self.metadata.summary
@@ -104,11 +100,5 @@ class ImageMetaTile(SmartTileWithLabel):
         """ Set the color of the image overlay box based on its metadata """
         def set_alpha(rgba, alpha):
             return rgba[:3] + [alpha]
-
-        if self.metadata.gt_id:
-            self.box_color = set_alpha(self.theme_cls.accent_color, 0.6)
-        elif self.metadata.has_model:
-            self.box_color = set_alpha(self.theme_cls.primary_color, 0.5)
-        else:
-            self.box_color = (0, 0, 0, 0.5)
+        self.box_color = (0, 0, 0, 0.5)
 

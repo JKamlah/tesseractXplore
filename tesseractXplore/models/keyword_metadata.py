@@ -2,7 +2,6 @@ from itertools import chain
 from logging import getLogger
 from typing import Any, Dict, List
 
-from tesseractXplore.inat_metadata import sort_model_keywords, quote
 
 # All tags that support regular and hierarchical keyword lists
 KEYWORD_TAGS = [
@@ -26,7 +25,7 @@ class KeywordMetadata:
     def __init__(self, metadata=None, keywords=None):
         """ Initialize with full metadata or keywords only """
         self.keywords = keywords or self.get_combined_keywords(metadata)
-        self.kv_keywords = self.get_kv_keywords()
+        self.kv_keywords = "HEY"#self.get_kv_keywords()
         self.hier_keywords = self.get_hierarchical_keywords()
         self.normal_keywords = self.get_normal_keywords()
 
@@ -54,13 +53,6 @@ class KeywordMetadata:
         else:
             return [keywords.strip()] if keywords.strip() else []
 
-    def get_kv_keywords(self) -> Dict[str, str]:
-        """ Get all keywords that contain key-value pairs"""
-        kv_keywords = [kw for kw in self.keywords if kw.count('=') == 1 and kw.split('=')[1]]
-        kv_keywords = sort_model_keywords(kv_keywords)
-        logger.info(f'{len(kv_keywords)} unique key-value pairs found in keywords')
-        return dict([kw.split('=') for kw in kv_keywords])
-
     def get_hierarchical_keywords(self) -> List[str]:
         """
         Get all hierarchical keywords as flat strings.
@@ -84,7 +76,7 @@ class KeywordMetadata:
     @property
     def flickr_tags(self):
         """ Get all model and normal keywords as quoted, space-separated tags compatible with Flickr """
-        return ' '.join([quote(kw) for kw in self.kv_keyword_list + self.normal_keywords])
+        return ' '
 
     @property
     def hier_keyword_tree(self) -> Dict[str, Any]:

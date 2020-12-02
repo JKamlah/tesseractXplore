@@ -1,7 +1,9 @@
 from kivy.properties import NumericProperty, BooleanProperty
-from kivymd.uix.button import MDFloatingActionButton, MDRoundFlatIconButton
+from kivymd.uix.button import MDFloatingActionButton, MDRoundFlatIconButton, MDRectangleFlatButton
 from kivymd.uix.list import IconRightWidget
 from tesseractXplore.widgets.tooltip import MDTooltip
+from tesseractXplore.widgets.tooglebutton import MDToggleButton
+from tesseractXplore.app import get_app
 from kivy.properties import (
     NumericProperty,
 )
@@ -35,3 +37,10 @@ class TooltipFloatingButton(MDFloatingActionButton, MDTooltip):
 
 class TooltipIconButton(MDRoundFlatIconButton, MDTooltip):
     """ Flat button class with icon and tooltip behavior """
+
+
+class MyToggleButton(MDRectangleFlatButton, MDToggleButton):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        #md_bg_color: app.theme_cls.primary_dark
+        self.background_down = get_app().theme_cls.primary_dark

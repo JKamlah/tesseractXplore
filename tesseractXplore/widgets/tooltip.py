@@ -183,7 +183,7 @@ class MDTooltip(ThemableBehavior, HoverBehavior, TouchBehavior, Widget):
     def display_tooltip(self, interval):
         if not self._tooltip:
             return
-        Window.add_widget(self._tooltip)
+        #Window.add_widget(self._tooltip)
         pos = self.to_window(self.center_x, self.center_y)
         x = pos[0] - self._tooltip.width / 2
 

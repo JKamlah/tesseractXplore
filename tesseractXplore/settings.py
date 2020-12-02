@@ -6,10 +6,9 @@ from os.path import isfile
 from shutil import copyfile
 from typing import Dict, Any
 
-import json
 import yaml
 
-from tesseractXplore.constants import DATA_DIR, CONFIG_PATH, DEFAULT_CONFIG_PATH, STORED_TAXA_PATH
+from tesseractXplore.constants import DATA_DIR, CONFIG_PATH, DEFAULT_CONFIG_PATH
 
 logger = getLogger().getChild(__name__)
 
@@ -50,44 +49,6 @@ def reset_defaults():
     logger.info(f'Resetting {CONFIG_PATH} to defaults')
     makedirs(DATA_DIR, exist_ok=True)
     copyfile(DEFAULT_CONFIG_PATH, CONFIG_PATH)
-
-
-# TODO: Is there a better file format for model history than just a plain text file? JSON list? sqlite?
-# TODO: Separately store loaded history, new history for session; only write (append) new history
-def read_stored_taxa() -> Dict:
-    """ Read model view history, starred, and frequency
-
-    Returns:
-        Stored model view history, starred, and frequency
-    """
-    if not isfile(STORED_TAXA_PATH):
-        stored_taxa = {}
-    else:
-        with open(STORED_TAXA_PATH) as f:
-            stored_taxa = json.load(f)
-
-    stored_taxa.setdefault('history', [])
-    stored_taxa.setdefault('starred', [])
-    stored_taxa['frequent'] = convert_int_dict(stored_taxa.get('frequent', {}))
-    return stored_taxa
-
-
-def write_stored_taxa(stored_taxa: Dict):
-    """ Write model view history to file, along with stats on most frequently viewed taxa
-
-    Args:
-        Complete model history (including previously stored history)
-    """
-    # Do a recount/resort before writing
-    stored_taxa["frequent"] = OrderedDict(Counter(stored_taxa["history"]).most_common())
-
-    logger.info(
-        f'Writing stored taxa: {len(stored_taxa["history"])} history items, '
-        f'{len(stored_taxa["starred"])} starred items, '
-        f'{len(stored_taxa["frequent"])} frequent items'
-    )
-    with open(STORED_TAXA_PATH, 'w') as f:
-        json.dump(stored_taxa, f, indent=4)
 
 
 def convert_int_dict(int_dict):

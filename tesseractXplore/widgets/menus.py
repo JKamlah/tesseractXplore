@@ -29,6 +29,10 @@ class PhotoContextMenuItem(AutoHideMenuItem):
     def metadata(self):
         return self.parent.ref.metadata
 
+class TessprofileContextMenuItem(AutoHideMenuItem):
+    """ Menu item that has a reference to an image and its metadata
+    (partly just to be more explicit/readable)
+    """
 
 class ListContextMenuItem(AutoHideMenuItem):
     @property

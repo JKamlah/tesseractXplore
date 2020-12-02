@@ -10,26 +10,30 @@ class CustomOneLineListItem(OneLineListItem):
 class ModelListController(Controller):
     """ Controller class to manage image metadata screen """
     def __init__(self, screen, **kwargs):
-        self.screen = screen['modellist']
+        self.screen = screen
 
 
     def set_list(self, text="", search=False):
-        '''Builds a list of icons for the screen MDIcons.'''
+        '''Lists all installed models '''
 
         def add_item(model):
-            self.screen.data.append(
+            self.screen.modellist.data.append(
                 {
                     "viewclass": "OneLineListItem",
                     "text": model,
                     "on_release": partial(self.set_model, model)
                 }
             )
-        self.screen.data = []
+        self.screen.modellist.data = []
         for model in get_app().tesseract_controller.models:
             if search:
-                textparts = text.split(" ")
-                if sum([True if textpart.lower() in model.lower() else False for textpart in textparts]) == len(textparts):
-                    add_item(model)
+                if self.screen.exact_match_chk.active:
+                    if text == model[:len(text)]:
+                        add_item(model)
+                else:
+                    textparts = text.split(" ")
+                    if sum([True if textpart.lower() in model.lower() else False for textpart in textparts]) == len(textparts):
+                        add_item(model)
             else:
                 add_item(model)
 

@@ -1,4 +1,6 @@
 import asyncio
+import shutil
+import os
 from logging import getLogger
 
 from tesseractXplore.app import alert, get_app
@@ -17,22 +19,21 @@ class ImageSelectionController(Controller):
         self.screen = screen
         self.image_previews = screen.image_previews
         self.file_chooser = screen.file_chooser
+        self.update_filechooser_filter()
         self.file_list = []
         self.theme_cls = get_app().theme_cls
 
         # Context menu item events
         # For recgonize see tesseract_controller
-        #self.context_menu.ids.view_model_ctx.bind(on_release=self.view_model)
-        # self.context_menu.ids.view_gt_ctx.bind(on_release=self.view_gt)
         self.context_menu.ids.edit_fulltext_ctx.bind(on_release=self.edit_fulltext)
         self.context_menu.ids.edit_image_ctx.bind(on_release=self.edit_image)
         self.context_menu.ids.remove_ctx.bind(on_release=lambda x: self.remove_image(x.selected_image))
         self.context_menu.ids.open_pdf_ctx.bind(on_release=self.open_pdf)
 
         # Other widget events
-        self.screen.model_id_input.bind(on_text_validate=self.on_model_id)
         self.screen.clear_button.bind(on_release=self.clear)
         self.screen.load_button.bind(on_release=self.add_file_chooser_images)
+        self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection)
         self.screen.sort_button.bind(on_release=self.sort_previews)
         self.screen.zoomin_button.bind(on_release=self.zoomin)
         self.screen.zoomout_button.bind(on_release=self.zoomout)
@@ -44,6 +45,11 @@ class ImageSelectionController(Controller):
 
         # TODO: Not working atm only on main window atm (see app.py)
         #self.screen.image_scrollview.bind(on_keyboard=self.on_keyboard)
+
+    def update_filechooser_filter(self):
+        # TODO: Rework this
+        self.file_chooser.filters = ["*"+filter.strip() for filter in get_app().settings_controller.controls['filetypes'].text[1:-1].replace("'","").split(',')]
+        self.file_chooser._update_files()
 
     def zoomin(self, instance, *args):
         currentvalue = self.screen.image_previews.row_default_height
@@ -64,9 +70,9 @@ class ImageSelectionController(Controller):
         if touch.osx < 0.7 and len(self.image_previews.children) > 0:
             if touch.is_mouse_scrolling:
                 if touch.button == 'scrolldown':
-                    self.zoomout(instance, None)
-                elif touch.button == 'scrollup':
                     self.zoomin(instance, None)
+                elif touch.button == 'scrollup':
+                    self.zoomout(instance, None)
 
     def sort_previews(self, instance, *args):
         if instance.text == 'Sort Up':
@@ -86,8 +92,18 @@ class ImageSelectionController(Controller):
         # Load and save start dir from file chooser with the rest of the app settings
         get_app().add_control_widget(self.file_chooser, 'start_dir', 'photos')
 
+    def delete_file_chooser_selection(self,*args):
+        for sel in  self.file_chooser.selection:
+            if os.path.isfile(sel):
+                os.remove(sel)
+            else:
+                shutil.rmtree(sel)
+        self.file_chooser._update_files()
+
     def add_file_chooser_images(self, *args):
         """ Add one or more files and/or dirs selected via a FileChooser """
+        if not self.file_chooser.selection:
+            self.add_images(self.file_chooser.files[1:])
         self.add_images(self.file_chooser.selection)
 
     def add_image(self, path):
@@ -146,10 +162,12 @@ class ImageSelectionController(Controller):
         self.add_images(paths)
 
     def select_model_from_photo(self, model_id):
-        self.screen.model_id_input.text = str(model_id)
+        return
+        #self.screen.model_id_input.text = str(model_id)
 
     def select_gt_from_photo(self, gt_id):
-        self.screen.gt_id_input.text = str(gt_id)
+        return
+        #self.screen.gt_id_input.text = str(gt_id)
 
     def remove_image(self, image):
         """ Remove an image from file list and image previews """
@@ -161,16 +179,14 @@ class ImageSelectionController(Controller):
         """ Clear all image selections (selected files, previews, and inputs) """
         logger.info('Main: Clearing image selections')
         self.file_list = []
-        self.screen.gt_id_input.text = ''
-        self.screen.model_id_input.text = ''
         self.file_chooser.selection = []
         self.image_previews.clear_widgets()
 
     @property
     def input_dict(self):
         return {
-            "gt_id": int(self.screen.gt_id_input.text or 0),
-            "model_id": int(self.screen.model_id_input.text or 0),
+            "gt_id": int(0),
+            "model_id": int(0),
             "recursive": self.screen.recursive_chk.active,
         }
 
@@ -181,6 +197,7 @@ class ImageSelectionController(Controller):
             f'Files:\n{self.file_list}\n'
             f'Input: {self.input_dict}\n'
         )
+
 
     def on_image_click(self, instance, touch):
         """ Event handler for clicking an image """

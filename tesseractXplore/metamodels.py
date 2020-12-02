@@ -8,21 +8,30 @@ from typing import Dict, Any
 
 import yaml
 
-from tesseractXplore.constants import DATA_DIR, DEFAULT_MODEL_PATH
+from tesseractXplore.constants import DATA_DIR, DEFAULT_MODEL_PATH, MODEL_PATH
 
 logger = getLogger().getChild(__name__)
 
-
 def read_metamodels() -> Dict[str, Any]:
-    """  Read models from the models file
+    """  Read settings from the settings file
+
     Returns:
-        models dictionary
+        Stored config state
     """
+    if not isfile(MODEL_PATH):
+        reset_defaults()
+    logger.info(f'Reading settings from {MODEL_PATH}')
     with open(DEFAULT_MODEL_PATH) as f:
         return setdefault(yaml.safe_load(f))
 
+def reset_defaults():
+    """ Reset settings to defaults """
+    logger.info(f'Resetting {MODEL_PATH} to defaults')
+    makedirs(DATA_DIR, exist_ok=True)
+    copyfile(DEFAULT_MODEL_PATH, MODEL_PATH)
+
 def setdefault(metamodel: Dict[str, Any]):
-    """ """
+    """ Setting default that no value is missing """
     for maincat in metamodel.values():
         maincat.setdefault('types',{})
         maincat.setdefault('scrape',True)
@@ -66,11 +75,7 @@ def setdefault(metamodel: Dict[str, Any]):
 #         yaml.safe_dump(settings, f)
 #
 #
-# def reset_defaults():
-#     """ Reset settings to defaults """
-#     logger.info(f'Resetting {CONFIG_PATH} to defaults')
-#     makedirs(DATA_DIR, exist_ok=True)
-#     copyfile(DEFAULT_CONFIG_PATH, CONFIG_PATH)
+
 
 
 def convert_int_dict(int_dict):
@@ -84,7 +89,3 @@ def _is_int(value):
         return True
     except (TypeError, ValueError):
         return False
-
-if __name__ == "__main__":
-    metamodel = read_models()
-    stop = 1

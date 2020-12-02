@@ -1,9 +1,7 @@
 import attr
 from typing import List, Dict, Optional
 
-from pyinaturalist.node_api import get_taxa_by_id
-from tesseractXplore.inat_metadata import get_rank_idx
-from tesseractXplore.constants import TAXON_BASE_URL, ICONISH_TAXA, ATLAS_APP_ICONS, CC_LICENSES
+from tesseractXplore.constants import ATLAS_APP_ICONS, CC_LICENSES
 
 kwarg = attr.ib(default=None)
 
@@ -18,48 +16,17 @@ class Model:
     :py:func:`get_taxa_autocomplete`
     """
     id: int = kwarg
-    ancestry: str = kwarg
-    atlas_id: int = kwarg
-    complete_rank: str = kwarg
-    complete_species_count: int = kwarg
-    extinct: bool = kwarg
-    iconic_model_id: int = kwarg
-    iconic_model_name: str = kwarg
-    is_active: bool = kwarg
-    listed_taxa_count: int = kwarg
     name: str = kwarg
     gts_count: int = kwarg
     partial: bool = kwarg
-    parent_id: int = kwarg
-    rank: str = kwarg
-    rank_level: int = kwarg
-    model_changes_count: int = kwarg
-    model_schemes_count: int = kwarg
-    wikipedia_summary: str = kwarg
-    wikipedia_url: str = kwarg
-    preferred_common_name: str = attr.ib(default='')
+    modelgroup: str = kwarg
+    url: Dict = attr.ib(factory=dict)
+    model: Dict = attr.ib(factory=dict)
 
     # Nested collections with defaults
     ancestor_ids: List[int] = attr.ib(factory=list)
     ancestors: List[Dict] = attr.ib(factory=list)
-    children: List[Dict] = attr.ib(factory=list)
-    conservation_statuses: List[str] = attr.ib(factory=list)
-    current_synonymous_model_ids: List[int] = attr.ib(factory=list)
     default_photo: Dict = attr.ib(factory=dict)
-    flag_counts: Dict = attr.ib(factory=dict)
-    listed_taxa: List = attr.ib(factory=list)
-    model_photos: List = attr.ib(factory=list)
-
-    # Internal attrs managed by @properties
-    _parent_taxa: List = attr.ib(default=None)
-    _child_taxa: List = attr.ib(default=None)
-
-    @classmethod
-    def from_id(cls, id: int):
-        """ Lookup and create a new Model object from an ID """
-        r = get_taxa_by_id(id)
-        json = r['results'][0]
-        return cls.from_dict(json)
 
     @classmethod
     def from_dict(cls, json: Dict, partial: bool = False):
@@ -69,80 +36,14 @@ class Model:
         valid_json = {k: v for k, v in json.items() if k in attr_names and v is not None}
         return cls(partial=partial, **valid_json)
 
-    # TODO: Seems like there should be a better way to do this.
-    def update_from_full_record(self):
-        t = Model.from_id(self.id)
-        self.ancestors = t.ancestors
-        self.children = t.children
-        self.default_photo = t.default_photo
-        self.model_photos = t.model_photos
-
     @property
     def ancestry_str(self):
-        return ' | '.join(t.name for t in self.parent_taxa)
+        return ' | '.join(t.name for t in [])
 
     @property
     def icon_path(self) -> str:
-        return get_icon_path(self.iconic_model_id)
-
-    @property
-    def link(self) -> str:
-        return f'{TAXON_BASE_URL}/{self.id}'
-
-    @property
-    def photo_url(self) -> str:
-        return self.default_photo.get('medium_url')
-
-    @property
-    def has_cc_photo(self) -> bool:
-        """ Determine if there is a default photo with a Creative Commons license """
-        license = self.default_photo.get('license_code', '').upper()
-        return license in CC_LICENSES and self.photo_url
-
-    @property
-    def thumbnail_url(self) -> str:
-        return self.default_photo.get('square_url')
-
-    @property
-    def parent_taxa(self) -> List:
-        """ Get this model's ancestors as Model objects (in descending order of rank) """
-        if self._parent_taxa is None:
-            if not self.ancestors:
-                self.update_from_full_record()
-            self._parent_taxa = [Model.from_dict(t, partial=True) for t in self.ancestors]
-        return self._parent_taxa
-
-    @property
-    def parent_taxa_ids(self) -> List:
-        return [model.id for model in self.parent_taxa]
-
-    @property
-    def parent(self):
-        """ Return immediate parent, if any """
-        return self.parent_taxa[-1] if self.parent_taxa else None
-
-    @property
-    def child_taxa(self) -> List:
-        """ Get this model's children as Model objects (in descending order of rank) """
-        def get_child_idx(model):
-            return get_rank_idx(model.rank), model.name
-
-        if self._child_taxa is None:
-            # TODO: Determine if it's already a full record but the model has no children?
-            if not self.children:
-                self.update_from_full_record()
-            self._child_taxa = [Model.from_dict(t, partial=True) for t in self.children]
-            # Children may be different ranks; sort children by rank then name
-            self._child_taxa.sort(key=get_child_idx)
-        return self._child_taxa
-
-    @property
-    def child_taxa_ids(self) -> List:
-        return [model.id for model in self.child_taxa]
-
+        return get_icon_path(1)
 
 def get_icon_path(id: int) -> Optional[str]:
     """ An iconic function to return an icon for an iconic model """
-    if id not in ICONISH_TAXA:
-        id = 0
-    return f'{ATLAS_APP_ICONS}/{ICONISH_TAXA[id]}'
+    return f'{ATLAS_APP_ICONS}'

@@ -1,6 +1,6 @@
 from kivy.properties import ListProperty
 from kivymd.uix.label import MDLabel
-from kivymd.uix.tooltip import MDTooltip
+from tesseractXplore.widgets.tooltip import MDTooltip
 
 
 # TODO: Debug root cause of rogue tooltips!

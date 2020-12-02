@@ -104,7 +104,7 @@ class FulltextViewController:
     def set_textfile(self, instance):
         self.screen.textfiles.set_item(instance.text[-75:])
         self.current_file.text[0] = instance.text
-        self.text.text = "\n".join(open(instance.text,encoding='utf-8').readlines())
+        self.text.text = "".join(open(instance.text,encoding='utf-8').readlines())
         self.text.cursor = (0, 0)
         self.textfiles_menu.dismiss()
 
@@ -119,7 +119,7 @@ class FulltextViewController:
 def read_file(fname, collections):
     res = find_file(fname, collections)
     if res:
-        return "\n".join(open(res,encoding='utf-8').readlines())
+        return "".join(open(res,encoding='utf-8').readlines())
     else:
         return ""
 
@@ -127,10 +127,10 @@ def find_file(fname, collections):
     app = get_app()
     #if outputfolder
     if app.tesseract_controller.selected_output_folder and Path(app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
-        collections.append(os.path.join(app.tesseract_controller.selected_output_foldier,fname))
+        collections.append(os.path.join(app.tesseract_controller.selected_output_foldier,fname.name))
     # else check cwd folder
     elif fname.is_file():
-        collections.append(fname)
+        collections.append(str(fname.absolute()))
     # else check cwd subfolder (depth 1)
     subfoldermatch = glob.glob(str(fname.parent.joinpath('**').joinpath(fname.name)))
     if subfoldermatch:

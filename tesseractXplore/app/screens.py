@@ -38,6 +38,9 @@ class FulltextViewScreen(MDScreen):
 class ModelListScreen(MDScreen):
     pass
 
+class TessprofilesScreen(MDScreen):
+    pass
+
 class ImageEditorScreen(MDScreen):
     pass
 
@@ -55,6 +58,7 @@ SCREENS = {
     'imageeditor': ImageEditorScreen,
     'model': ModelScreen,
     'modellist': ModelListScreen,
+    'tessprofiles': TessprofilesScreen,
     'groundtruth': GTScreen,
 }
 

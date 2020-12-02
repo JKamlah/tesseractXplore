@@ -13,4 +13,5 @@ from tesseractXplore.controllers.model_search_controller import ModelSearchContr
 from tesseractXplore.controllers.model_selection_controller import ModelSelectionController
 from tesseractXplore.controllers.model_view_controller import ModelViewController
 from tesseractXplore.controllers.modellist_controller import ModelListController
+from tesseractXplore.controllers.tessprofiles_controller import TessprofilesController
 from tesseractXplore.controllers.tesseract_controller import TesseractController

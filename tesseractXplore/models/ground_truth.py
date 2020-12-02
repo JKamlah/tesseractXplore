@@ -1,9 +1,6 @@
 import attr
 from typing import List, Dict
 
-from pyinaturalist.node_api import get_observation
-from tesseractXplore.constants import OBSERVATION_BASE_URL
-
 kwarg = attr.ib(default=None)
 
 
@@ -15,9 +12,7 @@ class GT:
     @classmethod
     def from_id(cls, id: int):
         """ Lookup and create a new GT object from an ID """
-        r = get_observation(id)
-        json = r['results'][0]
-        return cls.from_dict(json)
+        return {}
 
     @classmethod
     def from_dict(cls, json: Dict, partial: bool = False):

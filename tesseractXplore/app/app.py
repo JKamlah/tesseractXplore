@@ -3,11 +3,21 @@ import asyncio
 import os
 from logging import getLogger
 from threading import Thread
+from tesseractXplore.settings import read_settings
 
-# Set GL backend before any kivy modules are imported
-from kivy.clock import Clock
+#Set GL backend before any kivy modules are imported
 os.environ['KIVY_GL_BACKEND'] = 'sdl2'
-#os.environ['KIVY_TEXT'] = 'pango'
+#Set Textprovider backend before any kivy modules are imported
+settings = read_settings()
+if settings['display']['pil_textprovider'] == 'down':
+    os.environ['KIVY_TEXT'] = 'pil'
+elif settings['display']['pygame_textprovider'] == 'down':
+    os.environ['KIVY_TEXT'] = 'pygame'
+elif settings['display']['pango_textprovider'] == 'down':
+    os.environ['KIVY_TEXT'] = 'pango'
+
+# TODO: Make it as setting
+from kivy.clock import Clock
 
 # Disable multitouch emulation before any other kivy modules are imported
 from kivy.config import Config
@@ -22,6 +32,7 @@ from kivymd.app import MDApp
 from tesseractXplore.recognizer import tag_image
 from tesseractXplore.app import alert
 from tesseractXplore.app.screens import HOME_SCREEN, Root, load_screens
+from tesseractXplore.tessprofiles import read_tessprofiles
 from tesseractXplore.constants import (
     INIT_WINDOW_POSITION,
     INIT_WINDOW_SIZE,
@@ -41,9 +52,9 @@ from tesseractXplore.controllers import (
     ModelSearchController,
     ModelSelectionController,
     ModelViewController,
+    TessprofilesController,
     TesseractController,
 )
-from tesseractXplore.inat_metadata import strip_url_by_type
 from tesseractXplore.widgets import ModelListItem
 
 logger = getLogger().getChild(__name__)
@@ -61,22 +72,26 @@ class ControllerProxy:
     model_selection_controller = ObjectProperty()
     model_view_controller = ObjectProperty()
     modellist_controller = ObjectProperty()
+    tessprofiles_controller = ObjectProperty()
     settings_controller = ObjectProperty()
 
     def init_controllers(self, screens):
         # Init controllers with references to nested screen objects
+        self.settings_controller = SettingsController(screens['settings'].ids)
+        self.tessdatadir = self.settings_controller.tesseract['tessdatadir']
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
         self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
         self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)
         self.image_editor_controller = ImageEditorController(screens['imageeditor'].ids)
-        self.settings_controller = SettingsController(screens['settings'].ids)
         self.model_selection_controller = ModelSelectionController(screens['model'].ids)
         self.model_view_controller = ModelViewController(screens['model'].ids)
         self.modellist_controller = ModelListController(screens['modellist'].ids)
-        #self.model_search_controller = ModelSearchController(screens['model'].ids)
+        self.tessprofiles_controller = TessprofilesController(screens['tessprofiles'].ids)
+        self.model_search_controller = ModelSearchController(screens['model'].ids)
         # gt_search_controller = GTSearchController(screens['gt'].ids)
 
         # Proxy methods
+        self.tessprofiles = read_tessprofiles()
         self.is_starred = self.model_selection_controller.is_starred
         self.add_star = self.model_selection_controller.add_star
         self.select_fulltext = self.fulltext_view_controller.select_fulltext
@@ -88,7 +103,6 @@ class ControllerProxy:
         self.add_control_widget = self.settings_controller.add_control_widget
 
         # Proxy properties
-        self.stored_taxa = self.settings_controller.stored_taxa
         self.locale = self.settings_controller.locale
         self.username = self.settings_controller.username
         self.password = self.settings_controller.password
@@ -187,7 +201,8 @@ class TesseractXplore(MDApp, ControllerProxy):
         # TODO: Also save stored taxa, but needs optimization first (async, only store if changed)
         if self.screen_manager.current in ['settings']:
             self.settings_controller.save_settings()
-
+        if screen_name == "model":
+            self.model_view_controller.screen.tessdatadir.text = self.tessdatadir
         self.screen_manager.current = screen_name
         self.update_toolbar(screen_name)
         self.close_nav()
@@ -243,7 +258,7 @@ class TesseractXplore(MDApp, ControllerProxy):
     # TODO: Threw this together quickly, this could be cleaned up a lot
     def current_screen_paste(self):
         value = Clipboard.paste()
-        model_id, gt_id = strip_url_by_type(value)
+        model_id, gt_id = 0, 0
         if model_id:
             self.select_model(id=model_id)
             alert(f'Model {model_id} selected')

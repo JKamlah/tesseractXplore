@@ -3,7 +3,6 @@ from os.path import basename
 from typing import Dict, List, Optional
 
 from tesseractXplore.constants import StrTuple, IntTuple
-from tesseractXplore.inat_metadata import get_inaturalist_ids, get_min_rank
 from tesseractXplore.models import ImageMetadata, KeywordMetadata, KEYWORD_TAGS, HIER_KEYWORD_TAGS
 
 logger = getLogger().getChild(__name__)
@@ -33,32 +32,6 @@ class MetaMetadata(ImageMetadata):
         self.keyword_meta = KeywordMetadata(self.combined)
 
     @property
-    def inaturalist_ids(self) -> IntTuple:
-        """ Get model and/or gt IDs from metadata if available """
-        if self._inaturalist_ids is None:
-            self._inaturalist_ids = get_inaturalist_ids(self.simplified)
-        return self._inaturalist_ids
-
-    @property
-    def model_id(self) -> Optional[int]:
-        return self.inaturalist_ids[0]
-
-    @property
-    def gt_id(self) -> Optional[int]:
-        return self.inaturalist_ids[1]
-
-    @property
-    def min_rank(self) -> StrTuple:
-        """ Get the lowest (most specific) modelomic rank from tags, if any """
-        if self._min_rank is None:
-            self._min_rank = get_min_rank(self.simplified)
-        return self._min_rank
-
-    @property
-    def has_model(self) -> bool:
-        return bool(self.model_id or all(self.min_rank))
-
-    @property
     def simplified(self) -> Dict[str, str]:
         """
         Get simplified/deduplicated key-value pairs from a combination of keywords + basic metadata
@@ -79,17 +52,11 @@ class MetaMetadata(ImageMetadata):
                 'XMP': bool(self.xmp),
                 'SIDECAR': self.has_sidecar,
             }
-            meta_special = {
-                'TAX': self.has_model,
-                'OBS': self.gt_id,
-                # 'GPS': self.gps,
-            }
-            logger.info(f'Metadata summary: {meta_types} {meta_special}')
+            logger.info(f'Metadata summary: {meta_types}')
 
             self._summary = '\n'.join(
                 [
                     basename(self.image_path),
-                    ' | '.join([k for k, v in meta_special.items() if v]),
                     ' | '.join([k for k, v in meta_types.items() if v]),
                 ]
             )

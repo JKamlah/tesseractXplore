@@ -1,15 +1,17 @@
 """ Utilities for generating and retrieving image thumbnails """
 from hashlib import md5
 from io import BytesIO, IOBase
-from os import makedirs
-from os.path import dirname, isfile, join, normpath, splitext
-from shutil import copyfileobj
+from os import makedirs, scandir
+from os.path import dirname, isfile, join, normpath, getsize, splitext
+from shutil import copyfileobj, rmtree
 from logging import getLogger
 from typing import BinaryIO, Optional, Tuple, Union
 
 from PIL import Image
 from PIL.ImageOps import exif_transpose, flip
 import requests
+
+from tesseractXplore.validation import format_file_size
 
 from tesseractXplore.constants import (
     EXIF_ORIENTATION_ID,
@@ -195,6 +197,20 @@ def get_orientated_image(source, default_flip: bool=True) -> Image:
 
     return image
 
+
+def delete_thumbnails():
+    """Delete call cached thumbnails"""
+    rmtree(THUMBNAILS_DIR)
+    makedirs(THUMBNAILS_DIR)
+
+
+def get_thumbnail_cache_size() -> Tuple[int, str]:
+    """Get the current size of the thumbnail cache, in number of files and human-readable
+    total file size
+    """
+    files = [f for f in scandir(THUMBNAILS_DIR) if isfile(f)]
+    file_size = sum(getsize(f) for f in files)
+    return len(files), format_file_size(file_size)
 
 def flip_all(path: str):
     """ Vertically flip all images in a directory. Mainly for debugging purposes. """

@@ -6,9 +6,6 @@ from time import sleep
 from PIL import Image
 
 from tesseractXplore.constants import (
-    ATLAS_TAXON_ICONS,
-    ATLAS_TAXON_PHOTOS,
-    ATLAS_LOCAL_PHOTOS,
     ATLAS_MAX_SIZE,
     CC_LICENSES,
     THUMBNAILS_DIR,
@@ -17,27 +14,14 @@ from tesseractXplore.constants import (
     THUMBNAIL_SIZE_LG,
 )
 from tesseractXplore.image_glob import get_images_from_paths
-from tesseractXplore.constants import ICONIC_TAXA
 from tesseractXplore.models import Model
 from tesseractXplore.thumbnails import generate_thumbnail_from_url, get_thumbnail_if_exists
-
-# Current organization of altas files by thumb size; this may change in the future
-ATLAS_CATEGORIES = {
-    'small': ATLAS_TAXON_ICONS,
-    'medium': ATLAS_LOCAL_PHOTOS,
-    'large': ATLAS_TAXON_PHOTOS,
-}
-
-PRELOAD_TAXA = ICONIC_TAXA.copy()
-PRELOAD_TAXA[47685] = 'Mycetozoa'
-PRELOAD_TAXA[47120] = 'Arthropoda'
-PRELOAD_TAXA[47273] = 'Elasmobranchii'
-PRELOAD_TAXA[1] = 'animalia'
 
 IMAGE_DOWNLOAD_DELAY = 1
 
 logger = getLogger().getChild(__name__)
 
+# TODO: Atlas not impelemented atm
 
 def get_resource_path_if_exists(atlas_category, id):
     """ If the specified ID exists in the atlas, return the full path """
@@ -60,16 +44,6 @@ def get_atlas(atlas_path):
         atlas = Atlas(f'{atlas_path}.atlas')
         Cache.append('kv.atlas', atlas_path, atlas)
     return atlas
-
-
-def build_model_icon_atlas(dir=THUMBNAILS_DIR):
-    build_atlas(dir, *THUMBNAIL_SIZE_SM, 'model_icons', max_size=ATLAS_MAX_SIZE)
-
-
-# TODO: Aspect ratios vary quite a bit for these. Should divide (or sort?) them by square-ish, landscape, and portrait.
-# Or Maybe just crop them all to be square? (or at most 4:3?)
-def build_model_photo_atlas(dir=THUMBNAILS_DIR):
-    build_atlas(dir, *THUMBNAIL_SIZE_LG, 'model_photos', max_size=ATLAS_MAX_SIZE * 2)
 
 
 def build_local_photo_atlas(dir=THUMBNAILS_DIR):
@@ -218,6 +192,4 @@ def preload_thumnails(model, min_rank='family', depth=0):
 
 if __name__ == '__main__':
     # preload_iconic_taxa_thumbnails()
-    build_model_icon_atlas()
-    build_model_photo_atlas()
     build_local_photo_atlas()

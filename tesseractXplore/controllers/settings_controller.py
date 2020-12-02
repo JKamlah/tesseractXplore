@@ -1,18 +1,20 @@
 from locale import locale_alias, getdefaultlocale
 from logging import getLogger
 from typing import Tuple, List, Dict
+import subprocess
+from pathlib import Path
 
 from kivy.uix.widget import Widget
+from kivy.clock import Clock
 
 from kivymd.app import MDApp
 from tesseractXplore.app import alert
+from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
+from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
 
-from tesseractXplore.constants import PLACES_BASE_URL
 from tesseractXplore.settings import (
     read_settings,
     write_settings,
-    read_stored_taxa,
-    write_stored_taxa,
     reset_defaults,
 )
 
@@ -26,7 +28,14 @@ class SettingsController:
     def __init__(self, settings_screen):
         self.screen = settings_screen
         self.settings_dict = read_settings()
-        self._stored_taxa = read_stored_taxa()
+        # Set tessdatapath
+        if self.settings_dict['tesseract']['tessdatadir'] == '':
+            try:
+                tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"],stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1])
+                self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath.parent)
+            except Exception as e:
+                print(e)
+                pass
 
         # Set default locale if it's unset
         if self.account['locale'] is None:
@@ -47,6 +56,35 @@ class SettingsController:
         }
         self.update_control_widgets()
 
+        # Bind buttons
+        self.screen.cache_size_output.bind(on_release=self.update_cache_sizes)
+        self.screen.clear_stdout_cache_button.bind(on_release=self.clear_stdout_cache)
+        self.screen.clear_thumbnail_cache_button.bind(on_release=self.clear_thumbnail_cache)
+
+        Clock.schedule_once(self.update_cache_sizes, 5)
+
+    def clear_thumbnail_cache(self, *args):
+        logger.info('Settings: Clearing thumbnail cache')
+        delete_thumbnails()
+        self.update_cache_sizes()
+        alert('Cache has been cleared')
+
+    def clear_stdout_cache(self, *args):
+        logger.info('Settings: Clearing stdout cache')
+        clear_stdout_cache()
+        self.update_cache_sizes()
+        alert('Cache has been cleared')
+
+    def update_cache_sizes(self, *args):
+        """Populate 'Cache Size' sections with calculated totals"""
+        out = self.screen.cache_size_output
+
+        out.text = f'Request stdout cache size: {get_stdout_cache_size()}'
+        num_thumbs, thumbnail_total_size = get_thumbnail_cache_size()
+        out.secondary_text = (
+            f'Thumbnail cache size: {num_thumbs} files totaling {thumbnail_total_size}'
+        )
+
     def add_control_widget(self, widget: Widget, setting_name: str, section: str):
         """ Add a control widget from another screen, so its state will be stored with app settings """
         self.controls[setting_name] = widget
@@ -55,14 +93,6 @@ class SettingsController:
         # Initialize section and setting if either have never been set before
         self.settings_dict.setdefault(section, {})
         self.settings_dict[section].setdefault(setting_name, value)
-
-    @property
-    def stored_taxa(self) -> Tuple[List[int], List[int], Dict[int, int]]:
-        return (
-            self._stored_taxa['history'],
-            self._stored_taxa['starred'],
-            self._stored_taxa['frequent'],
-        )
 
     def update_control_widgets(self):
         """ Update state of settings controls in UI with values from settings file """
@@ -81,7 +111,6 @@ class SettingsController:
                     section[setting_name] = value
 
         write_settings(self.settings_dict)
-        write_stored_taxa(self._stored_taxa)
 
     def get_control_value(self, setting_name):
         """ Get the value of the control widget corresponding to a setting """
@@ -103,6 +132,8 @@ class SettingsController:
         control_widget = self.controls[setting_name]
         if hasattr(control_widget, 'active'):
             return control_widget, 'active', bool
+        elif hasattr(control_widget, 'state'):
+            return control_widget, 'state', str
         elif hasattr(control_widget, 'text'):
             return control_widget, 'text', str
         if hasattr(control_widget, 'path'):
