@@ -1,7 +1,7 @@
 from logging import getLogger
 
 from kivy.animation import Animation
-from kivymd.uix.progressbar import MDProgressBar
+from tesseractXplore.widgets.progressbar import MDProgressBar
 
 FINISHED_COLOR = .1, .8, .1, 1
 REMOVED_COLOR = 0, 0, 0, 0
@@ -29,6 +29,7 @@ class LoaderProgressBar(MDProgressBar):
             self.loader.bind(on_progress=self.update)
             self.loader.bind(on_complete=self.finish)
 
+
     def update(self, obj, value):
         """ Update progress value (for simpler event binding/unbinding) """
         self.value = value
@@ -50,5 +51,4 @@ class LoaderProgressBar(MDProgressBar):
         self.color = FINISHED_COLOR
         self.event = Animation(color=REMOVED_COLOR, duration=3, t='out_expo')
         self.event.start(self)
-
 
