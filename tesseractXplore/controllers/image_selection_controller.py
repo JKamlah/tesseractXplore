@@ -170,6 +170,7 @@ class ImageSelectionController(Controller):
         find_file(fname.parent.joinpath(fname.name.rsplit(".",1)[0]+".pdf"), pdf)
         if not pdf:
             alert(f"Couldn't find any matching pdf to {fname.name}")
+            return
         open_pdf(str(Path(pdf[0]).absolute()))
 
 
