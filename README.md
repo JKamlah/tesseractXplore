@@ -64,11 +64,23 @@ Some additional dependencies are required on Windows:
 pip install naturtag[ui-win]
 ```
 
+The standard text render has problems with combinded glyphs, 
+to present them correctly you have to install pango2:
+
+
+1. Install pangoft2 (`apt install libfreetype6-dev libpango1.0-dev
+   libpangoft2-1.0-0`) or ensure it is available in pkg-config
+2. Recompile kivy. Check that pangoft2 is found `use_pangoft2 = 1`
+3. Test it! Enforce the text core renderer to pango using environment variable:
+   `export KIVY_TEXT=pango`
+
+ 
+
 ##  GUI Usage
 
 ### Image Selection and Tagging
 The basic UI components are shown below:
-![Screenshot](assets/screenshots/gui-image-selector.png)
+![Screenshot]
 
 1. Drag & drop images or folders into the window.
 2. Or, select files via the file browser on the right
@@ -103,19 +115,19 @@ and it will be saved in the ★ tab. These items can be re-ordered via **Right-c
 
 ### Metadata
 **Right-click** an image and select **Copy Flickr tags** to copy keyword tags compatible with Flickr.
-![Screenshot](assets/screenshots/gui-image-context-menu.png)
+![Screenshot]
 
 Also, a very simple (and ugly) metadata view is included, mainly for debugging purposes.
 To open it, **Right-click** an image and select **View metadata**.
 
-![Screenshot](assets/screenshots/gui-metadata.png)
+![Screenshot]
 
 ### Settings
 There are also some settings to customize the metadata that your images will be tagged with,
 as well as iNaturalist info used in search filters. And yes, there is a dark mode, because
 why not.
 
-![Screenshot](assets/screenshots/gui-settings.png)
+![Screenshot]
 
 See [CLI Usage](#cli-usage) for more details on these settings.
 

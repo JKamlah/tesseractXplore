@@ -16,9 +16,11 @@ account:
 photos:
   start_dir: '/'
   # Not yet configurable
-  filetypes: ['jpg', 'jpeg', 'png', 'ppm', 'gif', 'tif', 'tiff']
+  filetypes: ['jpg', 'jpeg', 'jp2', 'png', 'ppm', 'gif', 'tif', 'tiff', 'pdf']
 viewer:
   pdfviewer: 'webbrowser'
+imageeditor:
+  ie_thumbnail_size: '1000'
 tesseract:
   model: null
   psm: null
