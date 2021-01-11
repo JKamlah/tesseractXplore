@@ -18,6 +18,9 @@ AUTOCOMPLETE_DELAY = 0.5
 AUTOCOMPLETE_MIN_CHARS = 3
 IMAGE_FILETYPES = ['*ppm', '*.jpg', '*.jpeg', '*.png', '*.gif', '*.tif', '*.tiff']
 
+# PDF utils (for windows user)
+PDF_DIR = join(DATA_DIR, 'pdf')
+
 # Thumnbnail & cache settings
 EXIF_ORIENTATION_ID = '0x0112'
 THUMBNAILS_DIR = join(DATA_DIR, 'thumbnails')
@@ -44,8 +47,8 @@ ATLAS_APP_ICONS = f'{ATLAS_BASE}/app_icons'
 ALL_ATLASES = [ATLAS_APP_ICONS, ATLAS_TAXON_ICONS, ATLAS_TAXON_PHOTOS, ATLAS_LOCAL_PHOTOS]
 
 # Cache settings
-CACHE_PATH = join(DATA_DIR, 'tesseractXplore_api_cache')
-CACHE_BACKEND = 'sqlite'
+CACHE_DIR = join(DATA_DIR, 'stdout')
+#CACHE_BACKEND = 'sqlite'
 
 # Config files
 CONFIG_PATH = join(DATA_DIR, 'settings.yml')
