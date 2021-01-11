@@ -7,7 +7,12 @@ from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller, ImageBatchLoader
 from tesseractXplore.image_glob import get_images_from_paths
 from tesseractXplore.controllers.fulltext_view_controller import find_file
+from tesseractXplore.pdf import open_pdf
+from tesseractXplore.diff_stdout import diff_dialog
 from kivy.core.window import Window
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.textfield import MDTextField
 
 logger = getLogger().getChild(__name__)
 
@@ -28,12 +33,13 @@ class ImageSelectionController(Controller):
         self.context_menu.ids.edit_fulltext_ctx.bind(on_release=self.edit_fulltext)
         self.context_menu.ids.edit_image_ctx.bind(on_release=self.edit_image)
         self.context_menu.ids.remove_ctx.bind(on_release=lambda x: self.remove_image(x.selected_image))
-        self.context_menu.ids.open_pdf_ctx.bind(on_release=self.open_pdf)
+        self.context_menu.ids.open_pdf_ctx.bind(on_release=self.open_pdf_instance)
+        self.context_menu.ids.diff_stdout_ctx.bind(on_release=diff_dialog)
 
         # Other widget events
         self.screen.clear_button.bind(on_release=self.clear)
         self.screen.load_button.bind(on_release=self.add_file_chooser_images)
-        self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection)
+        self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection_dialog)
         self.screen.sort_button.bind(on_release=self.sort_previews)
         self.screen.zoomin_button.bind(on_release=self.zoomin)
         self.screen.zoomout_button.bind(on_release=self.zoomout)
@@ -92,13 +98,39 @@ class ImageSelectionController(Controller):
         # Load and save start dir from file chooser with the rest of the app settings
         get_app().add_control_widget(self.file_chooser, 'start_dir', 'photos')
 
-    def delete_file_chooser_selection(self,*args):
+    def delete_file_chooser_selection_dialog(self,*args):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+        dialog = MDDialog(title="Deletion warning",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=MDTextField(text=f"Do you want to delete:{self.file_chooser.selection}",readonly=True),
+                          buttons=[
+                              MDFlatButton(
+                                  text="DELETE", on_release= self.delete_file_chooser_selection
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        dialog.content_cls.focused = True
+        dialog.open()
+
+    def delete_file_chooser_selection(self, instance, *args):
         for sel in  self.file_chooser.selection:
             if os.path.isfile(sel):
                 os.remove(sel)
             else:
                 shutil.rmtree(sel)
         self.file_chooser._update_files()
+        for file in self.file_list:
+            if not os.path.isfile(file):
+                self.file_list.remove(file)
+                for preview in self.image_previews.children:
+                    if file == preview.original_source:
+                        self.image_previews.remove_widget(preview)
+        instance.parent.parent.parent.parent.dismiss()
 
     def add_file_chooser_images(self, *args):
         """ Add one or more files and/or dirs selected via a FileChooser """
@@ -130,24 +162,16 @@ class ImageSelectionController(Controller):
         loader.start_thread()
 
 
-    def open_pdf(self, instance, *args):
+    def open_pdf_instance(self, instance, *args):
         """ Open a pdf via webbrowser or another external software """
         from pathlib import Path
-        pdfviewer = get_app().settings_controller.pdfviewer
         fname = Path(instance.selected_image.original_source)
-        pdf = find_file(fname.parent.joinpath(fname.name.rsplit(".",1)[0]+".pdf"))
-        if pdf is None:
+        pdf = []
+        find_file(fname.parent.joinpath(fname.name.rsplit(".",1)[0]+".pdf"), pdf)
+        if not pdf:
             alert(f"Couldn't find any matching pdf to {fname.name}")
-        elif pdfviewer == 'webbrowser':
-            import webbrowser
-            webbrowser.open(str(pdf.absolute()))
-        else:
-            import subprocess
-            try:
-                subprocess.run([pdfviewer, str(pdf.absolute())])
-            except:
-                alert(f"Couldn't find: {pdfviewer}")
-                pass
+        open_pdf(str(Path(pdf[0]).absolute()))
+
 
     def open_native_file_chooser(self, dirs=False):
         """ A bit of a hack; uses a hidden tkinter window to open a native file chooser dialog """
@@ -238,6 +262,8 @@ class ImageSelectionController(Controller):
     def edit_image(instance):
         get_app().switch_screen('image')
         get_app().select_image(instance)
+        get_app().image_editor_controller.reset()
+
 
     @staticmethod
     def on_model_id(input):
@@ -254,3 +280,5 @@ class ImageSelectionController(Controller):
     @staticmethod
     def tesseractxplore(instance):
         get_app().switch_screen('tesseractxplore')
+
+

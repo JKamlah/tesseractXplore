@@ -90,6 +90,7 @@ class TesseractController(Controller):
     def recognize_thread(self,instance,*args):
         self.disable_rec(instance, *args)
         self.ocr_event = threading.Thread(target=self.recognize, args=(instance,args))
+        self.ocr_event.setDaemon(True)
         self.ocr_event.start()
 
     def recognize_single_thread(self,instance,*args):
@@ -112,6 +113,7 @@ class TesseractController(Controller):
 
         #metadata_settings = get_app().metadata
         # TODO: Handle write errors (like file locked) and show dialog
+        #file_list = get_app().image_selection_controller
         model = "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip()
         psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
         oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
@@ -137,22 +139,27 @@ class TesseractController(Controller):
         get_app().switch_screen('tessprofiles')
 
     def load_tessprofile(self, tessprofileparams):
-        self.screen.model.set_item(f"Model: {tessprofileparams['model']}")
-        self.screen.psm.set_item(f"PSM: {self.psms[int(tessprofileparams['psm'])-1]}")
-        self.screen.oem.set_item(f"OEM: {self.oems[int(tessprofileparams['oem'])-1]}")
-        for outputformat in tessprofileparams['outputformat'].split(","):
-            self.screen[outputformat.strip()].active = True
+        self.screen.model.set_item(f"Model: {tessprofileparams.get('model', 'eng')}")
+        self.screen.psm.set_item(f"PSM: {self.psms[int(tessprofileparams['psm'])]}")
+        self.screen.oem.set_item(f"OEM: {self.oems[int(tessprofileparams['oem'])]}")
+        for outputformat in ['txt','hocr','alto','pdf','tsv']:
+            if outputformat in tessprofileparams['outputformat']:
+                self.screen[outputformat.strip()].active = True
+            else:
+                self.screen[outputformat.strip()].active = False
         if tessprofileparams['outputdir'] != "":
             self.screen.output.set_item(f"Selected output directory: {tessprofileparams['outputdir']}")
         else:
             self.screen.output.text = ''
             self.screen.output.set_item('')
             self.screen.output.text = f"Select output directory (default: input folder)"
-        self.screen.subfolder_chk.active = bool(tessprofileparams['subfolder'])
+        self.screen.subfolder_chk.active = True if tessprofileparams['subfolder'] == "True" else False
         self.screen.groupfolder.text = tessprofileparams['groupfolder']
         return
 
     def save_tessprofile_dialog(self):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
         dialog = MDDialog(title="Name of the profile",
                           type='custom',
                           auto_dismiss=False,
@@ -254,5 +261,3 @@ class TesseractController(Controller):
             callback=self.set_model
         )
 
-def close_dialog(instance, *args):
-    instance.parent.parent.parent.parent.dismiss()

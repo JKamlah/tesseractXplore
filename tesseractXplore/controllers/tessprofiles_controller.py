@@ -1,5 +1,5 @@
 from logging import getLogger
-from kivymd.uix.list import OneLineListItem, TwoLineAvatarIconListItem, IconRightWidget
+from kivymd.uix.list import OneLineListItem, TwoLineAvatarIconListItem, IconRightWidget, MDList
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
 from kivy.properties import StringProperty
@@ -16,6 +16,7 @@ class TessprofilesController(Controller):
     """ Controller class to manage tessprofiles screen """
     def __init__(self, screen, **kwargs):
         self.screen = screen
+        self.layout = MDList()
 
     def set_profiles(self, text="", search=False):
         """ Lists all tesseract profiles """
@@ -26,8 +27,9 @@ class TessprofilesController(Controller):
                     on_release= partial(self.load_profile, profileparam),
             )
             item.add_widget(IconRightWidget(icon= "trash-can",on_release=partial(self.remove_profile,profile)))
-            self.screen.tessprofilelist.add_widget(item)
+            self.layout.add_widget(item)
 
+        self.layout.clear_widgets()
         self.screen.tessprofilelist.clear_widgets()
         for profilename, profileparam in get_app().tessprofiles.items():
             profileparamstr = ", ".join([f"{k}:{v}" for k, v in profileparam.items()])
@@ -41,6 +43,7 @@ class TessprofilesController(Controller):
                         add_profile(profilename, profileparam, profileparamstr)
             else:
                 add_profile(profilename, profileparam, profileparamstr)
+        self.screen.tessprofilelist.add_widget(self.layout)
 
     def load_profile(self, profileparam, *args):
         """ Apply all settings of the choosen profile to the main window"""

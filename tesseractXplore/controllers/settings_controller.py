@@ -79,7 +79,8 @@ class SettingsController:
         """Populate 'Cache Size' sections with calculated totals"""
         out = self.screen.cache_size_output
 
-        out.text = f'Request stdout cache size: {get_stdout_cache_size()}'
+        num_stdout, stdout_total_size = get_stdout_cache_size()
+        out.text = f'Stdout cache size: {num_stdout} files totaling {stdout_total_size}'
         num_thumbs, thumbnail_total_size = get_thumbnail_cache_size()
         out.secondary_text = (
             f'Thumbnail cache size: {num_thumbs} files totaling {thumbnail_total_size}'

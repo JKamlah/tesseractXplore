@@ -5,7 +5,6 @@ from PIL import Image, ImageEnhance, ImageOps
 from io import BytesIO
 from kivy.uix.image import CoreImage
 
-
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.app.screens import HOME_SCREEN
 
@@ -15,40 +14,65 @@ class ImageEditorController:
     def __init__(self, screen, **kwargs):
         self.screen = screen
         self.image = screen.image
-        self.org_img = None
-        self.new_img = None
+        self.orig_img = None
+        self.orig_thumbnail = None
         #Window.bind(on_dropfile=self.drop_trigger)
+        # Main settings
         self.screen.adjust_button.bind(on_release=self.adjust)
         self.screen.save_button.bind(on_release=self.save)
         self.screen.reset_button.bind(on_release=self.reset)
 
-    def reset(self, instance, *args):
+    def reset(self, *args):
         data = BytesIO()
-        self.orig_img.save(data, format='png')
+        self.orig_thumbnail.save(data, format='png')
         data.seek(0)  # yes you actually need this
         im = CoreImage(BytesIO(data.read()), ext='png')
         self.image.texture = None
         self.image.texture = im.texture
         self.reset_values()
-        self.new_img = self.orig_img
 
     def reset_values(self):
         self.screen.brightness.value = 100
         self.screen.contrast.value = 100
         self.screen.sharpness.value = 0
+        self.screen.rotate.text = '0'
         self.screen.autocontrast_chk.active = False
         self.screen.equalize_chk.active = False
-        self.screen.stack_chk.active = False
+        self.screen.apply_to_selected_chk.active = False
 
     def on_image_click(self, instance, touch):
         """ Event handler for clicking an image """
         if not instance.collide_point(*touch.pos):
             return
 
+    def transpose(self,img):
+        """
+        One of PIL.Image.FLIP_LEFT_RIGHT,
+        PIL.Image.FLIP_TOP_BOTTOM,
+        PIL.Image.ROTATE_90,
+        PIL.Image.ROTATE_180,
+        PIL.Image.ROTATE_270,
+        PIL.Image.TRANSPOSE or PIL.Image.TRANSVERSE.
+        """
+        if self.screen['rotate_left_chk'].state == 'down':
+            img = img.transpose(method=Image.ROTATE_90)
+        elif self.screen['rotate_180_chk'].state == 'down':
+            img = img.transpose(method=Image.ROTATE_180)
+        elif self.screen['rotate_right_chk'].state == 'down':
+            img = img.transpose(method=Image.ROTATE_270)
+        if self.screen['flip_left2right_chk'].state == 'down':
+            img = img.transpose(method=Image.FLIP_LEFT_RIGHT)
+        elif self.screen['flip_top2bottom_chk'].state == 'down':
+            img = img.transpose(method=Image.FLIP_TOP_BOTTOM)
+        return img
+
+
     def adjust(self, instance):
-        img = self.new_img if self.screen.stack_chk.active else self.orig_img
+        img = self.orig_img if self.screen.fullsize_img_chk.active else self.orig_thumbnail
         img = self._adjust(img)
-        self.new_img = img
+        self._update_preview(img)
+
+    def _update_preview(self, img):
         data = BytesIO()
         img.save(data, format='png')
         data.seek(0)  # yes you actually need this
@@ -56,11 +80,13 @@ class ImageEditorController:
         self.image.texture = None
         self.image.texture = im.texture
 
+
     def _adjust(self, img):
         img = ImageEnhance.Brightness(img).enhance(self.screen.brightness.value/100)
         img = ImageEnhance.Contrast(img).enhance(self.screen.contrast.value/100)
         img = ImageEnhance.Sharpness(img).enhance(self.screen.sharpness.value)
-        img = img.rotate(float(self.screen.rotate.text))
+        img = self.transpose(img)
+        img = img.rotate(float(self.screen.rotate.text), expand=True)
         img = ImageOps.crop(img, border=int(self.screen.crop.text))
         if self.screen.autocontrast_chk.active:
             img = ImageOps.autocontrast(image=img)
@@ -78,7 +104,8 @@ class ImageEditorController:
                 self.new_img = self._adjust(self.orig_img)
                 self.new_img.save(str(self._outputpath().joinpath(Path(self.image.source).name)))
         else:
-            self.new_img.save(str(self._outputpath().joinpath(self.screen.imagename.text).absolute()))
+            img = self._adjust(self.orig_img)
+            img.save(str(self._outputpath().joinpath(self.screen.imagename.text).absolute()))
         app.image_selection_controller.file_chooser._update_files()
         app.switch_screen(HOME_SCREEN)
 
@@ -102,10 +129,9 @@ class ImageEditorController:
             self.image.source = image.selected_image.original_source
         self.screen.imagename.text = Path(self.image.source).name
         self.orig_img = Image.open(self.image.source).convert("RGB")
-        self.new_img = self.orig_img
-        #fpath = Path(image.selected_image.original_source)
-        #fdir = fpath.parent
-        #fname = fpath.name.rsplit(".",1)[0]
+        self.orig_thumbnail = self.orig_img.copy()
+        self.thumbnail_size = int(get_app().settings_controller.controls['ie_thumbnail_size'].text)
+        self.orig_thumbnail.thumbnail([self.thumbnail_size, self.thumbnail_size])
 
 
     def on_touch_down(self, touch):
