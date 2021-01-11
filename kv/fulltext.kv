@@ -21,13 +21,13 @@
                         id: textfiles
                         text: ''
                         on_release: app.fulltext_view_controller.textfiles_menu.open()
-                        md_bg_color: 1,0,0,0
+                        md_bg_color: 0,0,0,1
                     MDBoxLayout:
                         size_hint_y: None
                         height: dp(30)
                         spacing: dp(5)
                         MDRaisedButton:
-                            id: save_button
+                            id: save_text_button
                             text: 'Save text'
                             height: dp(30)
                             theme_text_color: 'Primary'
@@ -85,10 +85,26 @@
                         multiline: True
                 Tab:
                     text: 'hOCR'
-                    TextInput:
-                        id: hocr
-                        readonly: True
-                        multiline: True
+                    id: hocr
+                    BoxLayout:
+                        orientation: 'vertical'
+                        MDDropDownItem:
+                            id: hocrfiles
+                            text: ''
+                            on_release: app.fulltext_view_controller.hocrfiles_menu.open()
+                            md_bg_color: 0,0,0,1
+                        MDRaisedButton:
+                            id: save_hocr_button
+                            text: 'Save text'
+                            height: dp(30)
+                            theme_text_color: 'Primary'
+                            md_bg_color: app.theme_cls.primary_dark
+                        ScrollView:
+                            id: hocr_view
+                    #TextInput:
+                    #    id: hocr
+                    #    readonly: True
+                    #    multiline: True
                 Tab:
                     text: 'TSV'
                     TextInput:

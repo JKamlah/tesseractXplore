@@ -19,6 +19,7 @@
             size_hint_x: .4
             size_hint_min_x: 450
             md_bg_color: .1, .1, .1, .9
+
             MDLabel:
                 text: 'Brightness [b][color=b39ddb]' + str(round(root.ids.brightness.value)) + '[/color][/b]'
                 markup: True
@@ -77,7 +78,52 @@
                 input_filter: 'float'
                 text: '0.0'
                 hint_text: 'Angle of rotation'
+            MDLabel:
+                text: 'Fix rotations'
+                id: fixen
+                markup: True
+                halign: 'center'
+                theme_text_color: 'Primary'
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
 
+            MDBoxLayout:
+                orientation: 'horizontal'
+                adaptive_height: True
+                MyToggleButton
+                    text: 'Rotate 90° (left)'
+                    id: rotate_left_chk
+                    group: 'rotate'
+                    width: dp(8)
+                MyToggleButton:
+                    text: 'Rotate 180°'
+                    id: rotate_180_chk
+                    group: 'rotate'
+                    width: dp(8)
+                MyToggleButton:
+                    text: 'Rotate 90° (right)'
+                    id: rotate_right_chk
+                    group: 'rotate'
+                    width: dp(8)
+            MDLabel:
+                text: 'Flip'
+                markup: True
+                halign: 'center'
+                theme_text_color: 'Primary'
+                #pos_hint: {'center_x':0.1, 'center_y': 0.3}
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                adaptive_height: True
+                MyToggleButton
+                    text: 'Flip left to right'
+                    id: flip_left2right_chk
+                    group: 'flip'
+                    width: dp(8)
+                MyToggleButton:
+                    text: 'Flip top to bottom'
+                    id: flip_top2bottom_chk
+                    group: 'flip'
+                    width: dp(8)
             MDTextField:
                 id: crop
                 input_filter: 'int'
@@ -94,18 +140,18 @@
                 SwitchListItem:
                     id: equalize_chk
             OneLineAvatarIconListItem:
-                text: 'Stack actions'
+                text: 'Apply to all selected images'
                 SwitchListItem:
-                    id: stack_chk
+                    id: apply_to_selected_chk
 
 
-
+            # TODO: Not used atm
             OneLineAvatarIconListItem:
-                text: 'Apply to all selected images (if no output folder is set, images get overwritten!)'
+                text: 'Use fullsize image'
                 height: dp(50)
                 #width: dp(400)
                 SwitchListItem:
-                    id: apply_to_selected_chk
+                    id: fullsize_img_chk
 
             MDTextField:
                 id: outputfolder

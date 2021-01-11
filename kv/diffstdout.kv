@@ -1,0 +1,18 @@
+<DiffStdoutScreen>:
+    name: 'diffstdout'
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            Zoom:
+                Image:
+                    id: image
+                    allow_stretch: True
+                    keep_ratio: True
+                    size: self.parent.size
+            ScrollView:
+                id: scrollview
+                background_color: app.theme_cls.primary_color
+
+        StatusBar:
+            id: status_bar
