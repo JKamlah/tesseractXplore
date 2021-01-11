@@ -143,6 +143,10 @@ class TesseractXplore(MDApp, ControllerProxy):
 
 
     def build(self):
+        # Set color palette
+        self.theme_cls.primary_palette = MD_PRIMARY_PALETTE
+        self.theme_cls.accent_palette = MD_ACCENT_PALETTE
+
         # Create an event loop to be used by background loaders
         self.bg_loop = asyncio.new_event_loop()
         # Need this to get killed when app closes
@@ -175,8 +179,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         Window.size = INIT_WINDOW_SIZE
         Window.bind(on_keyboard=self.on_keyboard)
         Window.bind(on_request_close=self.on_request_close)
-        self.theme_cls.primary_palette = MD_PRIMARY_PALETTE
-        self.theme_cls.accent_palette = MD_ACCENT_PALETTE
+
 
         # On_dropfile sends a single file at a time; this collects files dropped at the same time
         Window.bind(on_dropfile=lambda _, path: self.dropped_files.append(path))

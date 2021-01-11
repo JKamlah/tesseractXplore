@@ -244,7 +244,7 @@ class TesseractController(Controller):
         '''
 
         self.selected_output_folder = path
-        self.screen.output.text = f"Selected output directoy: {path}"
+        self.screen.output.text = f"Selected output directory: {path}"
         self.exit_output_manager()
 
     def select_output_folder(self):
