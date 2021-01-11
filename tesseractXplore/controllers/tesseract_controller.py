@@ -235,14 +235,14 @@ class TesseractController(Controller):
         self.screen.oem.set_item(instance.text)
         self.oem_menu.dismiss()
 
-    def select_output(self, path):
+    def select_output(self, path=None):
         '''It will be called when you click on the file name
         or the catalog selection button.
 
         :type path: str;
         :param path: path to the selected directory or file;
         '''
-
+        if path is None: return
         self.selected_output_folder = path
         self.screen.output.text = f"Selected output directory: {path}"
         self.exit_output_manager()
@@ -250,6 +250,7 @@ class TesseractController(Controller):
     def select_output_folder(self):
         self.output_manager.show("/")
 
-    def exit_output_manager(self):
+
+    def exit_output_manager(self,*args):
         '''Called when the user reaches the root of the directory tree.'''
         self.output_manager.close()

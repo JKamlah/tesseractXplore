@@ -44,7 +44,7 @@
                     MDBoxLayout:
                         size_hint_y: 0.9
                         size_hint_min_y: 120
-
+                        md_bg_color: .1, .1, .1, .1
                         MDGridLayout:
                             cols: 1
                             spacing: dp(4)
@@ -158,7 +158,8 @@
                         OneLineListItem:
                             font_style: 'H5'
                             markup: True
-                            text: '[size=21]Image [b]Selection[/b][/size]'
+                            text: '[color=#ffffff][size=21]Image [b]Selection[/b][/size][/color]'
+                            text_color: 'Primary'
 
                         FileChooserListView:
                             id: file_chooser
