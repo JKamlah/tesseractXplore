@@ -3,6 +3,7 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from tesseractXplore.stdout_cache import read_stdout_cache
 from kivymd.uix.list import MDList, OneLineListItem
+from tesseractXplore.app import alert
 from functools import partial
 
 def close_dialog(instance, *args):
@@ -11,8 +12,10 @@ def close_dialog(instance, *args):
 def diff_dialog(instance, *args):
     image = instance.selected_image.original_source
     stdout_cache = read_stdout_cache(image)
-
     layout = MDList()
+    if len(stdout_cache.keys()) == 0:
+        alert("No stdout text available.")
+        return
     item = OneLineListItem(
         id= "First_text",
         text="Select first text",
@@ -28,7 +31,6 @@ def diff_dialog(instance, *args):
     dialog = MDDialog(title="Compare stdouts",
                       type='custom',
                       auto_dismiss=False,
-                      text="TEST1",
                       content_cls=layout,
                       buttons=[
                           MDFlatButton(
