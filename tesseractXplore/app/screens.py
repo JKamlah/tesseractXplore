@@ -47,6 +47,9 @@ class ImageEditorScreen(MDScreen):
 class ModelScreen(MDScreen):
     pass
 
+class DiffStdoutScreen(MDScreen):
+    pass
+
 class GTScreen(MDScreen):
     pass
 
@@ -60,6 +63,8 @@ SCREENS = {
     'modellist': ModelListScreen,
     'tessprofiles': TessprofilesScreen,
     'groundtruth': GTScreen,
+    'diffstdout': DiffStdoutScreen,
+
 }
 
 

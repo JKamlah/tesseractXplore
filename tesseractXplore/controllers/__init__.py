@@ -15,3 +15,4 @@ from tesseractXplore.controllers.model_view_controller import ModelViewControlle
 from tesseractXplore.controllers.modellist_controller import ModelListController
 from tesseractXplore.controllers.tessprofiles_controller import TessprofilesController
 from tesseractXplore.controllers.tesseract_controller import TesseractController
+from tesseractXplore.controllers.diffstdout_controller import DiffStdoutController

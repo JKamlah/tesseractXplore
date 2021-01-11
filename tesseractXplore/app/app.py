@@ -54,6 +54,7 @@ from tesseractXplore.controllers import (
     ModelViewController,
     TessprofilesController,
     TesseractController,
+    DiffStdoutController,
 )
 from tesseractXplore.widgets import ModelListItem
 
@@ -74,6 +75,8 @@ class ControllerProxy:
     modellist_controller = ObjectProperty()
     tessprofiles_controller = ObjectProperty()
     settings_controller = ObjectProperty()
+    diffstdout_controller = ObjectProperty()
+
 
     def init_controllers(self, screens):
         # Init controllers with references to nested screen objects
@@ -88,6 +91,7 @@ class ControllerProxy:
         self.modellist_controller = ModelListController(screens['modellist'].ids)
         self.tessprofiles_controller = TessprofilesController(screens['tessprofiles'].ids)
         self.model_search_controller = ModelSearchController(screens['model'].ids)
+        self.diffstdout_controller = DiffStdoutController(screens['diffstdout'].ids)
         # gt_search_controller = GTSearchController(screens['gt'].ids)
 
         # Proxy methods
