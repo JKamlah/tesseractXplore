@@ -2,14 +2,18 @@
 from tesseractXplore.models.meta_metadata import MetaMetadata
 from tesseractXplore.widgets import LoaderProgressBar
 from tesseractXplore.app import alert, get_app
+from tesseractXplore.stdout_cache import write_stdout_cache
+from tesseractXplore.evaluate import evaluate_report
 
 from pathlib import Path
+from functools import partial
 from subprocess import PIPE, Popen
 from shutil import move
 import time
 from kivymd.toast import toast
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
+from kivymd.uix.textfield import MDTextField
 from kivy.uix.textinput import TextInput
 
 def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_folder=None, outputformats=None, subfolder=False, groupfolder=""):
@@ -19,7 +23,6 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
     # TODO: Simplify this a bit
     all_metadata = []
     outputs = []
-    idx = -1
     app = get_app()
     pb = LoaderProgressBar(color=get_app().theme_cls.primary_color)
     pb.value = 0
@@ -51,11 +54,18 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
         stdout, stderr = p1.communicate()
         stdout = str(stdout.decode("utf-8"))
         if not outputformats:
-            dialog = MDDialog(title=Path(image).name,
+            pimage= Path(image)
+            dialog = MDDialog(title=pimage.name,
                      type='custom',
                      auto_dismiss=False,
-                     content_cls=TextInput(text=stdout, height=400,readonly=True),
+                     content_cls=TextInput(text=stdout, height=800,readonly=True),
                      buttons=[
+                         MDFlatButton(
+                             text="EVALUATE", on_release=partial(evaluate_report, stdout)
+                         ),
+                         MDFlatButton(
+                             text="SAVE", on_release=partial(cache_stdout_dialog, pimage,stdout, params)
+                         ),
                         MDFlatButton(
                             text="DISCARD", on_release=close_dialog
                         ),
@@ -66,9 +76,6 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
             time.sleep(1)
             dialog.content_cls.cursor = (0, 0)
             dialog.open()
-
-
-
         else:
             # TODO: Make it less ugly
             new_path = image_path.parent
@@ -99,6 +106,31 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
 def close_dialog(instance, *args):
     instance.parent.parent.parent.parent.dismiss()
 
+def cache_stdout_dialog(image: Path, text: str, params: list, instance, *args):
+    instance.parent.parent.parent.parent.dismiss()
+    dialog = MDDialog(title=image.name,
+                      type='custom',
+                      auto_dismiss=False,
+                      content_cls=MDTextField(text=""),
+                      buttons=[
+                          MDFlatButton(
+                              text="SAVE", on_release=partial(cache_stdout,image,text,params)
+                          ),
+                          MDFlatButton(
+                              text="DISCARD", on_release=close_dialog
+                          ),
+                      ],
+                      )
+    dialog.content_cls.focused = True
+    dialog.open()
+
+
+
+
+def cache_stdout(image, text, params, instance, *args):
+    id = instance.parent.parent.parent.parent.content_cls.text
+    write_stdout_cache(image,id,text, params)
+    instance.parent.parent.parent.parent.dismiss()
 
 def tag_image(image_path, keywords):
     metadata = MetaMetadata(image_path)
