@@ -81,37 +81,25 @@
                                     MDLabel:
                                         text: ' Select Ouputformat (default: stdout)'
                                         theme_text_color: 'Primary'
+
                                 MDBoxLayout:
                                     orientation: 'horizontal'
                                     adaptive_height: True
-                                    ItemLabel:
-                                        text: 'TXT '
-                                    MDSwitch:
+                                    MyToggleButton:
+                                        text:'TXT'
                                         id: txt
-                                        width: dp(8)
-                                    ItemLabel:
-                                        text: 'HOCR '
-                                    MDSwitch:
+                                    MyToggleButton:
+                                        text:'HOCR'
                                         id: hocr
-                                        width: dp(8)
-                                    ItemLabel:
-                                        text: 'ALTO '
-                                    MDSwitch:
+                                    MyToggleButton:
+                                        text:'ALTO'
                                         id: alto
-                                        width: dp(8)
-                                    ItemLabel:
-                                        text: 'PDF '
-                                    MDSwitch:
+                                    MyToggleButton:
+                                        text:'PDF'
                                         id: pdf
-                                        width: dp(8)
-                                    ItemLabel:
-                                        text: 'TSV '
-                                    MDSwitch:
+                                    MyToggleButton:
+                                        text:'TSV'
                                         id: tsv
-                                        halign: 'center'
-                                        width: dp(8)
-                                    ItemLabel:
-                                        text: ''
                             MDDropDownItem:
                                 id: output
                                 text: 'Select output directoy (default: input directory)'

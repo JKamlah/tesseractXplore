@@ -60,16 +60,16 @@ class TesseractController(Controller):
 
         # Init dropdownsettingsmenu
         # TODO: Rework this mess
-        menu_items = [
-            {
-                "icon": "git",
-                "text": f"Item {i}",
-            }
-            for i in range(5)
-        ]
-        self.settings_menu = MDDropdownMenu(
-            caller=screen.settings_menu, items=menu_items, width_mult=4
-        )
+        # menu_items = [
+        #     {
+        #         "icon": "git",
+        #         "text": f"Item {i}",
+        #     }
+        #     for i in range(5)
+        # ]
+        # self.settings_menu = MDDropdownMenu(
+        #     caller=screen.settings_menu, items=menu_items, width_mult=4
+        # )
         # Init dropdownmenu
         #psms = [line for line in check_output(["tesseract", "--help-psm"]).decode('utf-8').splitlines()[1:] if
         #        line.strip() != ""]
@@ -117,7 +117,7 @@ class TesseractController(Controller):
         model = "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip()
         psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
         oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
-        outputformats = [format for format in ['txt','hocr','alto','pdf','tsv'] if self.screen[format].active]
+        outputformats = self.active_outputformats()
         groupfolder = self.screen.groupfolder.text
         subfolder = self.screen.subfolder_chk.active
         proc_files, outputnames = recognize(file_list, model=model ,psm=psm, oem=oem, tessdatadir=get_app().tessdatadir, output_folder=self.selected_output_folder, outputformats=outputformats, subfolder=subfolder,groupfolder=groupfolder)
@@ -130,6 +130,9 @@ class TesseractController(Controller):
         #previews = {img.metadata.image_path: img for img in get_app().image_selection_controller.image_previews.children}
         #for metadata in all_metadata:
         #    previews[metadata.image_path].metadata = metadata
+
+    def active_outputformats(self):
+        return [outputformat for outputformat in ['txt','hocr','alto','pdf','tsv'] if self.screen[outputformat].state=='down']
 
     def on_tesssettings_click(self, *args):
         self.tessprofile_menu.show(*get_app().root_window.mouse_pos)
@@ -144,9 +147,9 @@ class TesseractController(Controller):
         self.screen.oem.set_item(f"OEM: {self.oems[int(tessprofileparams['oem'])]}")
         for outputformat in ['txt','hocr','alto','pdf','tsv']:
             if outputformat in tessprofileparams['outputformat']:
-                self.screen[outputformat.strip()].active = True
+                self.screen[outputformat.strip()].state = 'down'
             else:
-                self.screen[outputformat.strip()].active = False
+                self.screen[outputformat.strip()].state = 'normal'
         if tessprofileparams['outputdir'] != "":
             self.screen.output.set_item(f"Selected output directory: {tessprofileparams['outputdir']}")
         else:
@@ -183,7 +186,7 @@ class TesseractController(Controller):
                 "model": self.screen.model.current_item.split(" ")[1] if self.screen.model.current_item.split(" ")[0] == "Model:" else "eng",
                 "psm": "".join([char for char in self.screen.psm.text if char.isdigit()]),
                 "oem": "".join([char for char in self.screen.oem.text if char.isdigit()]),
-                "outputformat": " ,".join([outputformat for outputformat in ['txt','hocr','alto','pdf','tsv'] if self.screen[outputformat].active]),
+                "outputformat": self.active_outputformats(),
                 "outputdir": "" if self.screen.output.text.split(" ")[0] != "Selected" else self.screen.output.text.split(" ")[3],
                 "groupfolder": self.screen.groupfolder.text,
                 "subfolder": str(self.screen.subfolder_chk.active)
@@ -210,11 +213,11 @@ class TesseractController(Controller):
         instance.text = instance.text[:-1]
 
     def reset_ouputformat(self):
-        self.screen.txt.active = False
-        self.screen.alto.active = False
-        self.screen.hocr.active = False
-        self.screen.pdf.active = False
-        self.screen.tsv.active = False
+        self.screen.txt.state = 'normal'
+        self.screen.alto.state = 'normal'
+        self.screen.hocr.state = 'normal'
+        self.screen.pdf.state = 'normal'
+        self.screen.tsv.state = 'normal'
 
     def create_dropdown(self, caller, item, callback):
         return MDDropdownMenu(caller=caller,
@@ -250,14 +253,3 @@ class TesseractController(Controller):
     def exit_output_manager(self):
         '''Called when the user reaches the root of the directory tree.'''
         self.output_manager.close()
-
-    def show_example_grid_bottom_sheet(self):
-        from kivymd.uix.bottomsheet import MDGridBottomSheet
-
-        bs_menu = MDGridBottomSheet()
-        bs_menu.add_item(
-            "Facebook",
-            icon_src="play",
-            callback=self.set_model
-        )
-
