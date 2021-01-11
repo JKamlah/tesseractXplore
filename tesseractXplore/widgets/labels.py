@@ -1,6 +1,11 @@
 from kivy.properties import ListProperty
 from kivymd.uix.label import MDLabel
 from tesseractXplore.widgets.tooltip import MDTooltip
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton, ButtonBehavior
+from kivymd.uix.behaviors import RectangularRippleBehavior
+from kivy.properties import OptionProperty, ObjectProperty, \
+    BooleanProperty, NumericProperty
 
 
 # TODO: Debug root cause of rogue tooltips!
@@ -16,6 +21,23 @@ class HideableTooltip(MDTooltip):
     def on_mouse_pos(self, *args):
         if self.is_visible_callback():
             super().on_mouse_pos(*args)
+
+class HOCRLabel(RectangularRippleBehavior, ButtonBehavior,MDLabel):
+    """ Label class with tooltip behavior """
+    # Bug workaround; a fix has been committed, but not released
+    _no_ripple_effect = BooleanProperty(False)
+    def __init__(self,par_id,line_id,text,bbox,**kwargs):
+        self.par_id = par_id
+        self.line_id = line_id
+        self.bbox = bbox
+        self.edited = False
+        kwargs['text'] = text
+        super().__init__(**kwargs)
+
+
+    def close_dialog(self, instance, *args):
+        instance.parent.parent.parent.parent.dismiss()
+
 
 
 class TooltipLabel(MDLabel, MDTooltip):

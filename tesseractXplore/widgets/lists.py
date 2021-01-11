@@ -10,7 +10,7 @@ from kivymd.uix.selectioncontrol import MDCheckbox
 
 from tesseractXplore.app import alert
 from tesseractXplore.models import Model
-from tesseractXplore.widgets import CachedAsyncImage, Tab
+from tesseractXplore.widgets.images import CachedAsyncImage
 
 
 class SortableList(MDList):
