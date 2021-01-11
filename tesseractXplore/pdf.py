@@ -35,9 +35,14 @@ def pdf_dialog(pdfpath):
         pdfinfos = re.sub(r' +', ' ', pdfinfos)
         pdfinfos = pdfinfos.split("\n")[2:-1]
         pages = str(len(pdfinfos))
-        dpis = [pdfinfo.split(" ")[-3] for pdfinfo in pdfinfos]
-        from collections import Counter
-        dpi = Counter(dpis).most_common(1)[0][0]
+        if pages != "0":
+            dpis = [pdfinfo.split(" ")[-3] for pdfinfo in pdfinfos]
+            from collections import Counter
+            dpi = Counter(dpis).most_common(1)[0][0]
+        else:
+            pdfinfos = check_output(["pdfinfo", pdfpath]).decode('utf-8')
+            pages = pdfinfos.split("\n")[9].split(": ")[-1].strip()
+            dpi = 300
     else:
         pages = ""
     layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
@@ -50,12 +55,18 @@ def pdf_dialog(pdfpath):
     from kivymd.uix.boxlayout import MDBoxLayout
     from tesseractXplore.widgets import MyToggleButton
     boxlayout = MDBoxLayout(id="fileformat",orientation="horizontal", adaptive_height=True)
-    boxlayout.add_widget(MyToggleButton(text="jpg",group="imageformat"))
+    boxlayout.add_widget(MyToggleButton(text="jpeg",group="imageformat"))
     boxlayout.add_widget(MyToggleButton(text="jp2", group="imageformat"))
-    defaulttoggle =  MyToggleButton(text="ppm", group="imageformat")
+    defaulttoggle = MyToggleButton(text="ppm", group="imageformat")
     boxlayout.add_widget(defaulttoggle)
     boxlayout.add_widget(MyToggleButton(text="png", group="imageformat"))
     boxlayout.add_widget(MyToggleButton(text="tiff", group="imageformat"))
+    layout.add_widget(boxlayout)
+    layout.add_widget(OneLineListItem(text='Process to convert PDF to images'))
+    boxlayout = MDBoxLayout(id="converting", orientation="horizontal", adaptive_height=True)
+    boxlayout.add_widget(MyToggleButton(text="rendering", group="converting"))
+    defaulttoggle = MyToggleButton(text="extraction", group="converting")
+    boxlayout.add_widget(defaulttoggle)
     layout.add_widget(boxlayout)
     #layout.add_widget(MDTextField(id="fileformat", text="jpg", hint_text="Fileformat", height=400))
     pagenumbers = OneLineAvatarListItem(id='include_pagenumber',text='Include page numbers in output file names')
@@ -114,11 +125,13 @@ def pdfimages(pdfpath, instance, *args):
     makedirs(pdfdir, exist_ok=True)
     params = []
     children =  instance.parent.parent.parent.parent.content_cls.children
+    process = "pdfimages"
     for child in children:
         if child.id == "fileformat":
             for fileformat in child.children:
                 if fileformat.state == 'down':
-                    fileformat.text = "j" if fileformat.text == "jpg" else fileformat.text
+                    fileformat.text = "j" if fileformat.text == "jpg" and process == "pdfimages" else fileformat.text
+                    fileformat.text = "jpeg" if fileformat.text == "jp2" and process == "pdfimages" else fileformat.text
                     params.extend([f"-{fileformat.text}"])
         if child.id == "first" and child.text != "":
             params.extend(["-f", child.text])
@@ -126,7 +139,14 @@ def pdfimages(pdfpath, instance, *args):
             params.extend(["-l", child.text])
         if child.id == "include_pagenumber" and child.ids['_left_container'].children[0].active:
             params.extend(["-p"])
-    p1 = Popen(["pdfimages", *params, pdfpath, pdfdir.joinpath(pdfdir.name)])
+        if child.id == "converting":
+            for convprocess in child.children:
+                if convprocess.state == 'down':
+                    if convprocess.text == "rendering":
+                        process = "pdftoppm"
+                    else:
+                        process = "pdfimages"
+    p1 = Popen([process, *params, pdfpath, pdfdir.joinpath(pdfdir.name)])
     p1.communicate()
     get_app().image_selection_controller.file_chooser._update_files()
     get_app().image_selection_controller.add_images([pdfdir])
@@ -138,7 +158,7 @@ def extract_pdf(pdfpath):
             pdf_dialog(pdfpath)
             return pdfpath.split(".")[0]
         else:
-            toast("Please install poppler-utils to work with pdf")
+            toast("Please install poppler-utils to work convert PDFs to images")
     else:
         pdftoolpath = Path(PDF_DIR)
         if not pdftoolpath.exists():
