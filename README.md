@@ -29,7 +29,7 @@ some extras.
 
 ```
 Application features
-    ┣━ OCR images (single or batchwise)
+    ┣━ Do OCR (single or batchwise)
     ┣━ Save/Load tesseract settings
     ┣━ Open PDFs with external applications (Webbrowser,..) 
     ┣━ Convert PDF to images 
@@ -106,9 +106,9 @@ to do that an alternative text renderer needs to be used e.g. pango2:
 
 ##  GUI Usage
 
-### Image Selection and Tagging
+### Image Selection and OCR 
 The basic UI components are shown below:
-![Screenshot]
+![Screenshot](assets/screenshots/tesseractXplore.png)
 
 1. Drag & drop images or folders into the window.
 2. Or, select files via the file browser on the right
@@ -118,31 +118,37 @@ The basic UI components are shown below:
 Other things to do:
 * **Middle-click** an image to remove it
 * **Right-click** an image for a menu of more actions
+![Screenshot](assets/screenshots/image_context_menu.png)
 
 ### Save, load and reset tesseract settings
+![Screenshot](assets/screenshots/tesseract_settings_context_menu.png)
+
 Sometimes it can be handy to have settings profiles like for historical documents with just one column.
 The application allows to save settings into a profile with an individual name.
-To search and load user stored profiles.
-And to reset the settings to default.
+To reset the settings to default or to search and load user stored profiles.
+![Screenshot](assets/screenshots/loading_tesseract_settings.png)
+
 
 ### Model Search
 If you don't have a suitable model, click the 'Find a new model' button to go to the model
 search screen. You can start with searching by name, with autocompletion support:
 
-![Screenshot](assets/screenshots/gui-model-search.png)
+![Screenshot](assets/screenshots/tesseract_model_search_auto.png)
 
 You can also run a full search using the additional filters. For example, with group attributes (tessdata,..), 
 tags (medival) or select the model type (Fast/Best) or category (Language/Script):
 
-![Screenshot](assets/screenshots/gui-model-search-results.png)
+![Screenshot](assets/screenshots/tesseract_model_search_filter.png)
+
+On the right side of the window is an information page with download option.
+
+![Screenshot](assets/screenshots/tesseract_model_search.png)
 
 ### Settings
 There are also some settings to customize the application and global parameters.
 And yes, there is a dark mode, because why not.
 
 ![Screenshot]
-
-See [CLI Usage](#cli-usage) for more details on these settings.
 
 ### Keyboard Shortcuts
 Some keyboard shortcuts are included for convenience:
