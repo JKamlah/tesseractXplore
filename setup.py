@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 from tesseractXplore import __version__
 
 extras_require = {
-    'app': ['kivy>=1.11', 'kivymd~=0.104.1', 'kivy-garden.contextmenu', 'pygments'],
+    'app': ['kivy==1.11.1', 'kivymd==0.104.1', 'kivy-garden.contextmenu', 'pygments'],
     'dev': [
         'black',
         'kivy_examples',
