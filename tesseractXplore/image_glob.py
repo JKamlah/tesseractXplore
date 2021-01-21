@@ -1,11 +1,11 @@
-from glob import glob
 from fnmatch import fnmatch
+from glob import glob
 from itertools import chain
 from logging import getLogger
 from os.path import expanduser, isdir, isfile, join
 from typing import List, Union
-from tesseractXplore.constants import IMAGE_FILETYPES
 
+from tesseractXplore.constants import IMAGE_FILETYPES
 
 logger = getLogger().getChild(__name__)
 
@@ -62,7 +62,6 @@ def get_images_from_paths(paths: Union[str, List[str]], recursive: bool = False)
         if isfile(path) and path[-4:] == '.pdf':
             from tesseractXplore.pdf import extract_pdf
             path = extract_pdf(path)
-        from subprocess import getstatusoutput
         if isinstance(path, bytes):
             path = path.decode('utf-8')
         if isdir(path):

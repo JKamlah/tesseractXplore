@@ -1,22 +1,25 @@
-import os
 import glob
-from pathlib import Path
-from PIL import Image, ImageEnhance, ImageOps
+import os
 from io import BytesIO
+from pathlib import Path
+
+from PIL import Image, ImageEnhance, ImageOps
 from kivy.uix.image import CoreImage
 
-from tesseractXplore.app import alert, get_app
+from tesseractXplore.app import get_app
 from tesseractXplore.app.screens import HOME_SCREEN
+
 
 # TODO: This screen is pretty ugly.
 class ImageEditorController:
     """ Controller class to manage image metadata screen """
+
     def __init__(self, screen, **kwargs):
         self.screen = screen
         self.image = screen.image
         self.orig_img = None
         self.orig_thumbnail = None
-        #Window.bind(on_dropfile=self.drop_trigger)
+        # Window.bind(on_dropfile=self.drop_trigger)
         # Main settings
         self.screen.adjust_button.bind(on_release=self.adjust)
         self.screen.save_button.bind(on_release=self.save)
@@ -45,7 +48,7 @@ class ImageEditorController:
         if not instance.collide_point(*touch.pos):
             return
 
-    def transpose(self,img):
+    def transpose(self, img):
         """
         One of PIL.Image.FLIP_LEFT_RIGHT,
         PIL.Image.FLIP_TOP_BOTTOM,
@@ -66,7 +69,6 @@ class ImageEditorController:
             img = img.transpose(method=Image.FLIP_TOP_BOTTOM)
         return img
 
-
     def adjust(self, instance):
         img = self.orig_img if self.screen.fullsize_img_chk.active else self.orig_thumbnail
         img = self._adjust(img)
@@ -80,10 +82,9 @@ class ImageEditorController:
         self.image.texture = None
         self.image.texture = im.texture
 
-
     def _adjust(self, img):
-        img = ImageEnhance.Brightness(img).enhance(self.screen.brightness.value/100)
-        img = ImageEnhance.Contrast(img).enhance(self.screen.contrast.value/100)
+        img = ImageEnhance.Brightness(img).enhance(self.screen.brightness.value / 100)
+        img = ImageEnhance.Contrast(img).enhance(self.screen.contrast.value / 100)
         img = ImageEnhance.Sharpness(img).enhance(self.screen.sharpness.value)
         img = self.transpose(img)
         img = img.rotate(float(self.screen.rotate.text), expand=True)
@@ -118,7 +119,6 @@ class ImageEditorController:
             outputpath = Path(self.image.source).parent
         return outputpath
 
-
     def _save_image(self, image, outputpath):
         self.new_img.save(str(Path(self.image.source).parent.joinpath(self.screen.imagename.text).absolute()))
 
@@ -133,7 +133,6 @@ class ImageEditorController:
         self.thumbnail_size = int(get_app().settings_controller.controls['ie_thumbnail_size'].text)
         self.orig_thumbnail.thumbnail([self.thumbnail_size, self.thumbnail_size])
 
-
     def on_touch_down(self, touch):
         # Override Scatter's `on_touch_down` behavior for mouse scrolli
         if touch.is_mouse_scrolling:
@@ -144,8 +143,8 @@ class ImageEditorController:
                 if self.scale > 1:
                     self.scale = self.scale * 0.8
         # If some other kind of "touch": Fall back on Scatter's behavior
-        #else:
-            #super(ResizableDraggablePicture, self).on_touch_down(touch)
+        # else:
+        # super(ResizableDraggablePicture, self).on_touch_down(touch)
 
     def switch_tab(self):
         '''Switching the tab by name.'''
@@ -162,11 +161,13 @@ def read_file(fname):
     else:
         return ""
 
+
 def find_file(fname):
     app = get_app()
-    #if outputfolder
-    if app.tesseract_controller.selected_output_folder and Path(app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
-        return os.path.join(app.tesseract_controller.selected_output_foldier,fname)
+    # if outputfolder
+    if app.tesseract_controller.selected_output_folder and Path(
+            app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
+        return os.path.join(app.tesseract_controller.selected_output_foldier, fname)
     # else check cwd folder
     elif fname.is_file():
         return fname

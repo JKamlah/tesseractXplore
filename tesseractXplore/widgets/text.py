@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-from kivy.uix.textinput import TextInput
 '''
 Text Input
 ==========
@@ -155,23 +154,20 @@ from kivy.base import EventLoop
 from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.config import Config
-from kivy.metrics import inch
-from kivy.utils import boundary, platform
-from kivy.uix.behaviors import FocusBehavior
-
 from kivy.core.text import Label, DEFAULT_FONT
 from kivy.graphics import Color, Rectangle, PushMatrix, PopMatrix, Callback
 from kivy.graphics.context_instructions import Transform
 from kivy.graphics.texture import Texture
-
-from kivy.uix.widget import Widget
-from kivy.uix.bubble import Bubble
-from kivy.uix.behaviors import ButtonBehavior
-from kivy.uix.image import Image
-
+from kivy.metrics import inch
 from kivy.properties import StringProperty, NumericProperty, \
     BooleanProperty, AliasProperty, OptionProperty, \
     ListProperty, ObjectProperty, VariableListProperty
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.behaviors import FocusBehavior
+from kivy.uix.bubble import Bubble
+from kivy.uix.image import Image
+from kivy.uix.widget import Widget
+from kivy.utils import boundary, platform
 
 Cache_register = Cache.register
 Cache_append = Cache.append
@@ -1732,7 +1728,7 @@ class TextInputOCR(FocusBehavior, Widget):
     def _ensure_clipboard(self):
         global Clipboard, CutBuffer
         if not Clipboard:
-            from kivy.core.clipboard import Clipboard, CutBuffer
+            from kivy.core.clipboard import Clipboard
 
     def cut(self):
         ''' Copy current selection to clipboard then delete it from TextInputOCR.

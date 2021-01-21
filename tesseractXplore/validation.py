@@ -1,7 +1,8 @@
 """Type conversion, validation, and formatting utilities"""
 from datetime import datetime
-from dateutil.parser import parse as parse_date
 from typing import Any, Dict, Optional, Tuple
+
+from dateutil.parser import parse as parse_date
 
 
 def convert_float(value: Any) -> Optional[float]:

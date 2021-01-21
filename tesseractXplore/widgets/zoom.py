@@ -1,6 +1,7 @@
-from kivy.uix.scatterlayout import ScatterLayout
-from kivy.uix.scatter import Scatter
 from kivy.graphics.transformation import Matrix
+from kivy.uix.scatter import Scatter
+from kivy.uix.scatterlayout import ScatterLayout
+
 
 ###########################################################################
 ## Modified from: https://github.com/kivy/kivy/wiki/Draggable-Scalable-Button

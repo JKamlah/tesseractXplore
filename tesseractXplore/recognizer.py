@@ -1,22 +1,25 @@
 """ Combined entry point for both CLI and GUI """
-from tesseractXplore.models.meta_metadata import MetaMetadata
-from tesseractXplore.widgets import LoaderProgressBar
-from tesseractXplore.app import alert, get_app
-from tesseractXplore.stdout_cache import write_stdout_cache
-from tesseractXplore.evaluate import evaluate_report
-
-from pathlib import Path
-from functools import partial
-from subprocess import PIPE, Popen
-from shutil import move
 import time
-from kivymd.toast import toast
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.textfield import MDTextField
-from kivy.uix.textinput import TextInput
+from functools import partial
+from pathlib import Path
+from shutil import move
+from subprocess import PIPE, Popen
 
-def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_folder=None, outputformats=None, subfolder=False, groupfolder=""):
+from kivy.uix.textinput import TextInput
+from kivymd.toast import toast
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.textfield import MDTextField
+
+from tesseractXplore.app import get_app
+from tesseractXplore.evaluate import evaluate_report
+from tesseractXplore.models.meta_metadata import MetaMetadata
+from tesseractXplore.stdout_cache import write_stdout_cache
+from tesseractXplore.widgets import LoaderProgressBar
+
+
+def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_folder=None, outputformats=None,
+              subfolder=False, groupfolder=""):
     """
     OCR with tesseract on images
     """
@@ -26,51 +29,51 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
     app = get_app()
     pb = LoaderProgressBar(color=get_app().theme_cls.primary_color)
     pb.value = 0
-    pb.max = len(images)+1
+    pb.max = len(images) + 1
     status_bar = app.image_selection_controller.status_bar
     status_bar.clear_widgets()
     status_bar.add_widget(pb)
-    for idx,image in enumerate(images):
+    for idx, image in enumerate(images):
         if app.tesseract_controller.ocr_stop: break
-        pb.update(None, idx+1)
+        pb.update(None, idx + 1)
         output = None
         params = ["-l", model, "--psm", psm, "--oem", oem, ]
         if tessdatadir:
             params.extend(["--tessdata-dir", tessdatadir])
         if not app.settings_controller.controls['do_invert'].active:
-            params.extend(['-c','tessedit_do_invert=0'])
+            params.extend(['-c', 'tessedit_do_invert=0'])
         if app.settings_controller.controls['dpi'].text.isdigit():
             params.extend(['--dpi', app.settings_controller.controls['dpi']])
         if app.settings_controller.controls['extra_param'].text != "":
-            for param in  app.settings_controller.controls['extra_param'].text.split(' '):
+            for param in app.settings_controller.controls['extra_param'].text.split(' '):
                 params.extend(['-c', param])
         if not outputformats:
             p1 = Popen(["tesseract", *params, image, 'stdout'], stdout=PIPE)
         else:
             image_path = Path(image)
-            output = image_path.parent.joinpath(image_path.name.rsplit(".",1)[0]) \
+            output = image_path.parent.joinpath(image_path.name.rsplit(".", 1)[0]) \
                 if output_folder is None else Path(output_folder).joinpath(image_path.name)
             p1 = Popen(["tesseract", *params, image_path, output, *outputformats], stdout=PIPE)
         stdout, stderr = p1.communicate()
         stdout = str(stdout.decode("utf-8"))
         if not outputformats:
-            pimage= Path(image)
+            pimage = Path(image)
             dialog = MDDialog(title=pimage.name,
-                     type='custom',
-                     auto_dismiss=False,
-                     content_cls=TextInput(text=stdout, size_hint_y=None, height=800,readonly=True),
-                     buttons=[
-                         MDFlatButton(
-                             text="EVALUATE", on_release=partial(evaluate_report, stdout)
-                         ),
-                         MDFlatButton(
-                             text="SAVE", on_release=partial(cache_stdout_dialog, pimage,stdout, params)
-                         ),
-                        MDFlatButton(
-                            text="DISCARD", on_release=close_dialog
-                        ),
-                    ],
-                )
+                              type='custom',
+                              auto_dismiss=False,
+                              content_cls=TextInput(text=stdout, size_hint_y=None, height=800, readonly=True),
+                              buttons=[
+                                  MDFlatButton(
+                                      text="EVALUATE", on_release=partial(evaluate_report, stdout)
+                                  ),
+                                  MDFlatButton(
+                                      text="SAVE", on_release=partial(cache_stdout_dialog, pimage, stdout, params)
+                                  ),
+                                  MDFlatButton(
+                                      text="DISCARD", on_release=close_dialog
+                                  ),
+                              ],
+                              )
             dialog.content_cls.focused = True
             # TODO: There should be a better way to set cursor to 0,0
             time.sleep(1)
@@ -91,8 +94,8 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                     if outputformat == "alto": outputformat = "xml"
                     # print(str(image_path.parent.joinpath(output.name+"."+outputformat)))
                     # print(str(out_path.joinpath(output.name+"."+outputformat)))
-                    move(str(image_path.parent.joinpath(output.name+"."+outputformat).absolute()),
-                             str(out_path.joinpath(output.name+"."+outputformat).absolute()))
+                    move(str(image_path.parent.joinpath(output.name + "." + outputformat).absolute()),
+                         str(out_path.joinpath(output.name + "." + outputformat).absolute()))
 
             toast(output.name)
         outputs.append(output)
@@ -101,10 +104,12 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
         # all_metadata.append(tag_image(image_path, keywords))
     app.tesseract_controller.ocr_stop = False
     pb.finish()
-    return idx+1, outputs
+    return idx + 1, outputs
+
 
 def close_dialog(instance, *args):
     instance.parent.parent.parent.parent.dismiss()
+
 
 def cache_stdout_dialog(image: Path, text: str, params: list, instance, *args):
     instance.parent.parent.parent.parent.dismiss()
@@ -114,7 +119,7 @@ def cache_stdout_dialog(image: Path, text: str, params: list, instance, *args):
                       content_cls=MDTextField(text=""),
                       buttons=[
                           MDFlatButton(
-                              text="SAVE", on_release=partial(cache_stdout,image,text,params)
+                              text="SAVE", on_release=partial(cache_stdout, image, text, params)
                           ),
                           MDFlatButton(
                               text="DISCARD", on_release=close_dialog
@@ -125,12 +130,11 @@ def cache_stdout_dialog(image: Path, text: str, params: list, instance, *args):
     dialog.open()
 
 
-
-
 def cache_stdout(image, text, params, instance, *args):
     id = instance.parent.parent.parent.parent.content_cls.text
-    write_stdout_cache(image,id,text, params)
+    write_stdout_cache(image, id, text, params)
     instance.parent.parent.parent.parent.dismiss()
+
 
 def tag_image(image_path, keywords):
     metadata = MetaMetadata(image_path)

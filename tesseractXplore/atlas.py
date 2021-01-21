@@ -7,11 +7,8 @@ from PIL import Image
 
 from tesseractXplore.constants import (
     ATLAS_MAX_SIZE,
-    CC_LICENSES,
     THUMBNAILS_DIR,
     THUMBNAIL_SIZE_DEFAULT,
-    THUMBNAIL_SIZE_SM,
-    THUMBNAIL_SIZE_LG,
 )
 from tesseractXplore.image_glob import get_images_from_paths
 from tesseractXplore.models import Model
@@ -20,6 +17,7 @@ from tesseractXplore.thumbnails import generate_thumbnail_from_url, get_thumbnai
 IMAGE_DOWNLOAD_DELAY = 1
 
 logger = getLogger().getChild(__name__)
+
 
 # TODO: Atlas not impelemented atm
 

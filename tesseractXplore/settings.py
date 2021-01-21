@@ -1,5 +1,4 @@
 """ Basic utilities for reading and writing settings from config files """
-from collections import Counter, OrderedDict
 from logging import getLogger
 from os import makedirs
 from os.path import isfile

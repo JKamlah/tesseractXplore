@@ -20,18 +20,17 @@ from kivy.core.window import Window
 from kivy.metrics import dp
 from kivy.properties import DictProperty, StringProperty, BooleanProperty, ObjectProperty, NumericProperty
 from kivy.uix.behaviors import FocusBehavior
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
-
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivymd.uix.textfield import MDTextField
 
 from tesseractXplore.app.screens import load_kv
 from tesseractXplore.constants import AUTOCOMPLETE_DELAY, AUTOCOMPLETE_MIN_CHARS
-from tesseractXplore.widgets import TextFieldWrapper
+from tesseractXplore.widgets.inputs import TextFieldWrapper
 
 PADDING = dp(50)
 ROW_SIZE = dp(22)

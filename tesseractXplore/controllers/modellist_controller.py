@@ -1,17 +1,21 @@
-from kivymd.uix.list import OneLineListItem, ThreeLineAvatarIconListItem, ImageLeftWidget
-from tesseractXplore.app import alert, get_app
-from tesseractXplore.controllers import Controller
-from kivy.properties import StringProperty
 from functools import partial
+
+from kivy.properties import StringProperty
+from kivymd.uix.list import OneLineListItem
+
+from tesseractXplore.app import get_app
+from tesseractXplore.controllers import Controller
+
 
 class CustomOneLineListItem(OneLineListItem):
     icon = StringProperty()
 
+
 class ModelListController(Controller):
     """ Controller class to manage image metadata screen """
+
     def __init__(self, screen, **kwargs):
         self.screen = screen
-
 
     def set_list(self, text="", search=False):
         '''Lists all installed models '''
@@ -24,6 +28,7 @@ class ModelListController(Controller):
                     "on_release": partial(self.set_model, model)
                 }
             )
+
         self.screen.modellist.data = []
         for model in get_app().tesseract_controller.models:
             if search:
@@ -32,11 +37,12 @@ class ModelListController(Controller):
                         add_item(model)
                 else:
                     textparts = text.split(" ")
-                    if sum([True if textpart.lower() in model.lower() else False for textpart in textparts]) == len(textparts):
+                    if sum([True if textpart.lower() in model.lower() else False for textpart in textparts]) == len(
+                            textparts):
                         add_item(model)
             else:
                 add_item(model)
 
     def set_model(self, model):
-        get_app().tesseract_controller.screen.model.set_item('Model: '+model)
+        get_app().tesseract_controller.screen.model.set_item('Model: ' + model)
         get_app().switch_screen('tesseract_xplore')

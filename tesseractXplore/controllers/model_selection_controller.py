@@ -1,5 +1,4 @@
 import asyncio
-from collections import OrderedDict
 from logging import getLogger
 
 from kivy.clock import Clock
@@ -14,30 +13,32 @@ logger = getLogger().getChild(__name__)
 # TODO: Better name for this? Maybe 'ModelQuickAccessController'?
 class ModelSelectionController(Controller):
     """ Controller class to manage selecting stored taxa """
+
     def __init__(self, screen):
         super().__init__(screen)
         # Tab references
-        #self.history_tab = screen.history_tab
-        #self.frequent_tab = screen.frequent_tab
-        #self.starred_tab = screen.starred_tab
+        # self.history_tab = screen.history_tab
+        # self.frequent_tab = screen.frequent_tab
+        # self.starred_tab = screen.starred_tab
 
         # Context menu
         self.context_menu = screen.context_menu
         self.context_menu.ids.move_to_top_ctx.bind(on_release=self.move_starred_to_top)
 
         # Various model lists
-     #  self.model_history_ids = []
-     #  self.model_history_map = {}
-     #  self.model_history_list = screen.history_tab.ids.model_history_list
-     #  self.frequent_taxa_ids = {}
-     #  self.frequent_taxa_list = screen.frequent_tab.ids.frequent_taxa_list
-     #  self.frequent_taxa_list.sort_key = self.get_frequent_model_idx
-     #  self.user_taxa_ids = {}
-     #  self.user_taxa_map = {}
-     #  self.user_taxa_list = screen.user_tab.ids.user_taxa_list
-     #  self.starred_taxa_ids = []
-     #  self.starred_taxa_map = {}
-     #  self.starred_taxa_list = screen.starred_tab.ids.starred_taxa_list
+
+    #  self.model_history_ids = []
+    #  self.model_history_map = {}
+    #  self.model_history_list = screen.history_tab.ids.model_history_list
+    #  self.frequent_taxa_ids = {}
+    #  self.frequent_taxa_list = screen.frequent_tab.ids.frequent_taxa_list
+    #  self.frequent_taxa_list.sort_key = self.get_frequent_model_idx
+    #  self.user_taxa_ids = {}
+    #  self.user_taxa_map = {}
+    #  self.user_taxa_list = screen.user_tab.ids.user_taxa_list
+    #  self.starred_taxa_ids = []
+    #  self.starred_taxa_map = {}
+    #  self.starred_taxa_list = screen.starred_tab.ids.starred_taxa_list
 
     def post_init(self):
         Clock.schedule_once(lambda *x: asyncio.run(self.init_stored_taxa()), 1)
@@ -66,6 +67,7 @@ class ModelSelectionController(Controller):
                 self.model_history_map[item.model.id] = item
             for item in self.starred_taxa_list.children:
                 self.bind_star(item)
+
         loader.bind(on_complete=index_list_items)
 
         # Start loading batches of ModelListItems
@@ -142,7 +144,7 @@ class ModelSelectionController(Controller):
 
     def is_starred(self, model_id: int) -> bool:
         """ Check if the specified model is in the Starred list """
-        return #model_id in self.starred_taxa_map
+        return  # model_id in self.starred_taxa_map
 
     def on_starred_model_click(self, instance, touch):
         """ Event handler for clicking a item from starred taxa list """

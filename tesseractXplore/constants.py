@@ -1,8 +1,8 @@
-from collections import OrderedDict
 from os.path import dirname, join
 from typing import Optional, Tuple
 
 from appdirs import user_data_dir
+
 from tesseractXplore import __version__
 
 # Resource directories
@@ -48,7 +48,7 @@ ALL_ATLASES = [ATLAS_APP_ICONS, ATLAS_TAXON_ICONS, ATLAS_TAXON_PHOTOS, ATLAS_LOC
 
 # Cache settings
 CACHE_DIR = join(DATA_DIR, 'stdout')
-#CACHE_BACKEND = 'sqlite'
+# CACHE_BACKEND = 'sqlite'
 
 # Config files
 CONFIG_PATH = join(DATA_DIR, 'settings.yml')

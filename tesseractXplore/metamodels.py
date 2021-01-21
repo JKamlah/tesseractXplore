@@ -1,5 +1,4 @@
 """ Basic utilities for reading and writing settings from config files """
-from collections import Counter, OrderedDict
 from logging import getLogger
 from os import makedirs
 from os.path import isfile
@@ -11,6 +10,7 @@ import yaml
 from tesseractXplore.constants import DATA_DIR, DEFAULT_MODEL_PATH, MODEL_PATH
 
 logger = getLogger().getChild(__name__)
+
 
 def read_metamodels() -> Dict[str, Any]:
     """  Read settings from the settings file
@@ -24,18 +24,20 @@ def read_metamodels() -> Dict[str, Any]:
     with open(DEFAULT_MODEL_PATH) as f:
         return setdefault(yaml.safe_load(f))
 
+
 def reset_defaults():
     """ Reset settings to defaults """
     logger.info(f'Resetting {MODEL_PATH} to defaults')
     makedirs(DATA_DIR, exist_ok=True)
     copyfile(DEFAULT_MODEL_PATH, MODEL_PATH)
 
+
 def setdefault(metamodel: Dict[str, Any]):
     """ Setting default that no value is missing """
     for maincat in metamodel.values():
-        maincat.setdefault('types',{})
-        maincat.setdefault('scrape',True)
-        maincat.setdefault('models',{})
+        maincat.setdefault('types', {})
+        maincat.setdefault('scrape', True)
+        maincat.setdefault('models', {})
         for model in maincat['models'].values():
             model.setdefault('name', '')
             model.setdefault('alias', [])
@@ -47,13 +49,11 @@ def setdefault(metamodel: Dict[str, Any]):
             model['unicode'].setdefault('false', '')
             model['unicode'].setdefault('low', '')
             model['unicode'].setdefault('missing', '')
-            model.setdefault('dataset',{})
+            model.setdefault('dataset', {})
             model['dataset'].setdefault('name', '')
             model['dataset'].setdefault('description', {})
             model['dataset'].setdefault('url', '')
     return metamodel
-
-
 
 
 # TODO: Implement writting and uploading modelfiles to github
@@ -75,7 +75,6 @@ def setdefault(metamodel: Dict[str, Any]):
 #         yaml.safe_dump(settings, f)
 #
 #
-
 
 
 def convert_int_dict(int_dict):

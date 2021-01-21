@@ -2,7 +2,6 @@ from itertools import chain
 from logging import getLogger
 from typing import Any, Dict, List
 
-
 # All tags that support regular and hierarchical keyword lists
 KEYWORD_TAGS = [
     'Exif.Image.XPSubject',
@@ -22,10 +21,11 @@ class KeywordMetadata:
     """
     Container for combining, parsing, and organizing keyword metadata into relevant categories
     """
+
     def __init__(self, metadata=None, keywords=None):
         """ Initialize with full metadata or keywords only """
         self.keywords = keywords or self.get_combined_keywords(metadata)
-        self.kv_keywords = "HEY"#self.get_kv_keywords()
+        self.kv_keywords = "HEY"  # self.get_kv_keywords()
         self.hier_keywords = self.get_hierarchical_keywords()
         self.normal_keywords = self.get_normal_keywords()
 
@@ -118,6 +118,7 @@ class KeywordMetadata:
 
 def dict_to_indented_tree(d: Dict[str, Any]) -> str:
     """ Convert a dict-formatted tree into a single string, in indented tree format """
+
     def append_children(d, indent_lvl):
         subtree = ''
         for k, v in d.items():

@@ -3,11 +3,12 @@ import asyncio
 import os
 from logging import getLogger
 from threading import Thread
+
 from tesseractXplore.settings import read_settings
 
-#Set GL backend before any kivy modules are imported
+# Set GL backend before any kivy modules are imported
 os.environ['KIVY_GL_BACKEND'] = 'sdl2'
-#Set Textprovider backend before any kivy modules are imported
+# Set Textprovider backend before any kivy modules are imported
 settings = read_settings()
 if settings['display']['pil_textprovider'] == 'down':
     os.environ['KIVY_TEXT'] = 'pil'
@@ -21,6 +22,7 @@ from kivy.clock import Clock
 
 # Disable multitouch emulation before any other kivy modules are imported
 from kivy.config import Config
+
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 from kivy.core.clipboard import Clipboard
@@ -36,7 +38,6 @@ from tesseractXplore.constants import (
     INIT_WINDOW_SIZE,
     MD_PRIMARY_PALETTE,
     MD_ACCENT_PALETTE,
-    ATLAS_APP_ICONS,
     BACKSPACE,
     ENTER,
     F11, TRIGGER_DELAY,
@@ -74,7 +75,6 @@ class ControllerProxy:
     tessprofiles_controller = ObjectProperty()
     settings_controller = ObjectProperty()
     diffstdout_controller = ObjectProperty()
-
 
     def init_controllers(self, screens):
         # Init controllers with references to nested screen objects
@@ -128,6 +128,7 @@ class TesseractXplore(MDApp, ControllerProxy):
     """ Manages window, theme, main screen and navigation state; other application logic is
     handled by Controller
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.bg_loop = None
@@ -138,7 +139,6 @@ class TesseractXplore(MDApp, ControllerProxy):
         # Buffer + delayed trigger For collecting multiple files dropped at once
         self.dropped_files = []
         self.drop_trigger = Clock.create_trigger(self.process_dropped_files, TRIGGER_DELAY)
-
 
     def build(self):
         # Set color palette
@@ -178,14 +178,13 @@ class TesseractXplore(MDApp, ControllerProxy):
         Window.bind(on_keyboard=self.on_keyboard)
         Window.bind(on_request_close=self.on_request_close)
 
-
         # On_dropfile sends a single file at a time; this collects files dropped at the same time
         Window.bind(on_dropfile=lambda _, path: self.dropped_files.append(path))
         Window.bind(on_dropfile=self.drop_trigger)
 
         # Preload atlases so they're immediately available in Kivy cache
         # TODO: Currently not necessary, but will be in future version
-        #Image(source=f'{ATLAS_APP_ICONS}/')
+        # Image(source=f'{ATLAS_APP_ICONS}/')
         # Image(source=f'{ATLAS_TAXON_ICONS}/')
         return self.root
 
@@ -307,13 +306,14 @@ class TesseractXplore(MDApp, ControllerProxy):
             icon = 'fullscreen'
         else:
             Window.maximize()
-            Window.fullscreen = 'fake' #'auto'
+            Window.fullscreen = 'fake'  # 'auto'
             icon = 'fullscreen-exit'
         self.toolbar.right_action_items[0] = [icon, self.toggle_fullscreen]
 
 
 def main():
     TesseractXplore().run()
+
 
 if __name__ == '__main__':
     main()

@@ -1,32 +1,37 @@
+from functools import partial
 from logging import getLogger
+
+from kivy.properties import StringProperty
 from kivymd.uix.list import OneLineListItem, TwoLineAvatarIconListItem, IconRightWidget, MDList
+
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
-from kivy.properties import StringProperty
-from functools import partial
-
 from tesseractXplore.tessprofiles import write_tessprofiles
 
 logger = getLogger().getChild(__name__)
 
+
 class CustomOneLineListItem(OneLineListItem):
     icon = StringProperty()
 
+
 class TessprofilesController(Controller):
     """ Controller class to manage tessprofiles screen """
+
     def __init__(self, screen, **kwargs):
         self.screen = screen
         self.layout = MDList()
 
     def set_profiles(self, text="", search=False):
         """ Lists all tesseract profiles """
+
         def add_profile(profile, profileparam, profileparamstr):
             item = TwoLineAvatarIconListItem(
-                    text= profile,
-                    secondary_text= "Settings: " + profileparamstr,
-                    on_release= partial(self.load_profile, profileparam),
+                text=profile,
+                secondary_text="Settings: " + profileparamstr,
+                on_release=partial(self.load_profile, profileparam),
             )
-            item.add_widget(IconRightWidget(icon= "trash-can",on_release=partial(self.remove_profile,profile)))
+            item.add_widget(IconRightWidget(icon="trash-can", on_release=partial(self.remove_profile, profile)))
             self.layout.add_widget(item)
 
         self.layout.clear_widgets()
@@ -39,7 +44,8 @@ class TessprofilesController(Controller):
                         add_profile(profilename, profileparam, profileparamstr)
                 else:
                     textparts = text.split(" ")
-                    if sum([True if textpart.lower() in profilename.lower()+" "+profileparamstr.lower() else False for textpart in textparts]) == len(textparts):
+                    if sum([True if textpart.lower() in profilename.lower() + " " + profileparamstr.lower() else False
+                            for textpart in textparts]) == len(textparts):
                         add_profile(profilename, profileparam, profileparamstr)
             else:
                 add_profile(profilename, profileparam, profileparamstr)
@@ -56,6 +62,3 @@ class TessprofilesController(Controller):
         del get_app().tessprofiles[profile]
         write_tessprofiles(get_app().tessprofiles)
         self.set_profiles(text=self.screen.search_field.text)
-
-
-

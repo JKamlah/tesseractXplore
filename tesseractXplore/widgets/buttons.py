@@ -1,12 +1,11 @@
-from kivy.properties import NumericProperty, BooleanProperty
-from kivymd.uix.button import MDFloatingActionButton, MDRoundFlatIconButton, MDRaisedButton, MDRectangleFlatButton, MDFillRoundFlatButton
-from kivymd.uix.list import IconRightWidget
-from kivymd.uix.tooltip import MDTooltip
-from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
-from tesseractXplore.app import get_app
+from kivy.properties import BooleanProperty
 from kivy.properties import (
     NumericProperty,
 )
+from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
+from kivymd.uix.button import MDFloatingActionButton, MDRoundFlatIconButton, MDFillRoundFlatButton
+from kivymd.uix.list import IconRightWidget
+from kivymd.uix.tooltip import MDTooltip
 
 
 class StarButton(IconRightWidget):

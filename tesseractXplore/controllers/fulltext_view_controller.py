@@ -1,23 +1,26 @@
-import os
 import glob
+import os
 import re
-from pathlib import Path
 from collections import namedtuple
 from functools import partial
+from pathlib import Path
 
-from tesseractXplore.app import alert, get_app
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import MDList, OneLineListItem
 from kivymd.uix.menu import MDDropdownMenu
+
+from tesseractXplore.app import get_app
 from tesseractXplore.hocr import get_text_and_bbox, save_hocr
 from tesseractXplore.widgets.labels import HOCRLabel
-from kivymd.uix.list import MDList, OneLineListItem
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
+
 
 # TODO: This screen is pretty ugly.
 # TODO: Implement another text provider to display combined grapheme, see:
 # https://stackoverflow.com/questions/63646050/kivy-isnt-showing-bengali-joining-character-properly
 class FulltextViewController:
     """ Controller class to manage image metadata screen """
+
     def __init__(self, screen, **kwargs):
         self.screen = screen
         self.image = screen.image
@@ -27,16 +30,15 @@ class FulltextViewController:
         self.hocr = screen.hocr
         self.hocr_data = None
         self.tsv = screen.tsv
-        FileCollection = namedtuple('FileCollection','text alto hocr tsv')
-        self.files = FileCollection([],[],[],[])
+        FileCollection = namedtuple('FileCollection', 'text alto hocr tsv')
+        self.files = FileCollection([], [], [], [])
         self.current_file = FileCollection([''], [''], [''], [''])
-        self.tab_list = [screen.image,screen.text,screen.alto,screen.hocr,screen.tsv]
+        self.tab_list = [screen.image, screen.text, screen.alto, screen.hocr, screen.tsv]
         self.screen.save_text_button.bind(on_release=self.save_text)
         self.screen.delete_empty_lines_button.bind(on_release=self.delete_empty_lines)
         self.pil_image = None
-        #Window.bind(on_dropfile=self.drop_trigger)
-        #self.bind(current_tab=self.disable_tabs)
-
+        # Window.bind(on_dropfile=self.drop_trigger)
+        # self.bind(current_tab=self.disable_tabs)
 
     def delete_empty_lines(self, instance, *args):
         self.text.text = "\n".join(filter(lambda x: not re.match(r'^\s*$', x), self.text.text.split("\n")))
@@ -66,9 +68,9 @@ class FulltextViewController:
 
     def create_dropdown(self, caller, item, callback):
         menu = MDDropdownMenu(caller=caller,
-                       items=item,
-                       position="center",
-                       width_mult=20)
+                              items=item,
+                              position="center",
+                              width_mult=20)
         menu.bind(on_release=callback)
         return menu
 
@@ -78,17 +80,19 @@ class FulltextViewController:
             collection.clear()
         fpath = Path(fulltext.selected_image.original_source)
         fdir = fpath.parent
-        fname = fpath.name.rsplit(".",1)[0]
-        self.text.text = read_file(fdir.joinpath(fname+'.txt'), self.files.text)
+        fname = fpath.name.rsplit(".", 1)[0]
+        self.text.text = read_file(fdir.joinpath(fname + '.txt'), self.files.text)
         self.text.cursor = (0, 0)
         if self.files.text:
             self.screen.textfiles.text = self.files.text[0][-75:]
             self.current_file.text[0] = self.files.text[0]
-            self.textfiles_menu = self.create_dropdown(self.screen.textfiles, [{'text': textfile} for textfile in self.files.text], partial(self.set_file,"text"))
+            self.textfiles_menu = self.create_dropdown(self.screen.textfiles,
+                                                       [{'text': textfile} for textfile in self.files.text],
+                                                       partial(self.set_file, "text"))
         self.screen.fontsize.text = str(self.text.font_size)
-        self.alto.text = read_file(fdir.joinpath(fname+'.xml'), self.files.alto)
+        self.alto.text = read_file(fdir.joinpath(fname + '.xml'), self.files.alto)
         self.alto.cursor = (0, 0)
-        read_file(fdir.joinpath(fname+'.hocr'), self.files.hocr)
+        read_file(fdir.joinpath(fname + '.hocr'), self.files.hocr)
         if self.files.hocr:
             self.screen.hocrfiles.text = self.files.hocr[0][-75:]
             self.current_file.hocr[0] = self.files.hocr[0]
@@ -96,7 +100,7 @@ class FulltextViewController:
                                                        [{'text': hocrfile} for hocrfile in self.files.hocr],
                                                        partial(self.set_file, "hocr"))
             self.interactive_hocr(self.current_file.hocr[0])
-        self.tsv.text = read_file(fdir.joinpath(fname+'.tsv'), self.files.tsv)
+        self.tsv.text = read_file(fdir.joinpath(fname + '.tsv'), self.files.tsv)
         self.tsv.cursor = (0, 0)
 
     def interactive_hocr(self, hocrfile):
@@ -105,18 +109,19 @@ class FulltextViewController:
         self.hocr_data = get_text_and_bbox(hocrfile)
         for par_id, par_data in self.hocr_data.items():
             for line_id, line_data in par_data.items():
-                #for word_id, word_data in word_data.items():
+                # for word_id, word_data in word_data.items():
                 widget = HOCRLabel(text=line_data.pop('text'),
-                    bbox=line_data.pop('bbox'),
-                    par_id = par_id,
-                    line_id = line_id,
-                    on_release=partial(self.hocr_dialog),
-                    theme_text_color="Primary")
+                                   bbox=line_data.pop('bbox'),
+                                   par_id=par_id,
+                                   line_id=line_id,
+                                   on_release=partial(self.hocr_dialog),
+                                   theme_text_color="Primary")
                 widget.size_hint_y = None
                 widget.height = 40
                 layout.add_widget(widget)
         self.screen.hocr_view.add_widget(layout)
-        self.screen.save_hocr_button.bind(on_release=partial(save_hocr, self.current_file.hocr[0], self.screen.hocr_view.children[0].children))
+        self.screen.save_hocr_button.bind(
+            on_release=partial(save_hocr, self.current_file.hocr[0], self.screen.hocr_view.children[0].children))
 
     def _update_image(self, img, snippet):
         from io import BytesIO
@@ -131,7 +136,8 @@ class FulltextViewController:
     def update_bbox(self, line, instance, *args):
         bbox = self.get_bbox(instance)
         snippet = self.pil_image.crop(bbox)
-        self._update_image(instance.parent.parent.parent.parent.children[0].children[2].children[0].children[1],snippet)
+        self._update_image(instance.parent.parent.parent.parent.children[0].children[2].children[0].children[1],
+                           snippet)
 
     def get_bbox(self, instance):
         bboxinstance = instance.parent.parent.parent.parent.children[0].children[2].children[0].children[2].children[0]
@@ -145,9 +151,9 @@ class FulltextViewController:
         line.text = instance.parent.parent.parent.parent.children[0].children[2].children[0].children[0].text
         line.bbox = self.get_bbox(instance)
         line.edited = True
-        self.close_dialog(instance,*args)
+        self.close_dialog(instance, *args)
 
-    def hocr_dialog(self,instance, *args):
+    def hocr_dialog(self, instance, *args):
         from kivy.uix.image import Image
         from PIL.Image import open
         # texture.get_region seems to be buggy
@@ -202,14 +208,14 @@ class FulltextViewController:
                 if self.scale > 1:
                     self.scale = self.scale * 0.8
         # If some other kind of "touch": Fall back on Scatter's behavior
-        #else:
-            #super(ResizableDraggablePicture, self).on_touch_down(touch
+        # else:
+        # super(ResizableDraggablePicture, self).on_touch_down(touch
 
     def set_file(self, filetype, instance):
         if filetype == 'text':
             self.screen.textfiles.set_item(instance.text[-75:])
             self.current_file.text[0] = instance.text
-            self.text.text = "".join(open(instance.text,encoding='utf-8').readlines())
+            self.text.text = "".join(open(instance.text, encoding='utf-8').readlines())
             self.text.cursor = (0, 0)
             self.textfiles_menu.dismiss()
         if filetype == 'hocr':
@@ -228,15 +234,17 @@ class FulltextViewController:
 def read_file(fname, collections):
     res = find_file(fname, collections)
     if res:
-        return "".join(open(res,encoding='utf-8').readlines())
+        return "".join(open(res, encoding='utf-8').readlines())
     else:
         return ""
 
+
 def find_file(fname, collections):
     app = get_app()
-    #if outputfolder
-    if app.tesseract_controller.selected_output_folder and Path(app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
-        collections.append(os.path.join(app.tesseract_controller.selected_output_foldier,fname.name))
+    # if outputfolder
+    if app.tesseract_controller.selected_output_folder and Path(
+            app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
+        collections.append(os.path.join(app.tesseract_controller.selected_output_foldier, fname.name))
     # else check cwd folder
     if fname.is_file():
         collections.append(str(fname.absolute()))

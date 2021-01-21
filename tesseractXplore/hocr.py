@@ -4,6 +4,7 @@
 # within the hOCR file
 
 from __future__ import print_function
+
 import re
 
 from lxml import html
@@ -28,7 +29,7 @@ def get_prop(node, name):
 
 def save_hocr(hocr, data, *args):
     doc = html.parse(hocr)
-    data = {line.line:data for line in data if line.edited==True}
+    data = {line.line: data for line in data if line.edited == True}
     pages = doc.xpath('//*[@class="ocr_page"]')
     result = {}
     for page in pages:
@@ -44,12 +45,12 @@ def save_hocr(hocr, data, *args):
                         continue
                     result[lcount] = {'text': get_text(line), 'bbox': bbox}
                 lcount += 1
-                #if words:
+                # if words:
                 #    for word in words:
     return result
 
 
-def get_text_and_bbox(hocr, padding = 4):
+def get_text_and_bbox(hocr, padding=4):
     doc = html.parse(hocr)
     pages = doc.xpath('//*[@class="ocr_page"]')
     result = {}
@@ -67,5 +68,6 @@ def get_text_and_bbox(hocr, padding = 4):
                 lcount += 1
                 if words:
                     for word in words:
-                        result[par.get('id')][line.get('id')][word.get('id')] = {'text':get_text(word),'bbox':get_prop(word, 'bbox') }
+                        result[par.get('id')][line.get('id')][word.get('id')] = {'text': get_text(word),
+                                                                                 'bbox': get_prop(word, 'bbox')}
     return result

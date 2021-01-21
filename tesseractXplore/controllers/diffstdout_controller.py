@@ -1,19 +1,15 @@
-import json
 import os
 import glob
-import re
+import os
 from pathlib import Path
-from collections import namedtuple
 
-from kivy.properties import StringProperty, ObjectProperty
-from tesseractXplore.app import alert, get_app
-from kivymd.uix.menu import MDDropdownMenu
-from functools import partial
+from tesseractXplore.app import get_app
 
 
 # TODO: This screen is pretty ugly.
 class DiffStdoutController:
     """ Controller class to manage image metadata screen """
+
     def __init__(self, screen, **kwargs):
         self.screen = screen
 
@@ -28,8 +24,7 @@ class DiffStdoutController:
             collection.clear()
         fpath = Path(fulltext.selected_image.original_source)
         fdir = fpath.parent
-        fname = fpath.name.rsplit(".",1)[0]
-
+        fname = fpath.name.rsplit(".", 1)[0]
 
     def on_touch_down(self, touch):
         # Override Scatter's `on_touch_down` behavior for mouse scrolli
@@ -41,30 +36,31 @@ class DiffStdoutController:
                 if self.scale > 1:
                     self.scale = self.scale * 0.8
         # If some other kind of "touch": Fall back on Scatter's behavior
-        #else:
-            #super(ResizableDraggablePicture, self).on_touch_down(touch
+        # else:
+        # super(ResizableDraggablePicture, self).on_touch_down(touch
 
     def set_textfile(self, instance):
         self.screen.textfiles.set_item(instance.text[-75:])
         self.current_file.text[0] = instance.text
-        self.text.text = "".join(open(instance.text,encoding='utf-8').readlines())
+        self.text.text = "".join(open(instance.text, encoding='utf-8').readlines())
         self.text.cursor = (0, 0)
         self.textfiles_menu.dismiss()
-
 
 
 def read_file(fname, collections):
     res = find_file(fname, collections)
     if res:
-        return "".join(open(res,encoding='utf-8').readlines())
+        return "".join(open(res, encoding='utf-8').readlines())
     else:
         return ""
 
+
 def find_file(fname, collections):
     app = get_app()
-    #if outputfolder
-    if app.tesseract_controller.selected_output_folder and Path(app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
-        collections.append(os.path.join(app.tesseract_controller.selected_output_foldier,fname.name))
+    # if outputfolder
+    if app.tesseract_controller.selected_output_folder and Path(
+            app.tesseract_controller.selected_output_folder).joinpath(fname.name()).is_file():
+        collections.append(os.path.join(app.tesseract_controller.selected_output_foldier, fname.name))
     # else check cwd folder
     elif fname.is_file():
         collections.append(str(fname.absolute()))

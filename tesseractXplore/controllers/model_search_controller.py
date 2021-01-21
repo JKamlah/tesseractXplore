@@ -1,16 +1,15 @@
-import asyncio
 from logging import getLogger
 
-from tesseractXplore.controllers import Controller, ModelBatchLoader
 from tesseractXplore.app import get_app
-from tesseractXplore.widgets import DropdownTextField, IconicTaxaIcon
-
+from tesseractXplore.controllers import Controller, ModelBatchLoader
 from tesseractXplore.metamodels import read_metamodels
 
 logger = getLogger().getChild(__name__)
 
+
 class ModelSearchController(Controller):
     """ Controller class to manage model search """
+
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
@@ -18,7 +17,7 @@ class ModelSearchController(Controller):
         self.selected_model = None
 
         self.search_tab = screen.search_tab
-#        self.search_results_tab = screen.search_results_tab
+        #        self.search_results_tab = screen.search_results_tab
 
         # Search inputs
         self.model_tagfilter_input = screen.search_tab.ids.model_tagfilter_input
@@ -31,8 +30,6 @@ class ModelSearchController(Controller):
         self.languagemodel_chk = screen.search_tab.ids.languagemodel_chk
         self.scriptmodel_chk = screen.search_tab.ids.scriptmodel_chk
 
-
-
         # Buttons
         self.model_search_button = screen.search_tab.ids.model_search_button
         self.model_search_button.bind(on_release=self.apply_filter)
@@ -40,26 +37,29 @@ class ModelSearchController(Controller):
         self.reset_search_button.bind(on_release=self.reset_all_search_inputs)
 
         # Search results
-        #self.search_results_list = self.search_results_tab.ids.search_results_list
+        # self.search_results_list = self.search_results_tab.ids.search_results_list
 
     def get_model_autocomplete(self, search_str):
         res = []
         for modelgroup, modelgroupval in self.metamodels.items():
             if self.modelgroup_input.text == "" or self.modelgroup_input.text.lower() in modelgroup.lower():
-                for modelname in modelgroupval.get('models',[]):
+                for modelname in modelgroupval.get('models', []):
                     modelval = modelgroupval['models'][modelname]
-                    if search_str.lower() in modelname.lower() or any([1 if search_str.lower() in tag.lower() else 0 for tag in modelval.get("tags",[])]):
-                        if (self.bestmodel_chk.active and "best" in modelval["type"]) or (self.fastmodel_chk.active and "fast" in modelval["type"]):
-                            if (self.languagemodel_chk.active and "Language" in modelval["category"]) or (self.scriptmodel_chk.active and "Script" in modelval["category"]):
-                                res.append({"modelgroup":modelgroup,
-                                            "name":modelname,
-                                             "url":modelgroupval['types'],
-                                             "id": "Group:"+modelgroup+"Model:"+modelname,
-                                             "model":modelval})
+                    if search_str.lower() in modelname.lower() or any(
+                            [1 if search_str.lower() in tag.lower() else 0 for tag in modelval.get("tags", [])]):
+                        if (self.bestmodel_chk.active and "best" in modelval["type"]) or (
+                                self.fastmodel_chk.active and "fast" in modelval["type"]):
+                            if (self.languagemodel_chk.active and "Language" in modelval["category"]) or (
+                                    self.scriptmodel_chk.active and "Script" in modelval["category"]):
+                                res.append({"modelgroup": modelgroup,
+                                            "name": modelname,
+                                            "url": modelgroupval['types'],
+                                            "id": "Group:" + modelgroup + "Model:" + modelname,
+                                            "model": modelval})
         return res
 
-    def apply_filter(self,*args):
-        text =  self.model_search_input.text_input.text
+    def apply_filter(self, *args):
+        text = self.model_search_input.text_input.text
         self.model_search_input.text_input.text = ''
         self.model_search_input.dropdown_view.data = []
         self.model_search_input.text_input.text = text
@@ -67,7 +67,7 @@ class ModelSearchController(Controller):
     def search(self, *args):
         """ Run a search with the currently selected search parameters """
 
-        #asyncio.run(self._search())
+        # asyncio.run(self._search())
 
     # TODO: Paginated results
     async def _search(self):
@@ -134,4 +134,4 @@ class ModelSearchController(Controller):
     def on_tagfilter(text_input):
         """ Handle entering a model ID and pressing Enter """
         pass
-        #get_app().select_model(id=int(text_input.text))
+        # get_app().select_model(id=int(text_input.text))

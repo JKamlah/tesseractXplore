@@ -1,5 +1,6 @@
+from typing import Dict
+
 import attr
-from typing import List, Dict
 
 kwarg = attr.ib(default=None)
 

@@ -2,15 +2,13 @@
 from io import BytesIO
 from logging import getLogger
 
-from kivy.core.clipboard import Clipboard
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.image import AsyncImage
 from kivymd.uix.imagelist import SmartTile, SmartTileWithLabel
 
-from tesseractXplore.app import alert
+from tesseractXplore.app.cache import cache_async_thumbnail
 from tesseractXplore.models import get_icon_path, MetaMetadata
 from tesseractXplore.thumbnails import get_thumbnail_if_exists, get_format, get_thumbnail
-from tesseractXplore.app.cache import cache_async_thumbnail
 
 logger = getLogger().getChild(__name__)
 

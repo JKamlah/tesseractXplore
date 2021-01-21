@@ -3,6 +3,7 @@ from logging import getLogger
 
 from kivy.core.image import Image
 
+from tesseractXplore.atlas import get_resource_path_if_exists
 from tesseractXplore.thumbnails import (
     get_thumbnail_hash,
     get_thumbnail,
@@ -10,17 +11,16 @@ from tesseractXplore.thumbnails import (
     generate_thumbnail_from_bytes,
     to_monochrome,
 )
-from tesseractXplore.atlas import get_resource_path_if_exists
 
 logger = getLogger().getChild(__name__)
 
 
-def get_any_thumbnail(source: str, size: str='small') -> str:
+def get_any_thumbnail(source: str, size: str = 'small') -> str:
     """ Get the path of a thumbnail stored inside either an atlas or the thumbnail cache """
     return get_atlas_thumbnail_if_exists(source, size) or get_thumbnail(source)
 
 
-def get_any_thumbnail_if_exists(source: str, size: str='small') -> str:
+def get_any_thumbnail_if_exists(source: str, size: str = 'small') -> str:
     """ Get the path of a thumbnail stored inside either an atlas or the thumbnail cache """
     return get_atlas_thumbnail_if_exists(source, size) or get_thumbnail_if_exists(source)
 

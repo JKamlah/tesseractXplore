@@ -1,8 +1,7 @@
 from logging import getLogger
 from os.path import basename
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-from tesseractXplore.constants import StrTuple, IntTuple
 from tesseractXplore.models import ImageMetadata, KeywordMetadata, KEYWORD_TAGS, HIER_KEYWORD_TAGS
 
 logger = getLogger().getChild(__name__)
@@ -11,6 +10,7 @@ logger = getLogger().getChild(__name__)
 # TODO: Extract GPS info
 class MetaMetadata(ImageMetadata):
     """ Class for parsing & organizing info derived from basic image metadata """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Define lazy-loaded properties

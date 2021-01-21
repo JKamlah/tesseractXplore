@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
+import time
 import unicodedata
 from collections import defaultdict, Counter, OrderedDict
 from typing import DefaultDict, Dict
-import time
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
+
 from kivy.uix.textinput import TextInput
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 
 
 def get_defaultdict(resultslvl: Dict, newlvl, instance=OrderedDict) -> None:
@@ -31,6 +32,7 @@ def controlcharacter_check(glyph: str):
     else:
         return False
 
+
 def categorize(results: DefaultDict, category='combined') -> None:
     """
     Puts the unicode character in user-definied categories
@@ -52,6 +54,7 @@ def categorize(results: DefaultDict, category='combined') -> None:
             get_defaultdict(results[category]["cat"][ucat[0]][usubcat], ucat)
             results[category]["cat"][ucat[0]][usubcat][ucat].update({glyph: count})
     return
+
 
 def print_unicodeinfo(val: str, key: str) -> str:
     """
@@ -92,30 +95,30 @@ def report_subsection(report, subsection: str, result: DefaultDict, header="", s
     {header}
     {subheaderinfo}{addline if subheaderinfo != "" else ""}"""
     if not result:
-        report +=f"""{"-" * 60}\n"""
+        report += f"""{"-" * 60}\n"""
         return report
     for condition, conditionres in result[subsection].items():
-        report +=f"""
+        report += f"""
         {condition}
         {"-" * len(condition)}"""
         for key, val in conditionres.items():
             if isinstance(val, dict):
-                report +=f"""
+                report += f"""
             {key}:"""
                 for subkey, subval in sorted(val.items()):
                     if isinstance(subkey, int) or len(subkey) == 1:
                         subkey = ord(subkey)
-                        report +=f"""
+                        report += f"""
                             {print_unicodeinfo(subval, subkey)}"""
                     else:
-                        report +=f"""
+                        report += f"""
                             {print_unicodeinfo(subval, chr(subkey))}"""
             else:
                 if isinstance(key, int):
-                    report +=f"""
+                    report += f"""
                         {print_unicodeinfo(val, chr(key))}"""
                 else:
-                    report +=f"""
+                    report += f"""
                         {print_unicodeinfo(val, key)}"""
     report += f"""
     \n{"-" * 60}\n"""
@@ -209,13 +212,14 @@ def create_report(result: DefaultDict) -> str:
         report = report_subsection(report, "all", result["combined"], header={"Overall unicode character statistics"})
     return report
 
+
 def evaluate_text(text):
     """
     Reads text files, evaluate the unicode character and creates a report
     :return:
     """
     results = defaultdict(OrderedDict)
-    text = unicodedata.normalize("NFC",text)
+    text = unicodedata.normalize("NFC", text)
 
     get_defaultdict(results['single'], "TEXT")
     results['single']["TEXT"]['text'] = text
@@ -235,8 +239,8 @@ def evaluate_text(text):
     # Result output
     return create_report(results)
 
-def evaluate_report(text, *args):
 
+def evaluate_report(text, *args):
     def close_dialog(instance, *args):
         instance.parent.parent.parent.parent.dismiss()
 

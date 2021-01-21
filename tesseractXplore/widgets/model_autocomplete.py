@@ -1,6 +1,6 @@
 #from tesseractXplore.controllers.model_search_controller import get_model_autocomplete
-from tesseractXplore.widgets import AutocompleteSearch
 from tesseractXplore.app import get_app
+from tesseractXplore.widgets import AutocompleteSearch
 
 
 class ModelAutocompleteSearch(AutocompleteSearch):

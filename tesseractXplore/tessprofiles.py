@@ -8,7 +8,6 @@ from tesseractXplore.constants import TESSPROFILE_PATH
 logger = getLogger().getChild(__name__)
 
 
-
 def read_tessprofiles() -> Dict:
     """ Read tessprofiles
 

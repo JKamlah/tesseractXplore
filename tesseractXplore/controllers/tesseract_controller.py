@@ -1,31 +1,43 @@
-from logging import getLogger
 import threading
+import time
+from logging import getLogger
+from subprocess import check_output, getstatusoutput
+
+from kivymd.toast import toast
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.filemanager import MDFileManager
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.textfield import MDTextField
 
 from tesseractXplore.app import alert, get_app
-from tesseractXplore.controllers import Controller, ImageBatchLoader
+from tesseractXplore.controllers import Controller
 from tesseractXplore.recognizer import recognize
 from tesseractXplore.tessprofiles import write_tessprofiles
-
-from subprocess import check_output, getstatusoutput
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.filemanager import MDFileManager
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.textfield import MDTextField
-from kivymd.toast import toast
-
-import time
 
 logger = getLogger().getChild(__name__)
 
 
 class TesseractController(Controller):
     """ Controller class to manage image selector screen """
+
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
-        self.psms = ['  0    Orientation and script detection (OSD) only.', '  1    Automatic page segmentation with OSD.', '  2    Automatic page segmentation, but no OSD, or OCR. (not implemented)', '  3    Fully automatic page segmentation, but no OSD. (Default)', '  4    Assume a single column of text of variable sizes.', '  5    Assume a single uniform block of vertically aligned text.', '  6    Assume a single uniform block of text.', '  7    Treat the image as a single text line.', '  8    Treat the image as a single word.', '  9    Treat the image as a single word in a circle.', ' 10    Treat the image as a single character.', ' 11    Sparse text. Find as much text as possible in no particular order.', ' 12    Sparse text with OSD.', ' 13    Raw line. Treat the image as a single text line, bypassing hacks that are Tesseract-specific.']
-        self.oems = ['  0    Legacy engine only.', '  1    Neural nets LSTM engine only.', '  2    Legacy + LSTM engines.', '  3    Default, based on what is available.']
+        self.psms = ['  0    Orientation and script detection (OSD) only.',
+                     '  1    Automatic page segmentation with OSD.',
+                     '  2    Automatic page segmentation, but no OSD, or OCR. (not implemented)',
+                     '  3    Fully automatic page segmentation, but no OSD. (Default)',
+                     '  4    Assume a single column of text of variable sizes.',
+                     '  5    Assume a single uniform block of vertically aligned text.',
+                     '  6    Assume a single uniform block of text.', '  7    Treat the image as a single text line.',
+                     '  8    Treat the image as a single word.', '  9    Treat the image as a single word in a circle.',
+                     ' 10    Treat the image as a single character.',
+                     ' 11    Sparse text. Find as much text as possible in no particular order.',
+                     ' 12    Sparse text with OSD.',
+                     ' 13    Raw line. Treat the image as a single text line, bypassing hacks that are Tesseract-specific.']
+        self.oems = ['  0    Legacy engine only.', '  1    Neural nets LSTM engine only.',
+                     '  2    Legacy + LSTM engines.', '  3    Default, based on what is available.']
         self.init_dropdown()
         self.tessprofile_menu = screen.tessprofile_menu
         self.output_manager = MDFileManager(
@@ -45,10 +57,10 @@ class TesseractController(Controller):
         # Context menu
         self.screen.context_menu.ids.recognize_ctx.bind(on_release=self.recognize_single_thread)
 
-
     def get_models(self):
-        if  getstatusoutput("tesseract")[0] == 127: return []
-        return check_output(["tesseract", "--tessdata-dir", get_app().tessdatadir ,"--list-langs"]).decode('utf-8').splitlines()[1:]
+        if getstatusoutput("tesseract")[0] == 127: return []
+        return check_output(["tesseract", "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
+            'utf-8').splitlines()[1:]
 
     def stop_rec(self, instance):
         """ Unschedule progress event and log total execution time """
@@ -72,11 +84,11 @@ class TesseractController(Controller):
         #     caller=screen.settings_menu, items=menu_items, width_mult=4
         # )
         # Init dropdownmenu
-        #psms = [line for line in check_output(["tesseract", "--help-psm"]).decode('utf-8').splitlines()[1:] if
+        # psms = [line for line in check_output(["tesseract", "--help-psm"]).decode('utf-8').splitlines()[1:] if
         #        line.strip() != ""]
         self.psm_menu = self.create_dropdown(screen.psm, [{'text': 'PSM: ' + psm} for psm in self.psms], self.set_psm)
 
-        #oems = [line for line in check_output(["tesseract", "--help-oem"]).decode('utf-8').splitlines()[1:] if
+        # oems = [line for line in check_output(["tesseract", "--help-oem"]).decode('utf-8').splitlines()[1:] if
         #        line.strip() != ""]
         self.oem_menu = self.create_dropdown(screen.oem, [{'text': 'OEM: ' + oem} for oem in self.oems], self.set_oem)
 
@@ -88,15 +100,16 @@ class TesseractController(Controller):
         self.screen.recognize_button.disabled = False
         self.screen.pause_button.disabled = True
 
-    def recognize_thread(self,instance,*args):
+    def recognize_thread(self, instance, *args):
         self.disable_rec(instance, *args)
-        self.ocr_event = threading.Thread(target=self.recognize, args=(instance,args))
+        self.ocr_event = threading.Thread(target=self.recognize, args=(instance, args))
         self.ocr_event.setDaemon(True)
         self.ocr_event.start()
 
-    def recognize_single_thread(self,instance,*args):
-        self.disable_rec(instance,*args)
-        threading.Thread(target=self.recognize,args=(instance,args),kwargs={'file_list':[instance.selected_image.original_source]}).start()
+    def recognize_single_thread(self, instance, *args):
+        self.disable_rec(instance, *args)
+        threading.Thread(target=self.recognize, args=(instance, args),
+                         kwargs={'file_list': [instance.selected_image.original_source]}).start()
 
     def recognize(self, instance, *args, file_list=None):
         """ Recognize image with tesseract """
@@ -112,28 +125,31 @@ class TesseractController(Controller):
 
         logger.info(f'Main: Recognize {len(file_list)} images')
 
-        #metadata_settings = get_app().metadata
+        # metadata_settings = get_app().metadata
         # TODO: Handle write errors (like file locked) and show dialog
-        #file_list = get_app().image_selection_controller
+        # file_list = get_app().image_selection_controller
         model = "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip()
         psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
         oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
         outputformats = self.active_outputformats()
         groupfolder = self.screen.groupfolder.text
         subfolder = self.screen.subfolder_chk.active
-        proc_files, outputnames = recognize(file_list, model=model ,psm=psm, oem=oem, tessdatadir=get_app().tessdatadir, output_folder=self.selected_output_folder, outputformats=outputformats, subfolder=subfolder,groupfolder=groupfolder)
+        proc_files, outputnames = recognize(file_list, model=model, psm=psm, oem=oem, tessdatadir=get_app().tessdatadir,
+                                            output_folder=self.selected_output_folder, outputformats=outputformats,
+                                            subfolder=subfolder, groupfolder=groupfolder)
         toast(f'{proc_files} images recognized')
-        self.last_rec_time = time.time()+2
+        self.last_rec_time = time.time() + 2
         get_app().image_selection_controller.file_chooser._update_files()
         self.enable_rec(instance)
 
         # Update image previews with new metadata
-        #previews = {img.metadata.image_path: img for img in get_app().image_selection_controller.image_previews.children}
-        #for metadata in all_metadata:
+        # previews = {img.metadata.image_path: img for img in get_app().image_selection_controller.image_previews.children}
+        # for metadata in all_metadata:
         #    previews[metadata.image_path].metadata = metadata
 
     def active_outputformats(self):
-        return [outputformat for outputformat in ['txt','hocr','alto','pdf','tsv'] if self.screen[outputformat].state=='down']
+        return [outputformat for outputformat in ['txt', 'hocr', 'alto', 'pdf', 'tsv'] if
+                self.screen[outputformat].state == 'down']
 
     def on_tesssettings_click(self, *args):
         self.tessprofile_menu.show(*get_app().root_window.mouse_pos)
@@ -146,7 +162,7 @@ class TesseractController(Controller):
         self.screen.model.set_item(f"Model: {tessprofileparams.get('model', 'eng')}")
         self.screen.psm.set_item(f"PSM: {self.psms[int(tessprofileparams['psm'])]}")
         self.screen.oem.set_item(f"OEM: {self.oems[int(tessprofileparams['oem'])]}")
-        for outputformat in ['txt','hocr','alto','pdf','tsv']:
+        for outputformat in ['txt', 'hocr', 'alto', 'pdf', 'tsv']:
             if outputformat in tessprofileparams['outputformat']:
                 self.screen[outputformat.strip()].state = 'down'
             else:
@@ -164,6 +180,7 @@ class TesseractController(Controller):
     def save_tessprofile_dialog(self):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
+
         dialog = MDDialog(title="Name of the profile",
                           type='custom',
                           auto_dismiss=False,
@@ -184,11 +201,13 @@ class TesseractController(Controller):
         tessprofilename = instance.parent.parent.parent.parent.content_cls.text
         if tessprofilename != '':
             get_app().tessprofiles[tessprofilename] = {
-                "model": self.screen.model.current_item.split(" ")[1] if self.screen.model.current_item.split(" ")[0] == "Model:" else "eng",
+                "model": self.screen.model.current_item.split(" ")[1] if self.screen.model.current_item.split(" ")[
+                                                                             0] == "Model:" else "eng",
                 "psm": "".join([char for char in self.screen.psm.text if char.isdigit()]),
                 "oem": "".join([char for char in self.screen.oem.text if char.isdigit()]),
                 "outputformat": self.active_outputformats(),
-                "outputdir": "" if self.screen.output.text.split(" ")[0] != "Selected" else self.screen.output.text.split(" ")[3],
+                "outputdir": "" if self.screen.output.text.split(" ")[0] != "Selected" else
+                self.screen.output.text.split(" ")[3],
                 "groupfolder": self.screen.groupfolder.text,
                 "subfolder": str(self.screen.subfolder_chk.active)
             }
@@ -209,7 +228,7 @@ class TesseractController(Controller):
         self.screen.groupfolder.text = ''
 
     def reset_text(self, instance):
-        instance.text = instance.text+'!'
+        instance.text = instance.text + '!'
         instance.set_item('')
         instance.text = instance.text[:-1]
 
@@ -222,9 +241,9 @@ class TesseractController(Controller):
 
     def create_dropdown(self, caller, item, callback):
         menu = MDDropdownMenu(caller=caller,
-                       items=item,
-                       position="center",
-                       width_mult=20)
+                              items=item,
+                              position="center",
+                              width_mult=20)
         menu.bind(on_release=callback)
         return menu
 
@@ -251,7 +270,6 @@ class TesseractController(Controller):
     def select_output_folder(self):
         self.output_manager.show("/")
 
-
-    def exit_output_manager(self,*args):
+    def exit_output_manager(self, *args):
         '''Called when the user reaches the root of the directory tree.'''
         self.output_manager.close()

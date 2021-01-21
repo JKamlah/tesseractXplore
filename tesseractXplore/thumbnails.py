@@ -1,17 +1,15 @@
 """ Utilities for generating and retrieving image thumbnails """
 from hashlib import md5
 from io import BytesIO, IOBase
+from logging import getLogger
 from os import makedirs, scandir
 from os.path import dirname, isfile, join, normpath, getsize, splitext
 from shutil import copyfileobj, rmtree
-from logging import getLogger
 from typing import BinaryIO, Optional, Tuple, Union
 
+import requests
 from PIL import Image
 from PIL.ImageOps import exif_transpose, flip
-import requests
-
-from tesseractXplore.validation import format_file_size
 
 from tesseractXplore.constants import (
     EXIF_ORIENTATION_ID,
@@ -20,6 +18,7 @@ from tesseractXplore.constants import (
     THUMBNAIL_SIZES,
     THUMBNAIL_DEFAULT_FORMAT,
 )
+from tesseractXplore.validation import format_file_size
 
 logger = getLogger().getChild(__name__)
 
@@ -146,9 +145,9 @@ def generate_thumbnail_from_bytes(image_bytes, source: str, **kwargs):
 def generate_thumbnail(
         source: Union[BinaryIO, str],
         thumbnail_path: str,
-        fmt: str=None,
-        size: str='medium',
-        default_flip: bool=True,
+        fmt: str = None,
+        size: str = 'medium',
+        default_flip: bool = True,
 ):
     """
     Generate and store a thumbnail from the source image
@@ -181,7 +180,7 @@ def generate_thumbnail(
         return source
 
 
-def get_orientated_image(source, default_flip: bool=True) -> Image:
+def get_orientated_image(source, default_flip: bool = True) -> Image:
     """
     Load and rotate/transpose image according to EXIF orientation, if any. If missing orientation
     and the image was fetched from iNat, it will be vertically mirrored. (?)
@@ -212,6 +211,7 @@ def get_thumbnail_cache_size() -> Tuple[int, str]:
     files = [f for f in scandir(THUMBNAILS_DIR) if isfile(f)]
     file_size = sum(getsize(f) for f in files)
     return len(files), format_file_size(file_size)
+
 
 def flip_all(path: str):
     """ Vertically flip all images in a directory. Mainly for debugging purposes. """

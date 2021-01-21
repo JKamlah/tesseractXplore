@@ -1,22 +1,20 @@
-from locale import locale_alias, getdefaultlocale
-from logging import getLogger
-from typing import Tuple, List, Dict
 import subprocess
+from locale import getdefaultlocale
+from logging import getLogger
 from pathlib import Path
 
-from kivy.uix.widget import Widget
 from kivy.clock import Clock
-
+from kivy.uix.widget import Widget
 from kivymd.app import MDApp
-from tesseractXplore.app import alert
-from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
-from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
 
+from tesseractXplore.app import alert
 from tesseractXplore.settings import (
     read_settings,
     write_settings,
     reset_defaults,
 )
+from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
+from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
 
 logger = getLogger().getChild(__name__)
 
@@ -31,7 +29,9 @@ class SettingsController:
         # Set tessdatapath
         if self.settings_dict['tesseract']['tessdatadir'] == '':
             try:
-                tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"],stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1])
+                tessdatapath = Path(
+                    subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode(
+                        'utf-8').splitlines()[0].split("file ")[1])
                 self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath.parent)
             except Exception as e:
                 logger.warning("Could not find tesseract installation")

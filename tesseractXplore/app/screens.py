@@ -4,8 +4,8 @@ from os.path import join
 from typing import Dict, Any
 
 from kivy.lang import Builder
-from kivymd.uix.screen import MDScreen
 from kivy.uix.boxlayout import BoxLayout
+from kivymd.uix.screen import MDScreen
 
 from tesseractXplore.constants import KV_SRC_DIR
 

@@ -1,7 +1,8 @@
-import attr
 from typing import List, Dict, Optional
 
-from tesseractXplore.constants import ATLAS_APP_ICONS, CC_LICENSES
+import attr
+
+from tesseractXplore.constants import ATLAS_APP_ICONS
 
 kwarg = attr.ib(default=None)
 
@@ -43,6 +44,7 @@ class Model:
     @property
     def icon_path(self) -> str:
         return get_icon_path(1)
+
 
 def get_icon_path(id: int) -> Optional[str]:
     """ An iconic function to return an icon for an iconic model """
