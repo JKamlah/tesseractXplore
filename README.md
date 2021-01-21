@@ -82,9 +82,10 @@ features described below are functional, however.
 See the wiki for details on the python package.
 
 ## Installation
-To install:
+Collecting installation steps:
 ```
 sudo apt-get install python3-sdl2
+pip install cython kivy==2.0.0 kivy-garden.contextmenu https://github.com/JKamlah/KivyMD
 git clone https://github.com/JKamlah/tesseractXplore
 python3 setup.py install
 ```
