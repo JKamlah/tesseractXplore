@@ -16,14 +16,9 @@ def diff_dialog(instance, *args):
     if len(stdout_cache.keys()) == 0:
         alert("No stdout text available.")
         return
-    item = OneLineListItem(
-        id= "First_text",
-        text="Select first text",
-        on_release=partial(select_text, stdout_cache.keys()),
-    )
+    item = OneLineListItem(text="Select first text",on_release=partial(select_text, stdout_cache.keys()))
     layout.add_widget(item)
     item = OneLineListItem(
-        id= "Second_text",
         text="Select second text",
         on_release=partial(select_text, stdout_cache.keys()),
     )

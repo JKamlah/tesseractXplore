@@ -84,6 +84,7 @@ See the wiki for details on the python package.
 ## Installation
 To install:
 ```
+sudo apt-get install python3-sdl2
 git clone https://github.com/JKamlah/tesseractXplore
 python3 setup.py install
 ```

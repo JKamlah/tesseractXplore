@@ -124,13 +124,13 @@
                                     SwitchListItem:
                                         id: subfolder_chk
                             MDGridLayout:
-                                orientation: 'horizontal'
-                                cols: 2
+                                orientation: 'lr-tb'
+                                cols: 3
                                 MDRoundFlatIconButton:
                                     text: 'Find a new model'
                                     disabled: False
-                                    icon: 'find'
-                                    width: dp(200)
+                                    icon: 'magnify'
+                                    #width: dp(400)
                                     on_press:
                                         app.switch_screen('model')
                                # MDRoundFlatIconButton:
@@ -159,7 +159,6 @@
                             font_style: 'H5'
                             markup: True
                             text: '[color=#ffffff][size=21]Image [b]Selection[/b][/size][/color]'
-                            text_color: 'Primary'
 
                         FileChooserListView:
                             id: file_chooser

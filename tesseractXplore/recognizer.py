@@ -58,7 +58,7 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
             dialog = MDDialog(title=pimage.name,
                      type='custom',
                      auto_dismiss=False,
-                     content_cls=TextInput(text=stdout, height=800,readonly=True),
+                     content_cls=TextInput(text=stdout, size_hint_y=None, height=800,readonly=True),
                      buttons=[
                          MDFlatButton(
                              text="EVALUATE", on_release=partial(evaluate_report, stdout)

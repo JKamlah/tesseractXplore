@@ -17,7 +17,7 @@
 		size_hint_max_y: 100
 
     # Main view populated with currently selected screen
-	NavigationLayout:
+	MDNavigationLayout:
 		title: app.title
 		md_bg_color: app.theme_cls.primary_color
 		x: toolbar.height
@@ -80,7 +80,7 @@
 					on_press:
 						app.switch_screen('settings')
 					IconLeftWidget:
-						icon: 'settings'
+						icon: 'apps'
 				OneLineIconListItem:
 					text: 'Exit'
 					on_press:
