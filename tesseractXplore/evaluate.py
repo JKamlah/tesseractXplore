@@ -244,7 +244,7 @@ def evaluate_report(text, *args):
     dialog = MDDialog(title="Report",
                       type='custom',
                       auto_dismiss=False,
-                      content_cls=TextInput(text=report, height=800, readonly=True),
+                      content_cls=TextInput(text=report, size_hint_y=None, height=800, readonly=True),
                       buttons=[
                           MDFlatButton(
                               text="DISCARD", on_release=close_dialog

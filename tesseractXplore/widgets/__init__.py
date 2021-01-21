@@ -24,5 +24,4 @@ from tesseractXplore.widgets.progress_bar import LoaderProgressBar
 from tesseractXplore.widgets.model_autocomplete import ModelAutocompleteSearch
 from tesseractXplore.widgets.zoom import Zoom
 from tesseractXplore.widgets.text import TextInputOCR
-from tesseractXplore.widgets.tooltip import MDTooltip, MDTooltipViewClass
-from tesseractXplore.widgets.tooglebutton import MDToggleButton
+from tesseractXplore.widgets.mdtabs import MDTabsLabel

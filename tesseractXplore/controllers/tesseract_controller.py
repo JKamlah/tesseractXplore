@@ -6,7 +6,7 @@ from tesseractXplore.controllers import Controller, ImageBatchLoader
 from tesseractXplore.recognizer import recognize
 from tesseractXplore.tessprofiles import write_tessprofiles
 
-from subprocess import check_output
+from subprocess import check_output, getstatusoutput
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.dialog import MDDialog
@@ -47,6 +47,7 @@ class TesseractController(Controller):
 
 
     def get_models(self):
+        if  getstatusoutput("tesseract")[0] == 127: return []
         return check_output(["tesseract", "--tessdata-dir", get_app().tessdatadir ,"--list-langs"]).decode('utf-8').splitlines()[1:]
 
     def stop_rec(self, instance):
@@ -220,18 +221,18 @@ class TesseractController(Controller):
         self.screen.tsv.state = 'normal'
 
     def create_dropdown(self, caller, item, callback):
-        return MDDropdownMenu(caller=caller,
+        menu = MDDropdownMenu(caller=caller,
                        items=item,
                        position="center",
-                       width_mult=20,
-                       callback=callback)
+                       width_mult=20)
+        menu.bind(on_release=callback)
+        return menu
 
-
-    def set_psm(self, instance):
+    def set_psm(self, menu, instance, *args):
         self.screen.psm.set_item(instance.text)
         self.psm_menu.dismiss()
 
-    def set_oem(self, instance):
+    def set_oem(self, menu, instance, *args):
         self.screen.oem.set_item(instance.text)
         self.oem_menu.dismiss()
 

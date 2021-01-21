@@ -13,12 +13,9 @@ Images can be loaded via a file chooser window or drag-and-drop. The result full
 * [Development Status](#development-status)
 * [Python Package](#python-package)
 * [GUI](#gui)
-    * [Installation](#gui-installation)
     * [Usage](#gui-usage)
-    * [Image Selection and Tagging](#image-selection-and-tagging)
+    * [Image Selection and OCR](#image-selection-and-ocr)
     * [Model Search](#model-search)
-    * [Saved Species](#saved-species)
-    * [Metadata](#metadata)
     * [Settings](#settings)
     * [Keyboard Shortcuts](#keyboard-shortcuts)
 * [See Also](#see-also)
@@ -85,6 +82,13 @@ features described below are functional, however.
 See the wiki for details on the python package.
 
 ## Installation
+To install:
+```
+sudo apt-get install python3-sdl2
+git clone https://github.com/JKamlah/tesseractXplore
+python3 setup.py install
+```
+<!---
 OS-specific builds will be coming soon, but for now running it requires a local python development
 environment. To install:
 ```
@@ -94,6 +98,7 @@ Some additional dependencies are required on Windows:
 ```
 pip install tesseractXplore[win]
 ```
+-->
 
 The standard text renderer can't display combined glyphs correctly, 
 to do that an alternative text renderer needs to be used e.g. pango2:
@@ -103,6 +108,8 @@ to do that an alternative text renderer needs to be used e.g. pango2:
 2. Recompile kivy. Check that pangoft2 is found `use_pangoft2 = 1`
 3. Test it! Enforce the text core renderer to pango using environment variable:
    `export KIVY_TEXT=pango`
+
+#  GUI
 
 ##  GUI Usage
 

@@ -208,6 +208,7 @@ def get_thumbnail_cache_size() -> Tuple[int, str]:
     """Get the current size of the thumbnail cache, in number of files and human-readable
     total file size
     """
+    makedirs(THUMBNAILS_DIR, exist_ok=True)
     files = [f for f in scandir(THUMBNAILS_DIR) if isfile(f)]
     file_size = sum(getsize(f) for f in files)
     return len(files), format_file_size(file_size)

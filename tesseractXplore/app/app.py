@@ -26,10 +26,8 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 from kivy.core.clipboard import Clipboard
 from kivy.core.window import Window
 from kivy.properties import ObjectProperty
-from kivy.uix.image import Image
 from kivymd.app import MDApp
 
-from tesseractXplore.recognizer import tag_image
 from tesseractXplore.app import alert
 from tesseractXplore.app.screens import HOME_SCREEN, Root, load_screens
 from tesseractXplore.tessprofiles import read_tessprofiles
@@ -186,7 +184,8 @@ class TesseractXplore(MDApp, ControllerProxy):
         Window.bind(on_dropfile=self.drop_trigger)
 
         # Preload atlases so they're immediately available in Kivy cache
-        Image(source=f'{ATLAS_APP_ICONS}/')
+        # TODO: Currently not necessary, but will be in future version
+        #Image(source=f'{ATLAS_APP_ICONS}/')
         # Image(source=f'{ATLAS_TAXON_ICONS}/')
         return self.root
 
@@ -301,11 +300,14 @@ class TesseractXplore(MDApp, ControllerProxy):
 
     def toggle_fullscreen(self, *args):
         """ Enable or disable fullscreen, and change icon"""
-        if Window.fullscreen:
+        # Window fullscreen doesn't work with two displays
+        if self.toolbar.right_action_items[0][0] == 'fullscreen-exit':
+            Window.restore()
             Window.fullscreen = 0
             icon = 'fullscreen'
         else:
-            Window.fullscreen = 'auto'
+            Window.maximize()
+            Window.fullscreen = 'fake' #'auto'
             icon = 'fullscreen-exit'
         self.toolbar.right_action_items[0] = [icon, self.toggle_fullscreen]
 

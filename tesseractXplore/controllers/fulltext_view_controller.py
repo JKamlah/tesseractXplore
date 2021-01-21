@@ -65,11 +65,12 @@ class FulltextViewController:
         widget.current_tab.content.editor.disabled = False
 
     def create_dropdown(self, caller, item, callback):
-        return MDDropdownMenu(caller=caller,
+        menu = MDDropdownMenu(caller=caller,
                        items=item,
                        position="center",
-                       width_mult=20,
-                       callback=callback)
+                       width_mult=20)
+        menu.bind(on_release=callback)
+        return menu
 
     def select_fulltext(self, fulltext):
         self.image.source = fulltext.selected_image.original_source
