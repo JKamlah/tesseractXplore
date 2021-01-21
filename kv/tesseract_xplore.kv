@@ -9,6 +9,13 @@
 
     FloatLayout:
         id: layout
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, .2
+            Rectangle:
+                # self here refers to the widget i.e BoxLayout
+                pos: self.pos
+                size: self.size
         # Right-click context menu for images
         PhotoContextMenu:
             id: context_menu
