@@ -16,6 +16,7 @@ from subprocess import getstatusoutput, check_output
 from sys import platform as _platform
 from kivymd.toast import toast
 from logging import getLogger
+from kivy.properties import Property
 
 from tesseractXplore.constants import PDF_DIR
 
@@ -46,15 +47,18 @@ def pdf_dialog(pdfpath):
     else:
         pages = ""
     layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
-    layout.add_widget(OneLineListItem( text='First page'))
-    layout.add_widget(MDTextField(id="first", text="0", hint_text="First page", height=400))
+    layout.add_widget(OneLineListItem(text='First page'))
+    # id first
+    layout.add_widget(MDTextField(text="0", hint_text="First page", height=400))
     layout.add_widget(OneLineListItem(text='Last page'))
-    layout.add_widget(MDTextField(id="last", text=pages, hint_text="Last page",height=400))
+    # id last
+    layout.add_widget(MDTextField(text=pages, hint_text="Last page",height=400))
     layout.add_widget(OneLineListItem(text='Imageformat (jpg, jp2, png, ppm(default), tiff)'))
 
     from kivymd.uix.boxlayout import MDBoxLayout
     from tesseractXplore.widgets import MyToggleButton
-    boxlayout = MDBoxLayout(id="fileformat",orientation="horizontal", adaptive_height=True)
+    #id = "fileformat"
+    boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
     boxlayout.add_widget(MyToggleButton(text="jpeg",group="imageformat"))
     boxlayout.add_widget(MyToggleButton(text="jp2", group="imageformat"))
     defaulttoggle = MyToggleButton(text="ppm", group="imageformat")
@@ -63,14 +67,17 @@ def pdf_dialog(pdfpath):
     boxlayout.add_widget(MyToggleButton(text="tiff", group="imageformat"))
     layout.add_widget(boxlayout)
     layout.add_widget(OneLineListItem(text='Process to convert PDF to images'))
-    boxlayout = MDBoxLayout(id="converting", orientation="horizontal", adaptive_height=True)
+    # id="converting",
+    boxlayout = MDBoxLayout( orientation="horizontal", adaptive_height=True)
     boxlayout.add_widget(MyToggleButton(text="rendering", group="converting"))
     defaulttoggle = MyToggleButton(text="extraction", group="converting")
     boxlayout.add_widget(defaulttoggle)
     layout.add_widget(boxlayout)
     #layout.add_widget(MDTextField(id="fileformat", text="jpg", hint_text="Fileformat", height=400))
-    pagenumbers = OneLineAvatarListItem(id='include_pagenumber',text='Include page numbers in output file names')
-    pagenumbers.add_widget(SwitchListItem(id='include_pagenumber_chk'))
+    # id='include_pagenumber',
+    pagenumbers = OneLineAvatarListItem(text='Include page numbers in output file names')
+    # id = 'include_pagenumber_chk'
+    pagenumbers.add_widget(SwitchListItem())
     layout.add_widget(pagenumbers)
     dialog = MDDialog(title="Extract images from PDF",
                          type='custom',
@@ -126,20 +133,20 @@ def pdfimages(pdfpath, instance, *args):
     params = []
     children =  instance.parent.parent.parent.parent.content_cls.children
     process = "pdfimages"
-    for child in children:
-        if child.id == "fileformat":
+    for idx, child in enumerate(reversed(children)):
+        if idx == 6:
             for fileformat in child.children:
                 if fileformat.state == 'down':
                     fileformat.text = "j" if fileformat.text == "jpg" and process == "pdfimages" else fileformat.text
                     fileformat.text = "jpeg" if fileformat.text == "jp2" and process == "pdfimages" else fileformat.text
                     params.extend([f"-{fileformat.text}"])
-        if child.id == "first" and child.text != "":
+        if idx==2 and child.text != "":
             params.extend(["-f", child.text])
-        if child.id == "last" and child.text != "":
+        if idx==4 and child.text != "":
             params.extend(["-l", child.text])
-        if child.id == "include_pagenumber" and child.ids['_left_container'].children[0].active:
+        if idx==9 and child.ids['_left_container'].children[0].active:
             params.extend(["-p"])
-        if child.id == "converting":
+        if idx==8:
             for convprocess in child.children:
                 if convprocess.state == 'down':
                     if convprocess.text == "rendering":
