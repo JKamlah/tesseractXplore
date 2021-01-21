@@ -1,8 +1,9 @@
 from kivy.properties import StringProperty
 from kivy.uix.widget import Widget
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.tab import MDTabsBase, MDTabsLabel
-from tesseractXplore.widgets.tooltip import MDTooltip
+#from kivymd.uix.tab import MDTabsBase, MDTabsLabel
+from tesseractXplore.widgets.mdtabs import MDTabsBase, MDTabsLabel
+from kivymd.uix.tooltip import MDTooltip
 
 from tesseractXplore.widgets import truncate
 

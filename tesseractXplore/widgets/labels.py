@@ -1,6 +1,6 @@
 from kivy.properties import ListProperty
 from kivymd.uix.label import MDLabel
-from tesseractXplore.widgets.tooltip import MDTooltip
+from kivymd.uix.tooltip import MDTooltip
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton, ButtonBehavior
 from kivymd.uix.behaviors import RectangularRippleBehavior

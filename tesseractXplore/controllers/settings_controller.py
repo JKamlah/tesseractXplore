@@ -34,7 +34,7 @@ class SettingsController:
                 tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"],stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1])
                 self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath.parent)
             except Exception as e:
-                print(e)
+                logger.warning("Could not find tesseract installation")
                 pass
 
         # Set default locale if it's unset
