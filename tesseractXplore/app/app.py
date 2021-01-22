@@ -176,6 +176,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         Window.left = left
         Window.top = top
         Window.size = INIT_WINDOW_SIZE
+        Window.borderless = 1
         Window.bind(on_keyboard=self.on_keyboard)
         Window.bind(on_request_close=self.on_request_close)
 
@@ -288,6 +289,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         else:
             self.toolbar.left_action_items = [["arrow-left", self.home]]
         self.toolbar.right_action_items = [
+            ['border-all-variant', self.toggle_border],
             ['fullscreen', self.toggle_fullscreen],
             ['dots-vertical', self.open_settings],
         ]
@@ -298,23 +300,35 @@ class TesseractXplore(MDApp, ControllerProxy):
             is_active = self.settings_controller.display['dark_mode']
         self.theme_cls.theme_style = 'Dark' if is_active else 'Light'
 
+    def toggle_border(self, *args):
+        """ Enable or disable fullscreen, and change icon"""
+        # Window fullscreen doesn't work with two displays
+        if self.toolbar.right_action_items[0][0] == 'border-all-variant':
+            Window.borderless = 0
+            icon = 'border-none-variant'
+        else:
+            Window.borderless = 1
+            icon = 'border-all-variant'
+        self.toolbar.right_action_items[0] = [icon, self.toggle_border]
+
     def toggle_fullscreen(self, *args):
         """ Enable or disable fullscreen, and change icon"""
         # Window fullscreen doesn't work with two displays
         if self.toolbar.right_action_items[0][0] == 'fullscreen-exit':
             Window.restore()
-            Window.fullscreen = 0
+            Window.borderless = 0
+            #Window.fullscreen = 0
             icon = 'fullscreen'
         else:
             Window.maximize()
-            Window.fullscreen = 'fake'  # 'auto'
+            Window.borderless = 1
+            #Window.borderless = 1  # 'auto'
             icon = 'fullscreen-exit'
-        self.toolbar.right_action_items[0] = [icon, self.toggle_fullscreen]
+        self.toolbar.right_action_items[1] = [icon, self.toggle_fullscreen]
 
 
 def main():
     TesseractXplore().run()
-
 
 if __name__ == '__main__':
     main()
