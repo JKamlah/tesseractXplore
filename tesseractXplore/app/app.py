@@ -314,15 +314,11 @@ class TesseractXplore(MDApp, ControllerProxy):
     def toggle_fullscreen(self, *args):
         """ Enable or disable fullscreen, and change icon"""
         # Window fullscreen doesn't work with two displays
-        if self.toolbar.right_action_items[0][0] == 'fullscreen-exit':
+        if self.toolbar.right_action_items[1][0] == 'fullscreen-exit':
             Window.restore()
-            Window.borderless = 0
-            #Window.fullscreen = 0
             icon = 'fullscreen'
         else:
             Window.maximize()
-            Window.borderless = 1
-            #Window.borderless = 1  # 'auto'
             icon = 'fullscreen-exit'
         self.toolbar.right_action_items[1] = [icon, self.toggle_fullscreen]
 
