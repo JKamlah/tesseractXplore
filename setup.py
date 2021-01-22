@@ -30,6 +30,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'appdirs',
+        'python-dateutil',
         'attrs',
         'click-help-colors',
         'pillow>=7.0',

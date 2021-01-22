@@ -28,7 +28,7 @@ def pdf_dialog(pdfpath):
         instance.parent.parent.parent.parent.dismiss()
 
     layout = MDList()
-    if getstatusoutput("pdfimages")[0] != 127:
+    if getstatusoutput("pdfimages")[0] not in [1, 127]:
         import re
         pdfinfos = check_output(["pdfimages", "-list", pdfpath]).decode('utf-8')
         pdfinfos = re.sub(r' +', ' ', pdfinfos)
@@ -162,7 +162,7 @@ def pdfimages(pdfpath, instance, *args):
 
 def extract_pdf(pdfpath):
     if _platform not in ["win32", "win64"]:
-        if getstatusoutput("pdfimages")[0] != 127:
+        if getstatusoutput("pdfimages")[0] not in [1, 127]:
             pdf_dialog(pdfpath)
             return pdfpath.split(".")[0]
         else:

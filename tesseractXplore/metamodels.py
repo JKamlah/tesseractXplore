@@ -21,7 +21,7 @@ def read_metamodels() -> Dict[str, Any]:
     if not isfile(MODEL_PATH):
         reset_defaults()
     logger.info(f'Reading settings from {MODEL_PATH}')
-    with open(DEFAULT_MODEL_PATH) as f:
+    with open(DEFAULT_MODEL_PATH, encoding="utf-8") as f:
         return setdefault(yaml.safe_load(f))
 
 
