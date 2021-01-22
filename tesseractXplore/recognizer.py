@@ -48,12 +48,14 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
             for param in app.settings_controller.controls['extra_param'].text.split(' '):
                 params.extend(['-c', param])
         if not outputformats:
-            p1 = Popen(["tesseract", *params, image, 'stdout'], stdout=PIPE)
+            tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
+            p1 = Popen([tesscmd, *params, image, 'stdout'], stdout=PIPE)
         else:
             image_path = Path(image)
             output = image_path.parent.joinpath(image_path.name.rsplit(".", 1)[0]) \
                 if output_folder is None else Path(output_folder).joinpath(image_path.name)
-            p1 = Popen(["tesseract", *params, image_path, output, *outputformats], stdout=PIPE)
+            tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
+            p1 = Popen([tesscmd, *params, image_path, output, *outputformats], stdout=PIPE)
         stdout, stderr = p1.communicate()
         stdout = str(stdout.decode("utf-8"))
         if not outputformats:

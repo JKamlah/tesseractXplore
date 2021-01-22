@@ -80,6 +80,7 @@ class ControllerProxy:
         # Init controllers with references to nested screen objects
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.tessdatadir = self.settings_controller.tesseract['tessdatadir']
+        self.tesspath = self.settings_controller.tesseract['tesspath']
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
         self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
         self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)

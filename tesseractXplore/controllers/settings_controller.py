@@ -2,6 +2,7 @@ import subprocess
 from locale import getdefaultlocale
 from logging import getLogger
 from pathlib import Path
+from sys import platform as _platform
 
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
@@ -27,12 +28,28 @@ class SettingsController:
         self.screen = settings_screen
         self.settings_dict = read_settings()
         # Set tessdatapath
+        if self.settings_dict['tesseract']['tesspath'] == '':
+            if _platform in ["win32","win64"]:
+                from os import environ, path
+                tessfolder = 'Tesseract-OCR\\tesseract.exe'
+                if path.exists(path.join(environ['ProgramFiles(x86)'],tessfolder)):
+                    self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles(x86)'],tessfolder)
+                elif path.exists(path.join(environ['ProgramFiles'],tessfolder)):
+                    self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles'], tessfolder)
+                else:
+                    logger.warning("Please set the path to tesseract.exe manually in the settings window")
+                #self.save_settings()
         if self.settings_dict['tesseract']['tessdatadir'] == '':
             try:
-                tessdatapath = Path(
-                    subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode(
-                        'utf-8').splitlines()[0].split("file ")[1])
-                self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath.parent)
+                if self.settings_dict['tesseract']['tesspath'] != '':
+                    # TODO: It seems that the stderr text here is corrupted needs to be checked again
+                    tessdatapath = Path(subprocess.run([self.settings_dict['tesseract']['tesspath'], "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ",1)[1].rsplit(" ",1)[0])
+                    tessdatapath = Path(Path(self.settings_dict['tesseract']['tesspath']).drive).joinpath(tessdatapath).joinpath('tessdata')
+                    if tessdatapath.exists():
+                        self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                else:
+                    tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1].rsplit(" ",1)[0])
+                    self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
             except Exception as e:
                 logger.warning("Could not find tesseract installation")
                 pass

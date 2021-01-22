@@ -58,8 +58,9 @@ class TesseractController(Controller):
         self.screen.context_menu.ids.recognize_ctx.bind(on_release=self.recognize_single_thread)
 
     def get_models(self):
-        if getstatusoutput("tesseract")[0] in [1, 127]: return []
-        return check_output(["tesseract", "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
+        tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
+        if getstatusoutput(tesscmd)[0] in [1, 127]: return []
+        return check_output([tesscmd, "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
             'utf-8').splitlines()[1:]
 
     def stop_rec(self, instance):

@@ -93,13 +93,17 @@
                     font_style: 'H5'
                     text: 'Extra Tesseract-Settings'
                 TwoLineListItem:
+                    text: 'Path to tesseract'
+                    secondary_text: 'This dir is automatically found, but can be set manually too'
+                MDTextField:
+                    mode: 'rectangle'
+                    id: tesspath
+                TwoLineListItem:
                     text: 'Path to tesseract models (Tessdata)'
                     secondary_text: 'This dir is automatically found, but can be set manually too'
-
                 MDTextField:
                     mode: 'rectangle'
                     id: tessdatadir
-
                 # TODO: ATM not used
                 #OneLineAvatarListItem:
                 #    text: 'Use Path to tesseract'

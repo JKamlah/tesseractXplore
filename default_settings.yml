@@ -25,6 +25,7 @@ tesseract:
   model: null
   psm: null
   oem: null
+  tesspath: ''
   tessdatadir: ''
   do_invert: true
 # Not yet configurable
