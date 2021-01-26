@@ -10,6 +10,7 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
+from kivymd.toast import toast
 from functools import partial
 
 from tesseractXplore.app import get_app
@@ -93,11 +94,12 @@ class ModelViewController(Controller):
             r = requests.get(url)
             with open(outputpath, 'wb') as f:
                 f.write(r.content)
+            toast('Download: Succesful')
             logger.info(f'Download: Succesful')
             # Update Modelslist
             get_app().tesseract_controller.models = get_app().tesseract_controller.get_models()
-        except Exception as e:
-            print(e)
+        except:
+            toast('Download: Error')
             logger.info(f'Download: Error while downloading')
 
 
@@ -172,30 +174,8 @@ class ModelViewController(Controller):
 
     async def load_model_info(self):
         await asyncio.gather(
-            self.load_photo_section(),
             self.load_basic_info_section(),
-            self.load_model(),
         )
-
-    async def load_photo_section(self):
-        """ Load model photo + links """
-        logger.info('Model: Loading photo section')
-        # if self.selected_model.photo_url:
-        #    self.model_photo.source = self.selected_model.photo_url
-
-        # Configure link to iNaturalist page
-        # self.model_link.bind(on_release=lambda *x: webbrowser.open(self.selected_model.link))
-        # self.model_link.tooltip_text = self.selected_model.link
-        # self.model_link.disabled = False
-
-        # Configure 'View parent' button
-        # if self.selected_model.parent:
-        #    self.model_parent_button.disabled = False
-        #    self.model_parent_button.model = self.selected_model
-        #    self.model_parent_button.tooltip_text = f'Go to {self.selected_model.parent.name}'
-        # else:
-        #    self.model_parent_button.disabled = True
-        #    self.model_parent_button.tooltip_text = ''
 
     async def load_basic_info_section(self):
         """ Load basic info for the currently selected model """
@@ -235,30 +215,6 @@ class ModelViewController(Controller):
     #        value = getattr(self.selected_model, k)
     #        item = OneLineListItem(text=f'id: {value}')
     #        self.basic_info.add_widget(item)
-
-    async def load_model(self):
-        """ Populate ancestors and children for the currently selected model """
-        return
-        total_taxa = len(self.selected_model.parent_taxa) + len(self.selected_model.child_taxa)
-
-        # Set up batch loader + event bindings
-        if self.loader:
-            self.loader.cancel()
-        self.loader = ModelBatchLoader()
-        self.start_progress(total_taxa, self.loader)
-
-        # Start loading ancestors
-        # logger.info(f'Model: Loading {len(self.selected_model.parent_taxa)} ancestors')
-        # self.model_ancestors_label.text = _get_label('Ancestors', self.selected_model.parent_taxa)
-        # self.model_ancestors.clear_widgets()
-        # self.loader.add_batch(self.selected_model.parent_taxa_ids, parent=self.model_ancestors)
-
-        # logger.info(f'Model: Loading {len(self.selected_model.child_taxa)} children')
-        # self.model_children_label.text = _get_label('Children', self.selected_model.child_taxa)
-        # self.model_children.clear_widgets()
-        # self.loader.add_batch(self.selected_model.child_taxa_ids, parent=self.model_children)
-
-        self.loader.start_thread()
 
     def on_star(self, button):
         """ Either add or remove a model from the starred list """
