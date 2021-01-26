@@ -59,7 +59,7 @@ class TesseractController(Controller):
 
     def get_models(self):
         tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
-        if getstatusoutput(tesscmd)[0] in [1, 127]: return []
+        if getstatusoutput(tesscmd)[0] in get_app().errorcodes: return []
         return check_output([tesscmd, "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
             'utf-8').splitlines()[1:]
 
@@ -73,24 +73,7 @@ class TesseractController(Controller):
         screen = self.screen
 
         # Init dropdownsettingsmenu
-        # TODO: Rework this mess
-        # menu_items = [
-        #     {
-        #         "icon": "git",
-        #         "text": f"Item {i}",
-        #     }
-        #     for i in range(5)
-        # ]
-        # self.settings_menu = MDDropdownMenu(
-        #     caller=screen.settings_menu, items=menu_items, width_mult=4
-        # )
-        # Init dropdownmenu
-        # psms = [line for line in check_output(["tesseract", "--help-psm"]).decode('utf-8').splitlines()[1:] if
-        #        line.strip() != ""]
         self.psm_menu = self.create_dropdown(screen.psm, [{'text': 'PSM: ' + psm} for psm in self.psms], self.set_psm)
-
-        # oems = [line for line in check_output(["tesseract", "--help-oem"]).decode('utf-8').splitlines()[1:] if
-        #        line.strip() != ""]
         self.oem_menu = self.create_dropdown(screen.oem, [{'text': 'OEM: ' + oem} for oem in self.oems], self.set_oem)
 
     def disable_rec(self, instance, *args):
