@@ -2,9 +2,15 @@ import asyncio
 from logging import getLogger
 from pathlib import Path
 from typing import List
+from sys import platform as _platform
 
 import requests
 from kivymd.uix.list import OneLineListItem
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.textfield import MDTextField
+from kivymd.uix.button import MDFlatButton
+from functools import partial
 
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller, ModelBatchLoader
@@ -23,35 +29,77 @@ class ModelViewController(Controller):
         # Controls
         # self.model_link = screen.model_links.ids.selected_model_link_button
         self.download_button = screen.model_links.ids.download_button
-        self.download_button.bind(on_release=lambda x: self.download_model())
+        self.download_button.bind(on_release=lambda x: self.check_downlaod_model())
 
         # Outputs
         self.selected_model = None
-        # self.model_photo = screen.selected_model_photo
-        # self.model_ancestors_label = screen.model_section.ids.model_ancestors_label
-        # self.model_children_label = screen.model_section.ids.model_children_label
-        # self.model_ancestors = screen.model_section.ids.model_ancestors
-        # self.model_children = screen.model_section.ids.model_children
 
-    def download_model(self, model_obj: Model = None, model_dict: dict = None, id: int = None, if_empty: bool = False):
+    def check_downlaod_model(self):
+        outputpath = Path(self.screen.tessdatadir.text).joinpath(self.screen.filename.text).absolute()
+        if outputpath.exists():
+            self.overwrite_existing_file_dialog(outputpath)
+        else:
+            self.download_model(outputpath)
+
+    def overwrite_existing_file_dialog(self, outputpath):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+        layout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
+        layout.add_widget(OneLineListItem(text=str(outputpath.absolute())))
+        dialog = MDDialog(title="Overwrite existing destination file?",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=layout,
+                          buttons=[
+                              MDFlatButton(
+                                  text="OVERWRITE", on_release=partial(self.start_download_model, outputpath)
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        dialog.content_cls.focused = True
+        dialog.open()
+
+    def start_download_model(self, outputpath, instance):
+        instance.parent.parent.parent.parent.dismiss()
+        self.download_model(outputpath)
+
+    def download_model(self, outputpath):
         if self.screen.best_toggle.state == 'down':
             url = self.selected_model.url['best']['url']
         else:
             url = self.selected_model.url['fast']['url']
         url += self.selected_model.model['name']
-        outputpath = Path(self.screen.tessdatadir.text).joinpath(self.screen.filename.text).absolute()
         logger.info(f'Download: {url} -> {str(outputpath)}')
+        if outputpath.parent.exists():
+            if not self.check_folder_access(outputpath.parent):
+                return self.unlock_folder_dialog(outputpath.parent, outputpath, url)
+        else:
+            try:
+                outputpath.parent.mkdir(parents=True)
+            except PermissionError:
+                mainfolder = self.get_permitted_folder(outputpath)
+                if not self.check_folder_access(mainfolder):
+                    return self.unlock_folder_dialog(mainfolder, outputpath, url)
+                logger.warning("Could not create folder '%s'", outputpath)
+            except:
+                logger.warning("Could not create folder '%s'", outputpath)
+        self._dl_model(url,outputpath)
+
+    def _dl_model(self, url, outputpath):
         try:
             r = requests.get(url)
-            if not outputpath.parent.exists():
-                outputpath.parent.mkdir(parents=True)
             with open(outputpath, 'wb') as f:
                 f.write(r.content)
             logger.info(f'Download: Succesful')
             # Update Modelslist
             get_app().tesseract_controller.models = get_app().tesseract_controller.get_models()
-        except:
+        except Exception as e:
+            print(e)
             logger.info(f'Download: Error while downloading')
+
 
     def select_model(self, model_obj: Model = None, model_dict: dict = None, id: int = None, if_empty: bool = False):
         """ Update model info display by either object, ID, partial record, or complete record """
@@ -74,6 +122,53 @@ class ModelViewController(Controller):
         # Add to model history, and update model id on image selector screen
         get_app().update_history(self.selected_model.id)
         get_app().select_model_from_photo(self.selected_model.id)
+
+    def check_folder_access(self, folderpath):
+        import os
+        if not os.access(folderpath, os.W_OK) and _platform not in ["win32", "win64"]:
+            return False
+        return True
+
+    def get_permitted_folder(self, outputpath):
+        mainfolder = outputpath.parent
+        while not mainfolder.exists():
+            mainfolder = mainfolder.parent
+        return mainfolder
+
+
+    def unlock_folder_dialog(self, folderpath, outputpath, url):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+        layout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
+        layout.add_widget(MDTextField(hint_text="Password",password=True))
+        dialog = MDDialog(title="Enter sudo password to change the rights of the destination folder",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=layout,
+                          buttons=[
+                              MDFlatButton(
+                                  text="ENTER", on_release=partial(self.unlock_folder, folderpath, outputpath, url)
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        dialog.content_cls.focused = True
+        dialog.open()
+
+    def unlock_folder(self, folderpath, outputpath, url, instance, *args):
+        from subprocess import Popen, PIPE,DEVNULL, STDOUT
+        pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
+        instance.parent.parent.parent.parent.dismiss()
+        set_userrights = Popen(['sudo', '-S', 'chmod', 'o+rw', str(folderpath.absolute())],
+                               stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
+        set_userrights.stdin.write(bytes(pwd,'utf-8'))
+        set_userrights.communicate()
+        if not outputpath.parent.exists():
+            outputpath.parent.mkdir(parents=True)
+        self._dl_model(url,outputpath)
+        return
 
     async def load_model_info(self):
         await asyncio.gather(

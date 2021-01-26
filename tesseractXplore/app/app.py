@@ -3,6 +3,7 @@ import asyncio
 import os
 from logging import getLogger
 from threading import Thread
+from sys import platform as _platform
 
 from tesseractXplore.settings import read_settings
 
@@ -77,6 +78,9 @@ class ControllerProxy:
     diffstdout_controller = ObjectProperty()
 
     def init_controllers(self, screens):
+        # Init OS-specific errorcodes
+        self.errorcodes = [1,127] if _platform in ["win32","win64"] else [127]
+
         # Init controllers with references to nested screen objects
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.tessdatadir = self.settings_controller.tesseract['tessdatadir']
@@ -109,6 +113,7 @@ class ControllerProxy:
         self.locale = self.settings_controller.locale
         self.username = self.settings_controller.username
         self.password = self.settings_controller.password
+
 
         self.image_selection_controller.post_init()
         self.model_selection_controller.post_init()
