@@ -158,21 +158,25 @@ def extract_pdf(pdfpath):
             pdf_dialog(pdfpath)
             return pdfpath.split(".")[0]
         else:
-            toast("Please install poppler-utils to work convert PDFs to images")
+            toast("Please install Poppler-utils to work convert PDFs to images with:")
+            toast("sudo apt-get install poppler-utils")
     else:
         pdftoolpath = Path(PDF_DIR)
         if not pdftoolpath.exists():
             # TODO: Don work atm properly and use the official site
-            url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-20.12.1-h7cbfaf2_0.tar.bz2'
             try:
-                import requests, zipfile, io
-                r = requests.get(url, stream=True)
-                pdftoolpath.mkdir(parents=True)
-                z = zipfile.ZipFile(io.BytesIO(r.content))
-                z.extractall(str(pdftoolpath.absolute()))
-                logger.info(f'Download: Succesful')
-                # Update Modelslist
-                get_app().tesseract_controller.models = get_app().tesseract_controller.get_models()
+                install_win(pdftoolpath)
+                pdf_dialog(pdfpath)
             except:
                 logger.info(f'Download: Error while downloading')
     return pdfpath
+
+def install_win(pdftoolpath):
+    import requests, zipfile, io
+    url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.89.0-h3772339_5.zip'
+    r = requests.get(url, stream=True)
+    pdftoolpath.mkdir(parents=True)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    z.extractall(str(pdftoolpath.absolute()))
+    toast('Download: Poppler succesful')
+    logger.info(f'Download: Succesful')
