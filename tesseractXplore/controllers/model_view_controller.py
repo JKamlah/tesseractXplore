@@ -30,12 +30,12 @@ class ModelViewController(Controller):
         # Controls
         # self.model_link = screen.model_links.ids.selected_model_link_button
         self.download_button = screen.model_links.ids.download_button
-        self.download_button.bind(on_release=lambda x: self.check_downlaod_model())
+        self.download_button.bind(on_release=lambda x: self.check_download_model())
 
         # Outputs
         self.selected_model = None
 
-    def check_downlaod_model(self):
+    def check_download_model(self):
         outputpath = Path(self.screen.tessdatadir.text).joinpath(self.screen.filename.text).absolute()
         if outputpath.exists():
             self.overwrite_existing_file_dialog(outputpath)
@@ -127,7 +127,7 @@ class ModelViewController(Controller):
 
     def check_folder_access(self, folderpath):
         import os
-        if not os.access(folderpath, os.W_OK) and _platform not in ["win32", "win64"]:
+        if not os.access(folderpath, os.W_OK):
             return False
         return True
 
@@ -163,9 +163,16 @@ class ModelViewController(Controller):
         from subprocess import Popen, PIPE,DEVNULL, STDOUT
         pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
         instance.parent.parent.parent.parent.dismiss()
-        set_userrights = Popen(['sudo', '-S', 'chmod', 'o+rw', str(folderpath.absolute())],
+        if _platform not in ["win32", "win64"]:
+            set_userrights = Popen(['sudo', '-S', 'chmod', 'o+rw', str(folderpath.absolute())],
                                stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
-        set_userrights.stdin.write(bytes(pwd,'utf-8'))
+        else:
+            toast(f"Please set write rights for the current user to folder {folderpath}")
+            return
+            # TODO: Make the cmd run
+            #set_userrights = Popen(['runas', '/noprofile', '/user:Administrator', 'NeedsAdminPrivilege.exe'],
+            #                       stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
+        set_userrights.stdin.write(bytes(pwd, 'utf-8'))
         set_userrights.communicate()
         if not outputpath.parent.exists():
             outputpath.parent.mkdir(parents=True)

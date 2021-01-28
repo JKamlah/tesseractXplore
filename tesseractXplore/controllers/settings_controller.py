@@ -44,9 +44,12 @@ class SettingsController:
                 if self.settings_dict['tesseract']['tesspath'] != '':
                     # TODO: It seems that the stderr text here is corrupted needs to be checked again
                     tessdatapath = Path(subprocess.run([self.settings_dict['tesseract']['tesspath'], "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ",1)[1].rsplit(" ",1)[0])
-                    tessdatapath = Path(Path(self.settings_dict['tesseract']['tesspath']).drive).joinpath(tessdatapath).joinpath('tessdata')
                     if tessdatapath.exists():
                         self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                    else:
+                        tessdatapath = Path(Path(self.settings_dict['tesseract']['tesspath']).drive).joinpath(tessdatapath).joinpath('tessdata')
+                        if tessdatapath.exists():
+                            self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
                 else:
                     tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1].rsplit(" ",1)[0])
                     self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
