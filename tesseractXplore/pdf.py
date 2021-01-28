@@ -24,13 +24,13 @@ from tesseractXplore.widgets.progressbar import MDProgressBar
 logger = getLogger().getChild(__name__)
 
 
-def pdf_dialog(pdfpath):
+def pdf_dialog(pdfpath,cmds):
     # Called by image_glob.py
     def close_dialog(instance, *args):
         instance.parent.parent.parent.parent.dismiss()
 
     layout = MDList()
-    pdfinfos = check_output(["pdfimages", "-list", pdfpath]).decode('utf-8')
+    pdfinfos = check_output([cmds["pdfimages"], "-list", pdfpath]).decode('utf-8')
     pdfinfos = re.sub(r' +', ' ', pdfinfos)
     pdfinfos = pdfinfos.split("\n")[2:-1]
     pages = str(len(pdfinfos))
@@ -39,7 +39,7 @@ def pdf_dialog(pdfpath):
         from collections import Counter
         dpi = Counter(dpis).most_common(1)[0][0]
     else:
-        pdfinfos = check_output(["pdfinfo", pdfpath]).decode('utf-8')
+        pdfinfos = check_output([cmds["pdfinfo"], pdfpath]).decode('utf-8')
         pages = pdfinfos.split("\n")[9].split(": ")[-1].strip()
         dpi = 300
     layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
@@ -78,7 +78,7 @@ def pdf_dialog(pdfpath):
                       content_cls=layout,
                       buttons=[
                           MDFlatButton(
-                              text="CREATE IMAGES", on_release=partial(pdfimages_threading, pdfpath)
+                              text="CREATE IMAGES", on_release=partial(pdfimages_threading, pdfpath, cmds)
                           ),
                           MDFlatButton(
                               text="VIEW PDF", on_release=partial(open_pdf, pdfpath)
@@ -93,9 +93,9 @@ def pdf_dialog(pdfpath):
     dialog.open()
 
 
-def pdfimages_threading(pdfpath, instance, *args):
+def pdfimages_threading(pdfpath, cmds, instance, *args):
     instance.parent.parent.parent.parent.dismiss()
-    pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, instance, args))
+    pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, args))
     pdfimages_thread.setDaemon(True)
     pdfimages_thread.start()
 
@@ -114,7 +114,7 @@ def open_pdf(fname, *args):
             pass
 
 
-def pdfimages(pdfpath, instance, *args):
+def pdfimages(pdfpath, cmds, instance, *args):
     pb = MDProgressBar(color=get_app().theme_cls.primary_color, type="indeterminate")
     status_bar = get_app().image_selection_controller.status_bar
     status_bar.clear_widgets()
@@ -124,7 +124,7 @@ def pdfimages(pdfpath, instance, *args):
     makedirs(pdfdir, exist_ok=True)
     params = []
     children = instance.parent.parent.parent.parent.content_cls.children
-    process = "pdfimages"
+    process = cmds["pdfimages"]
     for idx, child in enumerate(reversed(children)):
         if idx == 6:
             for fileformat in child.children:
@@ -142,9 +142,9 @@ def pdfimages(pdfpath, instance, *args):
             for convprocess in child.children:
                 if convprocess.state == 'down':
                     if convprocess.text == "rendering":
-                        process = "pdftoppm"
+                        process = cmds["pdftoppm"]
                     else:
-                        process = "pdfimages"
+                        process = cmds["pdfimages"]
     p1 = Popen([process, *params, pdfpath, pdfdir.joinpath(pdfdir.name)])
     p1.communicate()
     get_app().image_selection_controller.file_chooser._update_files()
@@ -155,6 +155,9 @@ def pdfimages(pdfpath, instance, *args):
 def extract_pdf(pdfpath):
     if _platform not in ["win32", "win64"]:
         if getstatusoutput("pdfimages")[0] not in [1, 127]:
+            cmds ={"pdfimages":"pdfimages",
+                   "pdfinfo":"pdfinfo",
+                   "pdftoppm":"pdftoppm"}
             pdf_dialog(pdfpath)
             return pdfpath.split(".")[0]
         else:
@@ -166,14 +169,20 @@ def extract_pdf(pdfpath):
             # TODO: Don work atm properly and use the official site
             try:
                 install_win(pdftoolpath)
-                pdf_dialog(pdfpath)
             except:
                 logger.info(f'Download: Error while downloading')
+                return
+        binpath = list(pdftoolpath.glob("./**/**/bin"))[0]
+        cmds = {"pdfimages": str(binpath.joinpath("pdfimages.exe").absolute()),
+                "pdfinfo": str(binpath.joinpath("pdfinfo.exe").absolute()),
+                "pdftoppm": str(binpath.joinpath("pdftoppm.exe").absolute())}
+        pdf_dialog(pdfpath,cmds)
     return pdfpath
 
 def install_win(pdftoolpath):
     import requests, zipfile, io
-    url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.89.0-h3772339_5.zip'
+    url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'
+    #url = 'http://blog.alivate.com.au/wp-content/uploads/2018/10/poppler-0.68.0_x86.7z'
     r = requests.get(url, stream=True)
     pdftoolpath.mkdir(parents=True)
     z = zipfile.ZipFile(io.BytesIO(r.content))
