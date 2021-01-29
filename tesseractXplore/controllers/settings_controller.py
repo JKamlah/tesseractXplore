@@ -16,6 +16,8 @@ from tesseractXplore.settings import (
 )
 from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
 from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
+from tesseractXplore.tesseract import install_tesseract_dialog
+
 
 logger = getLogger().getChild(__name__)
 
@@ -28,34 +30,11 @@ class SettingsController:
         self.screen = settings_screen
         self.settings_dict = read_settings()
         # Set tessdatapath
-        if self.settings_dict['tesseract']['tesspath'] == '':
-            if _platform in ["win32","win64"]:
-                from os import environ, path
-                tessfolder = 'Tesseract-OCR\\tesseract.exe'
-                if path.exists(path.join(environ['ProgramFiles(x86)'],tessfolder)):
-                    self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles(x86)'],tessfolder)
-                elif path.exists(path.join(environ['ProgramFiles'],tessfolder)):
-                    self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles'], tessfolder)
-                else:
-                    logger.warning("Please set the path to tesseract.exe manually in the settings window")
-                #self.save_settings()
-        if self.settings_dict['tesseract']['tessdatadir'] == '':
-            try:
-                if self.settings_dict['tesseract']['tesspath'] != '':
-                    # TODO: It seems that the stderr text here is corrupted needs to be checked again
-                    tessdatapath = Path(subprocess.run([self.settings_dict['tesseract']['tesspath'], "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ",1)[1].rsplit(" ",1)[0])
-                    if tessdatapath.exists():
-                        self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
-                    else:
-                        tessdatapath = Path(Path(self.settings_dict['tesseract']['tesspath']).drive).joinpath(tessdatapath).joinpath('tessdata')
-                        if tessdatapath.exists():
-                            self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
-                else:
-                    tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1].rsplit(" ",1)[0])
-                    self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
-            except Exception as e:
-                logger.warning("Could not find tesseract installation")
-                pass
+        if self.set_tesspaths():
+            self.screen.install_tesseract_btn.disabled = True
+
+        # Install tesseract
+        self.install_tesseract_dialog = install_tesseract_dialog
 
         # Set default locale if it's unset
         if self.account['locale'] is None:
@@ -82,6 +61,38 @@ class SettingsController:
         self.screen.clear_thumbnail_cache_button.bind(on_release=self.clear_thumbnail_cache)
 
         Clock.schedule_once(self.update_cache_sizes, 5)
+
+    def set_tesspaths(self):
+        if self.settings_dict['tesseract']['tesspath'] == '':
+            if _platform in ["win32","win64"]:
+                from os import environ, path
+                tessfolder = 'Tesseract-OCR\\tesseract.exe'
+                if path.exists(path.join(environ['ProgramFiles(x86)'],tessfolder)):
+                    self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles(x86)'],tessfolder)
+                elif path.exists(path.join(environ['ProgramFiles'],tessfolder)):
+                    self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles'], tessfolder)
+                else:
+                    logger.warning("Please set the path to tesseract.exe manually in the settings window")
+                    return False
+                #self.save_settings()
+        if self.settings_dict['tesseract']['tessdatadir'] == '':
+            try:
+                if self.settings_dict['tesseract']['tesspath'] != '':
+                    # TODO: It seems that the stderr text here is corrupted needs to be checked again
+                    tessdatapath = Path(subprocess.run([self.settings_dict['tesseract']['tesspath'], "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ",1)[1].rsplit(" ",1)[0])
+                    if tessdatapath.exists():
+                        self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                    else:
+                        tessdatapath = Path(Path(self.settings_dict['tesseract']['tesspath']).drive).joinpath(tessdatapath).joinpath('tessdata')
+                        if tessdatapath.exists():
+                            self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                else:
+                    tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1].rsplit(" ",1)[0])
+                    self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+            except:
+                logger.warning("Could not find tesseract installation")
+                return False
+        return True
 
     def clear_thumbnail_cache(self, *args):
         logger.info('Settings: Clearing thumbnail cache')

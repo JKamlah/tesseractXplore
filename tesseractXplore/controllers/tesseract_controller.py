@@ -59,9 +59,11 @@ class TesseractController(Controller):
 
     def get_models(self):
         tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
-        if getstatusoutput(tesscmd)[0] in [127]: return []
-        return check_output([tesscmd, "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
-            'utf-8').splitlines()[1:]
+        try:
+            return check_output([tesscmd, "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
+                'utf-8').splitlines()[1:]
+        except:
+            return []
 
     def stop_rec(self, instance):
         """ Unschedule progress event and log total execution time """

@@ -92,6 +92,11 @@
                 OneLineListItem:
                     font_style: 'H5'
                     text: 'Extra Tesseract-Settings'
+                MDRaisedButton:
+                    id: install_tesseract_btn
+                    text: "Install tesseract"
+                    on_press:
+                        app.settings_controller.install_tesseract_dialog()
                 TwoLineListItem:
                     text: 'Path to tesseract'
                     secondary_text: 'This dir is automatically found, but can be set manually too'
