@@ -181,7 +181,6 @@ class TesseractXplore(MDApp, ControllerProxy):
         Window.left = left
         Window.top = top
         Window.size = INIT_WINDOW_SIZE
-        Window.borderless = 1
         Window.bind(on_keyboard=self.on_keyboard)
         Window.bind(on_request_close=self.on_request_close)
 
@@ -294,7 +293,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         else:
             self.toolbar.left_action_items = [["arrow-left", self.home]]
         self.toolbar.right_action_items = [
-            ['border-all-variant', self.toggle_border],
+            ['border-none-variant', self.toggle_border],
             ['fullscreen', self.toggle_fullscreen],
             ['dots-vertical', self.open_settings],
         ]
