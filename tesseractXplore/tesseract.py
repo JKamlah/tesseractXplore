@@ -1,6 +1,7 @@
 from logging import getLogger
 from sys import platform as _platform
 from subprocess import Popen, run, PIPE,DEVNULL, STDOUT
+from os import startfile
 from pathlib import Path
 
 import requests
@@ -13,6 +14,7 @@ from kivymd.toast import toast
 from functools import partial
 
 from tesseractXplore.constants import DATA_DIR
+from tesseractXplore.app import get_app
 
 
 logger = getLogger().getChild(__name__)
@@ -49,10 +51,11 @@ def install_tesseract(instance):
 
 def install_win():
     try:
+        get = get_app()
         if _platform == "win32":
-            url = "https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w32-setup-v5.0.0-alpha.20201127.exe"
+            url = get_app().settings_controller.tesseract['win32url']
         else:
-            url = "https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.0.0-alpha.20201127.exe"
+            url = get_app().settings_controller.tesseract['win64url']
         r = requests.get(url)
         fout = Path(DATA_DIR).joinpath("tesseract.exe")
         logger.info(fout)
@@ -60,8 +63,8 @@ def install_win():
             f.write(r.content)
         toast('Download: Succesful')
         logger.info(f'Download: Succesful')
-        from os import startfile
         startfile(fout)
+        get_app().stop()
     except Exception as e:
         print(e)
         toast('Download: Error')
@@ -96,4 +99,5 @@ def install_unix(instance, *args):
                            stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
     install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
     install_tesseract.communicate()
+    get_app().stop()
     return
