@@ -1,6 +1,6 @@
 from logging import getLogger
 from sys import platform as _platform
-from subprocess import Popen, run, PIPE,DEVNULL, STDOUT
+from subprocess import Popen, PIPE,DEVNULL, STDOUT
 from os import startfile
 from pathlib import Path
 
@@ -13,7 +13,6 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.toast import toast
 from functools import partial
 
-from tesseractXplore.constants import DATA_DIR
 from tesseractXplore.app import get_app
 
 
@@ -51,14 +50,14 @@ def install_tesseract(instance):
 
 def install_win():
     try:
-        get = get_app()
         if _platform == "win32":
             url = get_app().settings_controller.tesseract['win32url']
         else:
             url = get_app().settings_controller.tesseract['win64url']
         r = requests.get(url)
-        fout = Path(DATA_DIR).joinpath("tesseract.exe")
-        logger.info(fout)
+        import tempfile
+        fout = Path(tempfile.gettempdir()).joinpath("tesseract.exe")
+        logger.info(f"Creating: {fout}")
         with open(fout, 'wb') as f:
             f.write(r.content)
         toast('Download: Succesful')
