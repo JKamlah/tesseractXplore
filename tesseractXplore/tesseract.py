@@ -1,7 +1,6 @@
 from logging import getLogger
 from sys import platform as _platform
 from subprocess import Popen, PIPE,DEVNULL, STDOUT
-from os import startfile
 from pathlib import Path
 
 import requests
@@ -56,6 +55,7 @@ def install_win():
             url = get_app().settings_controller.tesseract['win64url']
         r = requests.get(url)
         import tempfile
+        from os import startfile
         fout = Path(tempfile.gettempdir()).joinpath("tesseract.exe")
         logger.info(f"Creating: {fout}")
         with open(fout, 'wb') as f:

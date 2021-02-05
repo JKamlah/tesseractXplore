@@ -129,8 +129,6 @@ def pdfimages(pdfpath, cmds, instance, *args):
         if idx == 6:
             for fileformat in child.children:
                 if fileformat.state == 'down':
-                    fileformat.text = "j" if fileformat.text == "jpeg" and process == "pdfimages" else fileformat.text
-                    fileformat.text = "jpeg" if fileformat.text == "jp2" and process == "pdfimages" else fileformat.text
                     params.extend([f"-{fileformat.text}"])
         if idx == 2 and child.text != "":
             params.extend(["-f", child.text])
@@ -145,6 +143,8 @@ def pdfimages(pdfpath, cmds, instance, *args):
                         process = cmds["pdftoppm"]
                     else:
                         process = cmds["pdfimages"]
+                        fileformat.text = "j" if fileformat.text == "jpeg" else fileformat.text
+                        fileformat.text = "jpeg" if fileformat.text == "jp2" else fileformat.text
     p1 = Popen([process, *params, pdfpath, pdfdir.joinpath(pdfdir.name)])
     p1.communicate()
     get_app().image_selection_controller.file_chooser._update_files()
@@ -158,7 +158,7 @@ def extract_pdf(pdfpath):
             cmds ={"pdfimages":"pdfimages",
                    "pdfinfo":"pdfinfo",
                    "pdftoppm":"pdftoppm"}
-            pdf_dialog(pdfpath)
+            pdf_dialog(pdfpath, cmds)
             return pdfpath.split(".")[0]
         else:
             toast("Please install Poppler-utils to work convert PDFs to images with:")
