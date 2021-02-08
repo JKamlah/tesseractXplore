@@ -8,6 +8,7 @@ from tesseractXplore import __version__
 # Resource directories
 PKG_DIR = dirname(dirname(__file__))
 ASSETS_DIR = join(PKG_DIR, 'assets', '')
+METADATA_DIR = join(ASSETS_DIR, 'metadata', '')
 KV_SRC_DIR = join(PKG_DIR, 'kv')
 ICONS_DIR = join(ASSETS_DIR, 'icons')
 DATA_DIR = join(user_data_dir(), 'TesseractXplore')
@@ -52,12 +53,12 @@ CACHE_DIR = join(DATA_DIR, 'stdout')
 
 # Config files
 CONFIG_PATH = join(DATA_DIR, 'settings.yml')
-DEFAULT_CONFIG_PATH = join(PKG_DIR, 'default_settings.yml')
+DEFAULT_CONFIG_PATH = join(METADATA_DIR, 'default_settings.yml')
 TESSPROFILE_PATH = join(DATA_DIR, 'tessprofiles.json')
 
 # Model file
 MODEL_PATH = join(DATA_DIR, 'metadata_modellist.yml')
-DEFAULT_MODEL_PATH = join(PKG_DIR, 'default_metadata_modellist.yml')
+DEFAULT_MODEL_PATH = join(METADATA_DIR, 'default_metadata_modellist.yml')
 
 # URLs / API settings
 USER_AGENT = f'tesseract-xplore/{__version__};'.lower()

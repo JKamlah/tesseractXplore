@@ -1,3 +1,6 @@
+[build-system]
+requires = ['setuptools', 'wheel']
+
 [tool.black]
-line-length = 100
 skip-string-normalization = true
+line-length = 100

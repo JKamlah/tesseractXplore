@@ -1,4 +1,6 @@
 include *.kv
 include default-settings.yml
+graft kv
+graft assets
 recursive-include assets *
 recursive-exclude assets/iconic_taxa *
