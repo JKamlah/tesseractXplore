@@ -82,18 +82,26 @@ features described below are functional, however.
 See the wiki for details on the python package.
 
 ## Installation
-Collecting installation steps:
+It is recommended to use a virtual environment:
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+
 Linux/OS:
 ```
 sudo apt-get install python3-sdl2
 pip install --upgrade pip
-pip install -r requirements
+pip install .[app]
 ```
+If you use zsh-commandline you need to escape brackets with backslash!
+
 Windows (don't install kivy-gstreamer!):
 ```
 pip install --upgrade pip
-pip install -r requirements
+pip install .[all-win]
 ```
+
 <!---
 OS-specific builds will be coming soon, but for now running it requires a local python development
 environment. To install:
@@ -118,7 +126,10 @@ to do that an alternative text renderer needs to be used e.g. pango2:
 #  GUI
 
 ##  GUI Usage
-
+Start the GUI:
+```
+tesseractXplore
+```
 ### Image Selection and OCR 
 The basic UI components are shown below:
 ![Screenshot](assets/screenshots/tesseractXplore.png)
