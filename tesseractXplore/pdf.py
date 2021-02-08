@@ -18,7 +18,7 @@ from tesseractXplore.widgets import MyToggleButton
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.constants import PDF_DIR
 from tesseractXplore.widgets.lists import SwitchListItem
-from tesseractXplore.widgets.progressbar import MDProgressBar
+from kivymd.uix.progressbar import MDProgressBar
 
 
 logger = getLogger().getChild(__name__)

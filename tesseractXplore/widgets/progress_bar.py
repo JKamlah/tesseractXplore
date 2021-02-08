@@ -2,7 +2,7 @@ from logging import getLogger
 
 from kivy.animation import Animation
 
-from tesseractXplore.widgets.progressbar import MDProgressBar
+from kivymd.uix.progressbar import MDProgressBar
 
 FINISHED_COLOR = .1, .8, .1, 1
 REMOVED_COLOR = 0, 0, 0, 0

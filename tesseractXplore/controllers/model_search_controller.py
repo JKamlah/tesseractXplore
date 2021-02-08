@@ -66,7 +66,6 @@ class ModelSearchController(Controller):
 
     def search(self, *args):
         """ Run a search with the currently selected search parameters """
-
         # asyncio.run(self._search())
 
     # TODO: Paginated results

@@ -1,0 +1,15 @@
+cython
+kivy
+kivymd
+kivy-garden.contextmenu
+pygments
+appdirs
+attrs
+click-help-colors
+pillow
+pyexiv2
+pyyaml
+lxml
+requests
+xmltodict
+python-dateutil

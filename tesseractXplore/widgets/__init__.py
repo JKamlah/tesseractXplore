@@ -25,5 +25,4 @@ from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, P
 from tesseractXplore.widgets.model_autocomplete import ModelAutocompleteSearch
 from tesseractXplore.widgets.progress_bar import LoaderProgressBar
 from tesseractXplore.widgets.tabs import Tab
-from tesseractXplore.widgets.text import TextInputOCR
 from tesseractXplore.widgets.zoom import Zoom
