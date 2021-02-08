@@ -5,12 +5,19 @@ from setuptools import setup, find_packages
 from tesseractXplore import __version__
 
 extras_require = {  # noqa
-    'app': ['kivy',
-            'KivyMD @ git://github.com/kivymd/KivyMD.git@29e07fe094522bb2aad5a0f3ce311f65c7b2a869#egg=KivyMD',
+    'app': ['cython',
+            'kivy',
             'kivy-garden.contextmenu',
             'pygments'],
     'build': ['coveralls', 'twine', 'wheel'],
-    'dev': [
+}
+extras_require['all'] = list(chain.from_iterable(extras_require.values()))
+extras_require['app-win'] = [
+    'pypiwin32',
+    'kivy_deps.sdl2',
+    'kivy_deps.angle']
+extras_require['all-win'] = extras_require['all'] + extras_require['app-win']
+extras_require['dev'] = [
         'black==20.8b1',
         'flake8',
         'isort',
@@ -23,15 +30,9 @@ extras_require = {  # noqa
         'prettyprinter',
         'Sphinx~=3.2.1',
         'sphinx-rtd-theme',
-        'sphinxcontrib-apidoc',
-    ],
-}
-extras_require['all'] = list(chain.from_iterable(extras_require.values()))
-extras_require['app-win'] = [
-    'pypiwin32',
-    'kivy_deps.sdl2',
-    'kivy_deps.angle']
-extras_require['all-win'] = extras_require['all'] + extras_require['app-win']
+        'sphinxcontrib-apidoc']
+extras_require['all-win-dev'] = extras_require['all-win'] + extras_require['dev']
+extras_require['all-dev'] = extras_require['all'] + extras_require['dev']
 
 
 # To install kivy dev version on python 3.8:
@@ -53,6 +54,11 @@ setup(
         'lxml',
         'requests',
         'xmltodict',
+        'cython',
+        'kivy',
+        'kivy-garden.contextmenu',
+        'pygments',
+        'KivyMD @ git+https://github.com/kivymd/KivyMD.git@29e07fe094522bb2aad5a0f3ce311f65c7b2a869#egg=KivyMD',
     ],
     extras_require=extras_require,
     entry_points={
