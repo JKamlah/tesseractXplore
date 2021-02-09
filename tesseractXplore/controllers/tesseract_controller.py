@@ -50,6 +50,7 @@ class TesseractController(Controller):
         self.screen.pause_button.bind(on_press=self.stop_rec)
         self.screen.model.bind(on_release=get_app().image_selection_controller.get_model)
         self.models = self.get_models()
+        self.print_on_screen = False
         self.ocr_event = None
         self.ocr_stop = False
         self.last_rec_time = time.time()
@@ -73,7 +74,6 @@ class TesseractController(Controller):
 
     def init_dropdown(self):
         screen = self.screen
-
         # Init dropdownsettingsmenu
         self.psm_menu = self.create_dropdown(screen.psm, [{'text': 'PSM: ' + psm} for psm in self.psms], self.set_psm)
         self.oem_menu = self.create_dropdown(screen.oem, [{'text': 'OEM: ' + oem} for oem in self.oems], self.set_oem)
@@ -118,11 +118,12 @@ class TesseractController(Controller):
         psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
         oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
         outputformats = self.active_outputformats()
+        print_on_screen = self.screen.print_on_screen_chk.active
         groupfolder = self.screen.groupfolder.text
         subfolder = self.screen.subfolder_chk.active
         proc_files, outputnames = recognize(file_list, model=model, psm=psm, oem=oem, tessdatadir=get_app().tessdatadir,
                                             output_folder=self.selected_output_folder, outputformats=outputformats,
-                                            subfolder=subfolder, groupfolder=groupfolder)
+                                            print_on_screen=print_on_screen, subfolder=subfolder, groupfolder=groupfolder)
         toast(f'{proc_files} images recognized')
         self.last_rec_time = time.time() + 2
         get_app().image_selection_controller.file_chooser._update_files()
@@ -153,6 +154,7 @@ class TesseractController(Controller):
                 self.screen[outputformat.strip()].state = 'down'
             else:
                 self.screen[outputformat.strip()].state = 'normal'
+        self.screen.print_on_screen_chk.active = True if tessprofileparams['print_on_screen'] == "True" else False
         if tessprofileparams['outputdir'] != "":
             self.screen.output.set_item(f"Selected output directory: {tessprofileparams['outputdir']}")
         else:
@@ -192,6 +194,7 @@ class TesseractController(Controller):
                 "psm": "".join([char for char in self.screen.psm.text if char.isdigit()]),
                 "oem": "".join([char for char in self.screen.oem.text if char.isdigit()]),
                 "outputformat": self.active_outputformats(),
+                "print_on_screen": str(self.screen.print_on_screen_chk.active),
                 "outputdir": "" if self.screen.output.text.split(" ")[0] != "Selected" else
                 self.screen.output.text.split(" ")[3],
                 "groupfolder": self.screen.groupfolder.text,
@@ -206,6 +209,7 @@ class TesseractController(Controller):
         self.reset_text(self.screen.psm)
         self.reset_text(self.screen.oem)
         self.reset_ouputformat()
+        self.screen.print_on_screen_chk.active = False
         self.selected_output_folder = None
         self.screen.output.text = ''
         self.screen.output.set_item('')
@@ -228,7 +232,7 @@ class TesseractController(Controller):
     def create_dropdown(self, caller, item, callback):
         menu = MDDropdownMenu(caller=caller,
                               items=item,
-                              position="center",
+                              position='bottom',
                               width_mult=20)
         menu.bind(on_release=callback)
         return menu

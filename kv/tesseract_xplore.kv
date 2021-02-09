@@ -49,8 +49,8 @@
                     # Text input fields
                     # TODO: Move input/search to a separate screen
                     MDBoxLayout:
-                        size_hint_y: 0.9
-                        size_hint_min_y: 120
+                        size_hint_y: 1.0
+                        size_hint_min_y: 150
                         md_bg_color: .1, .1, .1, .1
                         MDGridLayout:
                             cols: 1
@@ -68,12 +68,12 @@
 
                             MDDropDownItem:
                                 id: psm
-                                text: 'Select PSM (default: 3)'
+                                text: 'Select page segmentation mode (PSM) (default: 3)'
                                 on_release: app.tesseract_controller.psm_menu.open()
 
                             MDDropDownItem:
                                 id: oem
-                                text: 'Select OEM (default: 3)'
+                                text: 'Select OCR Engine mode (OEM) (default: 3)'
                                 on_release: app.tesseract_controller.oem_menu.open()
 
                             MDBoxLayout:
@@ -86,9 +86,8 @@
                                     size_hint_y: None
                                     height: dp(30)
                                     MDLabel:
-                                        text: ' Select Ouputformat (default: stdout)'
+                                        text: ' Select output format (default: print text on screen)'
                                         theme_text_color: 'Primary'
-
                                 MDBoxLayout:
                                     orientation: 'horizontal'
                                     adaptive_height: True
@@ -107,6 +106,12 @@
                                     MyToggleButton:
                                         text:'TSV'
                                         id: tsv
+                                OneLineAvatarIconListItem:
+                                    text: 'Print on screen'
+                                    height: dp(50)
+                                    #width: dp(400)
+                                    SwitchListItem:
+                                        id: print_on_screen_chk
                             MDDropDownItem:
                                 id: output
                                 text: 'Select output directory (default: input directory)'
@@ -181,12 +186,16 @@
                             #    id: debug_button
                             #    text: 'Debug'
                             #    md_bg_color: app.theme_cls.primary_dark
-                            MDRaisedButton:
-                                id: load_button
-                                text: 'Load Selected File/Folder'
-                                height: dp(50)
-                                theme_text_color: 'Primary'
+                            MDBoxLayout:
                                 md_bg_color: app.theme_cls.primary_dark
+                                adaptive_height: True
+                                padding: dp(0), dp(5.5)
+                                MDRaisedButton:
+                                    id: load_button
+                                    text: 'Load Selected File/Folder'
+                                    height: dp(50)
+                                    theme_text_color: 'Primary'
+                                    md_bg_color: app.theme_cls.primary_dark
                             MDBoxLayout:
                                 md_bg_color: app.theme_cls.primary_dark
                                 adaptive_height: True

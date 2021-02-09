@@ -19,7 +19,7 @@ from tesseractXplore.widgets import LoaderProgressBar
 
 
 def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_folder=None, outputformats=None,
-              subfolder=False, groupfolder=""):
+              print_on_screen=True, subfolder=False, groupfolder=""):
     """
     OCR with tesseract on images
     """
@@ -47,9 +47,9 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
         if app.settings_controller.controls['extra_param'].text != "":
             for param in app.settings_controller.controls['extra_param'].text.split(' '):
                 params.extend(['-c', param])
-        if not outputformats:
+        if not outputformats or print_on_screen:
             tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
-            p1 = Popen([tesscmd, *params, image, 'stdout'], stdout=PIPE)
+            p1 = Popen([tesscmd, *params, image, 'stdout', *outputformats], stdout=PIPE)
         else:
             image_path = Path(image)
             output = image_path.parent.joinpath(image_path.name.rsplit(".", 1)[0]) \
@@ -58,7 +58,7 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
             p1 = Popen([tesscmd, *params, image_path, output, *outputformats], stdout=PIPE)
         stdout, stderr = p1.communicate()
         stdout = str(stdout.decode("utf-8"))
-        if not outputformats:
+        if not outputformats or print_on_screen:
             pimage = Path(image)
             dialog = MDDialog(title=pimage.name,
                               type='custom',
