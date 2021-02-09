@@ -3,7 +3,7 @@ from kivymd.uix.snackbar import Snackbar
 
 
 def alert(text, **kwargs):
-    Snackbar(text=text, **kwargs).show()
+    Snackbar(text=text, **kwargs).open()
 
 
 def get_app():
