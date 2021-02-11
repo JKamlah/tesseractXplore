@@ -13,6 +13,7 @@ from tesseractXplore.models import Model
 from tesseractXplore.widgets.images import CachedAsyncImage
 
 
+
 class SortableList(MDList):
     """ List class that can be sorted by a custom sort key """
     def __init__(self, sort_key=None, **kwargs):
@@ -34,6 +35,9 @@ class ListItemWithCheckbox(OneLineAvatarIconListItem):
     '''Custom list item.'''
 
 class RightCheckbox(IRightBodyTouch, MDCheckbox):
+    '''Custom right container.'''
+
+class LeftCheckbox(ILeftBodyTouch, MDCheckbox):
     '''Custom right container.'''
 
 class TextInputListItem(OneLineListItem, MDTextFieldRound):

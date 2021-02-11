@@ -5,15 +5,13 @@ from kivymd.uix.list import OneLineListItem, OneLineAvatarIconListItem, TwoLineA
 
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
-
+from tesseractXplore.widgets import LeftCheckbox
 
 class CustomOneLineListItem(OneLineListItem):
     icon = StringProperty()
 
 from kivymd.uix.list import ILeftBodyTouch
 from kivymd.uix.selectioncontrol import MDCheckbox
-class LeftCheckbox(ILeftBodyTouch, MDCheckbox):
-    '''Custom right container.'''
 
 
 class ModelListController(Controller):

@@ -18,7 +18,7 @@ from tesseractXplore.widgets.images import CachedAsyncImage, IconicTaxaIcon, Ima
 from tesseractXplore.widgets.inputs import DropdownTextField, TextFieldWrapper
 from tesseractXplore.widgets.labels import HideableTooltip, TooltipLabel
 from tesseractXplore.widgets.lists import SortableList, SwitchListItem, TextInputListItem, ModelListItem, \
-    ThumbnailListItem, ListItemWithCheckbox
+    ThumbnailListItem, ListItemWithCheckbox, LeftCheckbox
 from tesseractXplore.widgets.mdtabs import MDTabsLabel
 from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, PhotoContextMenuItem, \
     ListContextMenuItem, TessprofileContextMenuItem
