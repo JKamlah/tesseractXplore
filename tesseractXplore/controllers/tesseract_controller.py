@@ -13,7 +13,7 @@ from kivymd.uix.textfield import MDTextField
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.recognizer import recognize
-from tesseractXplore.tessprofiles import write_tessprofiles
+from tesseractXplore.tessprofiles import write_tessprofiles, read_tessprofiles
 
 logger = getLogger().getChild(__name__)
 
@@ -57,6 +57,14 @@ class TesseractController(Controller):
 
         # Context menu
         self.screen.context_menu.ids.recognize_ctx.bind(on_release=self.recognize_single_thread)
+
+        # Load default settings
+        self.load_default_settings()
+
+    def load_default_settings(self):
+        for profile, profileparam in get_app().tessprofiles.items():
+            if profileparam['default'] == True:
+                self.load_tessprofile(profileparam)
 
     def get_models(self):
         tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
@@ -198,7 +206,8 @@ class TesseractController(Controller):
                 "outputdir": "" if self.screen.output.text.split(" ")[0] != "Selected" else
                 self.screen.output.text.split(" ")[3],
                 "groupfolder": self.screen.groupfolder.text,
-                "subfolder": str(self.screen.subfolder_chk.active)
+                "subfolder": str(self.screen.subfolder_chk.active),
+                "default": False
             }
         write_tessprofiles(get_app().tessprofiles)
         instance.parent.parent.parent.parent.dismiss()

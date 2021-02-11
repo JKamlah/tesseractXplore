@@ -81,6 +81,9 @@ class ControllerProxy:
         # Init OS-specific errorcodes
         self.errorcodes = [1,127] if _platform in ["win32","win64"] else [127]
 
+        # Read profile settings
+        self.tessprofiles = read_tessprofiles()
+
         # Init controllers with references to nested screen objects
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.tessdatadir = self.settings_controller.tesseract['tessdatadir']
@@ -98,7 +101,6 @@ class ControllerProxy:
         # gt_search_controller = GTSearchController(screens['gt'].ids)
 
         # Proxy methods
-        self.tessprofiles = read_tessprofiles()
         self.is_starred = self.model_selection_controller.is_starred
         self.add_star = self.model_selection_controller.add_star
         self.select_fulltext = self.fulltext_view_controller.select_fulltext
