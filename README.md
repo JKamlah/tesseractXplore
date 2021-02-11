@@ -81,29 +81,32 @@ features described below are functional, however.
 # Python Package
 See the wiki for details on the python package.
 
-## Installation
-It is recommended to use a virtual environment:
+# Installation
+
+It is recommended to use a virtual environment.
+
+## Linux/MacOS
+
 ```
 python3 -m venv venv
-Linux/MacOS:
 source venv/bin/activate
-Win (cmd.exe):
-<venv>\Scripts\activate.bat
-```
-
-Linux/OS:
-```
 sudo apt-get install python3-sdl2
 pip install --upgrade pip
 pip install .[app]
 ```
+
 If you use zsh-commandline you need to escape brackets with backslash!
 
-Windows (don't install kivy-gstreamer!):
+## Win (cmd.exe)
+
 ```
+python3 -m venv venv
+venv\Scripts\activate.bat
 pip install --upgrade pip
 pip install .[all-win]
 ```
+
+Don't install kivy-gstreamer on Windows!
 
 <!---
 OS-specific builds will be coming soon, but for now running it requires a local python development
@@ -116,6 +119,8 @@ Some additional dependencies are required on Windows:
 pip install tesseractXplore[win]
 ```
 -->
+
+## Installation of an alternative text renderer (optional)
 
 The standard text renderer can't display combined glyphs correctly, 
 to do that an alternative text renderer needs to be used e.g. pango2:
