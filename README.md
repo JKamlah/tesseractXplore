@@ -85,7 +85,10 @@ See the wiki for details on the python package.
 It is recommended to use a virtual environment:
 ```
 python3 -m venv venv
+Linux/MacOS:
 source venv/bin/activate
+Win (cmd.exe):
+<venv>\Scripts\activate.bat
 ```
 
 Linux/OS:
