@@ -6,39 +6,52 @@
 
 <ModellistScreen>:
     name: 'modellist'
-    BoxLayout:
+    FloatLayout:
         orientation: 'vertical'
-        spacing: dp(10)
-        padding: dp(20)
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: dp(10)
+            padding: dp(20)
+            OneLineAvatarIconListItem:
+                text: 'Exact match'
+                height: dp(50)
+                #width: dp(400)
+                SwitchListItem:
+                    id: exact_match_chk
 
-        OneLineAvatarIconListItem:
-            text: 'Exact match'
-            height: dp(50)
-            #width: dp(400)
-            SwitchListItem:
-                id: exact_match_chk
-
-        BoxLayout:
-            size_hint_y: None
-            height: self.minimum_height
-
-            MDIconButton:
-                icon: 'magnify'
-
-            MDTextField:
-                id: search_field
-                hint_text: 'Search icon'
-                on_text: app.modellist_controller.set_list(self.text, True)
-
-        RecycleView:
-            id: modellist
-            key_viewclass: 'viewclass'
-            key_size: 'height'
-
-            RecycleBoxLayout:
-                padding: dp(10)
-                default_size: None, dp(48)
-                default_size_hint: 1, None
+            BoxLayout:
                 size_hint_y: None
                 height: self.minimum_height
-                orientation: 'vertical'
+
+                MDIconButton:
+                    icon: 'magnify'
+
+                MDTextField:
+                    id: search_field
+                    hint_text: 'Search icon'
+                    on_text: app.modellist_controller.set_list(self.text, True)
+
+            RecycleView:
+                id: modellist
+                key_viewclass: 'viewclass'
+                key_size: 'height'
+
+                RecycleBoxLayout:
+                    padding: dp(10)
+                    default_size: None, dp(48)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+        MDBoxLayout:
+            spacing: dp(4)
+            padding: dp(4)
+            pos_hint: {'y':0.02}
+
+            ControlTooltipButton:
+                id: model_selection_button
+                icon: 'check'
+                elevation_normal: 8
+                #md_bg_color: app.theme_cls.primary_dark
+                tooltip_text: 'Accept model selection'
+                halign: 'bottom'
