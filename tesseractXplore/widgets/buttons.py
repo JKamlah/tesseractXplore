@@ -3,10 +3,15 @@ from kivy.properties import (
     NumericProperty,
 )
 from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
-from kivymd.uix.button import MDFloatingActionButton, MDRoundFlatIconButton, MDFillRoundFlatButton
+from kivymd.uix.button import MDFloatingActionButton, MDRaisedButton, MDFlatButton,\
+    MDFlatButton, \
+    MDRoundFlatIconButton, \
+    MDFillRoundFlatButton, \
+    MDRectangleFlatButton
 from kivymd.uix.list import IconRightWidget
 from kivymd.uix.tooltip import MDTooltip
 
+from tesseractXplore.app import get_app
 
 class StarButton(IconRightWidget):
     """
@@ -41,6 +46,7 @@ class TooltipIconButton(MDRoundFlatIconButton, MDTooltip):
 class MyToggleButton(MDFillRoundFlatButton, MDToggleButton):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        #md_bg_color: app.theme_cls.primary_dark
-        self.background_down = 0, 206, 209,0.5 #get_app().theme_cls.primary_dark
+        self.md_bg_color= 0, 206, 209,0.1
+        self.background_normal = 0, 206, 209, 0.1
+        self.background_down = 0, 206, 209, 0.4
 
