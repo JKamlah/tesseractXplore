@@ -2,7 +2,7 @@
 
 # TesseractXplore
 [![Build Status](https://travis-ci.org/JKamlah/tesseractXplore.svg?branch=dev)](https://travis-ci.org/JKamlah/tesseractXplore)
-[GitHub issues](https://itmg.shields.io/github/issues/JKamlah/tesseractXplore)
+[![GitHub issues](https://img.shields.io/github/issues/JKamlah/tesseractXplore)](https://github.com/JKamlah/tesseractXplore/issues)
 
 This tool provides a graphical interface to [tesseract](https://github.com/tesseract-ocr/tesseract). 
 Images can be loaded via a file chooser window or drag-and-drop. The result fulltext-files can also be edited.
