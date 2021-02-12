@@ -76,7 +76,9 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                                   ),
                               ],
                               )
-            dialog.content_cls.focused = True
+            if get_app()._platform not in ['win32','win64']:
+                # TODO: Focus function seems buggy in win
+                dialog.content_cls.focused = True
             # TODO: There should be a better way to set cursor to 0,0
             time.sleep(1)
             dialog.content_cls.cursor = (0, 0)

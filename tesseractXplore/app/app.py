@@ -79,6 +79,7 @@ class ControllerProxy:
 
     def init_controllers(self, screens):
         # Init OS-specific errorcodes
+        self._platform = _platform
         self.errorcodes = [1,127] if _platform in ["win32","win64"] else [127]
 
         # Read profile settings
