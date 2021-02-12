@@ -130,7 +130,9 @@ def cache_stdout_dialog(image: Path, text: str, params: list, instance, *args):
                           ),
                       ],
                       )
-    dialog.content_cls.focused = True
+    if get_app()._platform not in ['win32', 'win64']:
+    # TODO: Focus function seems buggy in win
+        dialog.content_cls.focused = True
     dialog.open()
 
 

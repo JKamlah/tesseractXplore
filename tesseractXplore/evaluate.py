@@ -7,6 +7,7 @@ from typing import DefaultDict, Dict
 from kivy.uix.textinput import TextInput
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
+from tesseractXplore.app import get_app
 
 
 def get_defaultdict(resultslvl: Dict, newlvl, instance=OrderedDict) -> None:
@@ -255,7 +256,9 @@ def evaluate_report(text, *args):
                           ),
                       ],
                       )
-    dialog.content_cls.focused = True
+    if get_app()._platform not in ['win32', 'win64']:
+    # TODO: Focus function seems buggy in win
+        dialog.content_cls.focused = True
     time.sleep(1)
     dialog.content_cls.cursor = (0, 0)
     dialog.open()

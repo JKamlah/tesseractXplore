@@ -89,7 +89,9 @@ def pdf_dialog(pdfpath,cmds):
                       ],
                       )
     defaulttoggle.state = 'down'
-    dialog.content_cls.focused = True
+    if get_app()._platform not in ['win32', 'win64']:
+    # TODO: Focus function seems buggy in win
+        dialog.content_cls.focused = True
     dialog.open()
 
 
