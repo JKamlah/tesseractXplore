@@ -43,10 +43,11 @@ class TooltipIconButton(MDRoundFlatIconButton, MDTooltip):
     """ Flat button class with icon and tooltip behavior """
 
 
-class MyToggleButton(MDFillRoundFlatButton, MDToggleButton):
+class MyToggleButton(MDRectangleFlatButton, MDToggleButton):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.md_bg_color= 0, 206, 209,0.1
-        self.background_normal = 0, 206, 209, 0.1
-        self.background_down = 0, 206, 209, 0.4
+        self.font_color_down = 0, 0, 0, 1
+        #self.md_bg_color= 0, 206, 209,0.1
+        #self.background_normal = 0, 206, 209, 0.1
+        #self.background_down = 0, 206, 209, 0.4
 
