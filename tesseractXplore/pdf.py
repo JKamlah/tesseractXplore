@@ -45,10 +45,10 @@ def pdf_dialog(pdfpath,cmds):
     layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
     layout.add_widget(OneLineListItem(text='First page'))
     # id first
-    layout.add_widget(MDTextField(text="0", hint_text="First page", height=400))
+    layout.add_widget(MDTextField(text="0", hint_text="First page", height=(get_app()._window.size[1])//2))
     layout.add_widget(OneLineListItem(text='Last page'))
     # id last
-    layout.add_widget(MDTextField(text=pages, hint_text="Last page", height=400))
+    layout.add_widget(MDTextField(text=pages, hint_text="Last page", height=(get_app()._window.size[1])//2))
     layout.add_widget(OneLineListItem(text='Imageformat (jpg, jp2, png, ppm(default), tiff)'))
     # id = "fileformat"
     boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)

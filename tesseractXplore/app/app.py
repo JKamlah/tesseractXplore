@@ -78,6 +78,9 @@ class ControllerProxy:
     diffstdout_controller = ObjectProperty()
 
     def init_controllers(self, screens):
+        # Basic app information
+        self._window = Window
+
         # Init OS-specific errorcodes
         self._platform = _platform
         self.errorcodes = [1,127] if _platform in ["win32","win64"] else [127]
