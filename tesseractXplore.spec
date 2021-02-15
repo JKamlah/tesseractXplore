@@ -29,7 +29,7 @@ a = Analysis(
         ('assets\\metadata\\*.yml' , 'assets\\metadata'),
         ('assets\\*.png' , 'assets'),
         ('kv\\*.kv', 'kv'),
-        ('venv-tx\\Lib\\site-packages\\kivy_garden\\contextmenu\\*', 'kivy_garden\\contextmenu'),
+        ('venv\\Lib\\site-packages\\kivy_garden\\contextmenu\\*', 'kivy_garden\\contextmenu'),
     ],
     hiddenimports=hiddenimports,
     hookspath=[kivymd_hooks_path],
