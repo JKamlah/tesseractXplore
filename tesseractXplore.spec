@@ -13,8 +13,8 @@ if is_win:
     binaries = [
         # ( 'lib\\exiv2.dll', '.' ),
         # ( 'lib\\exiv2api.pyd', '.' ),
-        ('venv-tx\\Lib\\site-packages\\pyexiv2\\lib\\exiv2.dll', '.'),
-        ('venv-tx\\Lib\\site-packages\\pyexiv2\\lib\\py38-win\\exiv2api.pyd', '.'),
+        ('venv\\Lib\\site-packages\\pyexiv2\\lib\\exiv2.dll', '.'),
+        ('venv\\Lib\\site-packages\\pyexiv2\\lib\\py38-win\\exiv2api.pyd', '.'),
     ]
     hiddenimports = ['win32timezone']
     kivy_bins = [Tree(p) for p in (sdl2.dep_bins + angle.dep_bins)]
@@ -28,6 +28,7 @@ a = Analysis(
     datas=[
         ('assets\\metadata\\*.yml' , 'assets\\metadata'),
         ('assets\\*.png' , 'assets'),
+	('assets\\*.ico' , 'assets'),
         ('kv\\*.kv', 'kv'),
         ('venv\\Lib\\site-packages\\kivy_garden\\contextmenu\\*', 'kivy_garden\\contextmenu'),
     ],
