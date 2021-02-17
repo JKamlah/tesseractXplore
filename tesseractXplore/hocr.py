@@ -8,6 +8,7 @@ from __future__ import print_function
 import re
 
 from lxml import html
+from lxml import etree
 
 
 def get_text(node):
@@ -26,27 +27,35 @@ def get_prop(node, name):
             return args
     return None
 
+def set_prop(node, name, val):
+    title = node.get("title")
+    props = title.split(';')
+    for idx, prop in enumerate(props):
+        (key, args) = prop.split(None, 1)
+        args = args.strip('"')
+        if key == name:
+            args = val
+        props[idx] = key+' '+args
+    node.set("title","; ".join(props))
+    return None
+
 
 def save_hocr(hocr, data, *args):
     doc = html.parse(hocr)
-    data = {line.line: data for line in data if line.edited == True}
+    data = {line.line_id: line for line in data}
     pages = doc.xpath('//*[@class="ocr_page"]')
     result = {}
     for page in pages:
         pars = page.xpath("//*[@class='ocr_par']")
         for par in pars:
             lines = par.xpath("//*[@class='ocr_line']")
-            lcount = 1
             for line in lines:
-                words = line.xpath("//*[@class='ocrx_word']")
-                if lcount in data.keys():
-                    bbox = [int(x) for x in get_prop(line, 'bbox').split()]
-                    if bbox[0] > bbox[2] or bbox[1] >= bbox[3]:
-                        continue
-                    result[lcount] = {'text': get_text(line), 'bbox': bbox}
-                lcount += 1
-                # if words:
-                #    for word in words:
+                line.text = data[line.attrib["id"]].text
+                set_prop(line, "bbox", " ".join([str(num) for num in data[line.attrib["id"]].bbox]))
+                for word in list(line):
+                    line.remove(word)
+    with open(hocr, "w") as f:
+        f.writelines(etree.tostring(doc, pretty_print=True).decode('UTF-8'))
     return result
 
 
@@ -64,10 +73,10 @@ def get_text_and_bbox(hocr, padding=4):
                 result[par.get('id')][line.get('id')] = {}
                 result[par.get('id')][line.get('id')]['text'] = get_text(line)
                 result[par.get('id')][line.get('id')]['bbox'] = [int(x) for x in get_prop(line, 'bbox').split()]
-                words = line.xpath("*[@class='ocrx_word']")
                 lcount += 1
+                words = line.xpath("*[@class='ocrx_word']")
                 if words:
-                    for word in words:
-                        result[par.get('id')][line.get('id')][word.get('id')] = {'text': get_text(word),
-                                                                                 'bbox': get_prop(word, 'bbox')}
+                     for word in words:
+                         result[par.get('id')][line.get('id')][word.get('id')] = {'text': get_text(word),
+                                                                                  'bbox': get_prop(word, 'bbox')}
     return result
