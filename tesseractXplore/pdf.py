@@ -78,6 +78,9 @@ def pdf_dialog(pdfpath,cmds):
                       content_cls=layout,
                       buttons=[
                           MDFlatButton(
+                              text="OCR", on_release=partial(pdfimages_threading, pdfpath, cmds, ocr=True)
+                          ),
+                          MDFlatButton(
                               text="CREATE IMAGES", on_release=partial(pdfimages_threading, pdfpath, cmds)
                           ),
                           MDFlatButton(
@@ -95,11 +98,13 @@ def pdf_dialog(pdfpath,cmds):
     dialog.open()
 
 
-def pdfimages_threading(pdfpath, cmds, instance, *args):
+
+def pdfimages_threading(pdfpath, cmds, instance, ocr=False, *args):
     instance.parent.parent.parent.parent.dismiss()
-    pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, args))
+    pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, ocr, args))
     pdfimages_thread.setDaemon(True)
     pdfimages_thread.start()
+
 
 
 def open_pdf(fname, *args):
@@ -116,14 +121,19 @@ def open_pdf(fname, *args):
             pass
 
 
-def pdfimages(pdfpath, cmds, instance, *args):
+def pdfimages(pdfpath, cmds, instance, ocr, *args):
     pb = MDProgressBar(color=get_app().theme_cls.primary_color, type="indeterminate")
     status_bar = get_app().image_selection_controller.status_bar
     status_bar.clear_widgets()
     status_bar.add_widget(pb)
     pb.start()
-    pdfdir = Path(pdfpath.split('.')[0])
-    makedirs(pdfdir, exist_ok=True)
+    if ocr:
+        import tempfile
+        tmpdir = tempfile.TemporaryDirectory()
+        pdfdir = Path(tmpdir.name)
+    else:
+        pdfdir = Path(pdfpath.split('.')[0])
+        makedirs(pdfdir, exist_ok=True)
     params = []
     children = instance.parent.parent.parent.parent.content_cls.children
     process = cmds["pdfimages"]
@@ -147,10 +157,18 @@ def pdfimages(pdfpath, cmds, instance, *args):
                         process = cmds["pdfimages"]
                         fileformat.text = "j" if fileformat.text == "jpeg" else fileformat.text
                         fileformat.text = "jpeg" if fileformat.text == "jp2" else fileformat.text
-    p1 = Popen([process, *params, pdfpath, pdfdir.joinpath(pdfdir.name)])
+    p1 = Popen([process, *params, pdfpath, pdfdir.joinpath(Path(pdfpath.split('.')[0]).name)])
     p1.communicate()
     get_app().image_selection_controller.file_chooser._update_files()
-    get_app().image_selection_controller.add_images([pdfdir])
+    if not ocr:
+        get_app().image_selection_controller.add_images([pdfdir])
+    else:
+        images = list(pdfdir.glob('*.*'))
+        tc_screen = get_app().tesseract_controller
+        thread = tc_screen.recognize_thread(None,file_list=images, profile={'outputformats':['pdf'],'groupfolder':'','subforlder' : False, 'print_on_screen' : False})
+        thread.join()
+        p2 = Popen([cmds["pdfunite"], *sorted(list(pdfdir.glob('*.pdf'))), pdfpath[:-3]+"ocr.pdf"])
+        p2.communicate()
     pb.stop()
 
 
@@ -159,7 +177,8 @@ def extract_pdf(pdfpath):
         if getstatusoutput("pdfimages")[0] not in [1, 127]:
             cmds ={"pdfimages":"pdfimages",
                    "pdfinfo":"pdfinfo",
-                   "pdftoppm":"pdftoppm"}
+                   "pdftoppm":"pdftoppm",
+                   "pdfunite":"pdfunite"}
             pdf_dialog(pdfpath, cmds)
             return pdfpath.split(".")[0]
         else:
@@ -177,7 +196,8 @@ def extract_pdf(pdfpath):
         binpath = list(pdftoolpath.glob("./**/**/bin"))[0]
         cmds = {"pdfimages": str(binpath.joinpath("pdfimages.exe").absolute()),
                 "pdfinfo": str(binpath.joinpath("pdfinfo.exe").absolute()),
-                "pdftoppm": str(binpath.joinpath("pdftoppm.exe").absolute())}
+                "pdftoppm": str(binpath.joinpath("pdftoppm.exe").absolute()),
+                "pdfunite": str(binpath.joinpath("pdfunite.exe").absolute())}
         pdf_dialog(pdfpath,cmds)
     return pdfpath
 

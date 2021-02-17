@@ -94,26 +94,30 @@ class TesseractController(Controller):
         self.screen.recognize_button.disabled = False
         self.screen.pause_button.disabled = True
 
-    def recognize_thread(self, instance, *args):
+    def recognize_thread(self, instance, *args, file_list=None, profile=None):
         self.disable_rec(instance, *args)
-        self.ocr_event = threading.Thread(target=self.recognize, args=(instance, args))
+        self.ocr_event = threading.Thread(target=self.recognize, args=(instance, args),
+                                          kwargs={'file_list': file_list, 'profile': profile})
         self.ocr_event.setDaemon(True)
         self.ocr_event.start()
+        return self.ocr_event
 
-    def recognize_single_thread(self, instance, *args):
+    def recognize_single_thread(self, instance, *args, file_list=None, profile=None):
         self.disable_rec(instance, *args)
         threading.Thread(target=self.recognize, args=(instance, args),
-                         kwargs={'file_list': [instance.selected_image.original_source]}).start()
+                         kwargs={'file_list': [instance.selected_image.original_source],'profile': profile}).start()
 
-    def recognize(self, instance, *args, file_list=None):
+    def recognize(self, instance, *args, file_list=None, profile=None):
         """ Recognize image with tesseract """
+        if profile is None:
+            profile = {}
         if file_list is None:
             file_list = get_app().image_selection_controller.file_list
         if not file_list:
             alert(f'Select images to recognize')
             self.enable_rec(instance)
             return
-        if instance._ButtonBehavior__touch_time < self.last_rec_time:
+        if instance is not None and instance._ButtonBehavior__touch_time < self.last_rec_time:
             self.enable_rec(instance)
             return
 
@@ -122,13 +126,14 @@ class TesseractController(Controller):
         # metadata_settings = get_app().metadata
         # TODO: Handle write errors (like file locked) and show dialog
         # file_list = get_app().image_selection_controller
-        model = "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip()
-        psm = "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip()
-        oem = "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip()
-        outputformats = self.active_outputformats()
-        print_on_screen = self.screen.print_on_screen_chk.active
-        groupfolder = self.screen.groupfolder.text
-        subfolder = self.screen.subfolder_chk.active
+
+        model = profile.get("model", "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip())
+        psm = profile.get("psm", "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip())
+        oem = profile.get("oem", "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip())
+        outputformats = profile.get("outputformats", self.active_outputformats())
+        print_on_screen = profile.get("print_on_screen", self.screen.print_on_screen_chk.active)
+        groupfolder = profile.get("groupfolder", self.screen.groupfolder.text)
+        subfolder = profile.get("subfolder", self.screen.subfolder_chk.active)
         proc_files, outputnames = recognize(file_list, model=model, psm=psm, oem=oem, tessdatadir=get_app().tessdatadir,
                                             output_folder=self.selected_output_folder, outputformats=outputformats,
                                             print_on_screen=print_on_screen, subfolder=subfolder, groupfolder=groupfolder)

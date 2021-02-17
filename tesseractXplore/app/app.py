@@ -74,6 +74,7 @@ class ControllerProxy:
     model_view_controller = ObjectProperty()
     modellist_controller = ObjectProperty()
     tessprofiles_controller = ObjectProperty()
+    tesseract_controller = ObjectProperty()
     settings_controller = ObjectProperty()
     diffstdout_controller = ObjectProperty()
 
