@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TesseractXplore"
-!define PRODUCT_VERSION "0.1"
+!define PRODUCT_VERSION "0.1.1"
 !define PRODUCT_PUBLISHER "UB Mannheim"
 !define PRODUCT_WEB_SITE "https://github.com/JKamlah/tesseractXplore"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tesseractXplore.exe"
