@@ -169,6 +169,7 @@ def pdfimages(pdfpath, cmds, instance, ocr, *args):
         thread.join()
         p2 = Popen([cmds["pdfunite"], *sorted(list(pdfdir.glob('*.pdf'))), pdfpath[:-3]+"ocr.pdf"])
         p2.communicate()
+    get_app().image_selection_controller.file_chooser._update_files()
     pb.stop()
 
 
