@@ -98,6 +98,7 @@ class AutocompleteSearch(MDBoxLayout, TextFieldWrapper):
 
         matches = asyncio.run(self.get_autocomplete(search_str))
         logger.info(f'Found {len(matches)} matches for search string "{search_str}"')
+        self.dropdown_view.data = []
         self.dropdown_view.data = [get_row(i) for i in matches]
         self.dropdown_container.open()
 
