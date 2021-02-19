@@ -4,8 +4,9 @@ from logging import getLogger
 from os import makedirs
 from pathlib import Path
 import re
-from subprocess import Popen, run, getstatusoutput, check_output
+from subprocess import Popen, run, getstatusoutput, check_output, DEVNULL, STDOUT, PIPE
 from sys import platform as _platform
+import threading
 
 from kivymd.toast import toast
 from kivymd.uix.button import MDFlatButton
@@ -183,32 +184,63 @@ def extract_pdf(pdfpath):
             pdf_dialog(pdfpath, cmds)
             return pdfpath.split(".")[0]
         else:
-            toast("Please install Poppler-utils to work convert PDFs to images with:")
-            toast("sudo apt-get install poppler-utils")
+            from tesseractXplore.unix import run_cmd_with_sudo_dialog
+            run_cmd_with_sudo_dialog(title="Installing Poppler", func=install_poppler_unix)
+            toast("Please install Poppler-utils to work convert PDFs to images with:\nsudo apt-get install poppler-utils")
     else:
         pdftoolpath = Path(PDF_DIR)
         if not pdftoolpath.exists():
             # TODO: Don work atm properly and use the official site
             try:
-                install_win(pdftoolpath)
+                dl_event = threading.Thread(target=install_poppler_win, kwargs=({'pdftoolpath':str(pdftoolpath.absolute())}))
+                dl_event.setDaemon(True)
+                dl_event.start()
             except:
                 logger.info(f'Download: Error while downloading')
-                return
-        binpath = list(pdftoolpath.glob("./**/**/bin"))[0]
-        cmds = {"pdfimages": str(binpath.joinpath("pdfimages.exe").absolute()),
+        else:
+            binpath = list(pdftoolpath.glob("./**/**/bin"))[0]
+            cmds = {"pdfimages": str(binpath.joinpath("pdfimages.exe").absolute()),
                 "pdfinfo": str(binpath.joinpath("pdfinfo.exe").absolute()),
                 "pdftoppm": str(binpath.joinpath("pdftoppm.exe").absolute()),
                 "pdfunite": str(binpath.joinpath("pdfunite.exe").absolute())}
-        pdf_dialog(pdfpath,cmds)
+            pdf_dialog(pdfpath,cmds)
     return pdfpath
 
-def install_win(pdftoolpath):
+def start_installing_loaderprogress():
+    from tesseractXplore.widgets import LoaderProgressBar
+    pb = LoaderProgressBar(color=get_app().theme_cls.primary_color)
+    pb.value = 0
+    pb.max = 2
+    status_bar = get_app().image_selection_controller.status_bar
+    status_bar.clear_widgets()
+    status_bar.add_widget(pb)
+    pb.update(None, 1)
+    return pb
+
+def install_poppler_unix(instance, *args):
+    pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
+    instance.parent.parent.parent.parent.dismiss()
+    pb = start_installing_loaderprogress()
+    install_tesseract = Popen(['sudo', '-S', 'apt-get', 'install', '-y', 'poppler-utils'],
+                              stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
+    install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
+    install_tesseract.communicate()
+    pb.finish()
+    return
+
+def install_poppler_win(pdftoolpath=None):
     import requests, zipfile, io
-    url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'
-    #url = 'http://blog.alivate.com.au/wp-content/uploads/2018/10/poppler-0.68.0_x86.7z'
-    r = requests.get(url, stream=True)
-    pdftoolpath.mkdir(parents=True)
-    z = zipfile.ZipFile(io.BytesIO(r.content))
-    z.extractall(str(pdftoolpath.absolute()))
-    toast('Download: Poppler succesful')
-    logger.info(f'Download: Succesful')
+    toast('Installing: Poppler')
+    pb = start_installing_loaderprogress()
+    try:
+        url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'
+        r = requests.get(url, stream=True)
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        Path(pdftoolpath).mkdir(parents=True)
+        z.extractall(pdftoolpath)
+        toast('Installing: Poppler succesful\n Enable: Working with PDFs')
+        logger.info(f'Installing: Succesful')
+    except:
+        toast('Installing: Poppler not succesful')
+        logger.info(f'Download: Not succesful')
+    pb.finish()

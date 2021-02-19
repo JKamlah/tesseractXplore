@@ -7,11 +7,11 @@ import requests
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
 from kivymd.toast import toast
 from functools import partial
 
+from tesseractXplore.unix import run_cmd_with_sudo_dialog
 from tesseractXplore.app import get_app
 
 
@@ -45,11 +45,11 @@ def install_tesseract_dialog():
 def install_tesseract(instance):
     instance.parent.parent.parent.parent.dismiss()
     if _platform in ["win32", "win64"]:
-        install_win()
+        install_tesseract_win()
     else:
-        install_unix_dialog()
+        run_cmd_with_sudo_dialog(title="Enter sudo password to change the rights of the destination folder",func=install_tesseract_unix)
 
-def install_win():
+def install_tesseract_win():
     try:
         if _platform == "win32":
             url = get_app().settings_controller.tesseract['win32url']
@@ -71,32 +71,10 @@ def install_win():
         toast('Download: Error')
         logger.info(f'Download: Error while downloading')
 
-
-def install_unix_dialog():
-    def close_dialog(instance, *args):
-        instance.parent.parent.parent.parent.dismiss()
-    layout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
-    layout.add_widget(MDTextField(hint_text="Password",password=True))
-    dialog = MDDialog(title="Enter sudo password to change the rights of the destination folder",
-                      type='custom',
-                      auto_dismiss=False,
-                      content_cls=layout,
-                      buttons=[
-                          MDFlatButton(
-                              text="ENTER", on_release=partial(install_unix)
-                          ),
-                          MDFlatButton(
-                              text="DISCARD", on_release=close_dialog
-                          ),
-                      ],
-                      )
-    dialog.content_cls.focused = True
-    dialog.open()
-
-def install_unix(instance, *args):
+def install_tesseract_unix(instance, *args):
     pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
     instance.parent.parent.parent.parent.dismiss()
-    install_tesseract = Popen(['sudo', '-S', 'ap-get', 'install', '-y', 'tesseract-ocr'],
+    install_tesseract = Popen(['sudo', '-S', 'apt-get', 'install', '-y', 'tesseract-ocr'],
                            stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
     install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
     install_tesseract.communicate()
