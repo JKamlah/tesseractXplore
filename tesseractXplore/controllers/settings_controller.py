@@ -14,6 +14,7 @@ from tesseractXplore.settings import (
     write_settings,
     reset_defaults,
 )
+from tesseractXplore.constants import TESSDATA_PATH
 from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
 from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
 from tesseractXplore.tesseract import install_tesseract_dialog
@@ -29,6 +30,7 @@ class SettingsController:
     def __init__(self, settings_screen):
         self.screen = settings_screen
         self.settings_dict = read_settings()
+
         # Set tessdatapath
         if self.set_tesspaths():
             self.screen.install_tesseract_btn.disabled = True
@@ -45,6 +47,8 @@ class SettingsController:
         # )
         self.screen.dark_mode_chk.bind(active=MDApp.get_running_app().set_theme_mode)
 
+        self.set_tessdir()
+
         # Bind buttons (with no persisted value)
         self.screen.reset_default_button.bind(on_release=self.clear_settings)
 
@@ -60,7 +64,25 @@ class SettingsController:
         self.screen.clear_stdout_cache_button.bind(on_release=self.clear_stdout_cache)
         self.screen.clear_thumbnail_cache_button.bind(on_release=self.clear_thumbnail_cache)
 
+        self.screen.tessdatadir_user_sel_chk.bind(on_release=self.set_tessdir)
+        self.screen.tessdatadir_userspecific_sel_chk.bind(on_release=self.set_tessdir)
+        self.screen.tessdatadir_system_sel_chk.bind(on_release=self.set_tessdir)
+
         Clock.schedule_once(self.update_cache_sizes, 5)
+
+    def set_tessdir_btn(self, instance, *args):
+        self.set_tessdir()
+
+
+    def set_tessdir(self, *args):
+        for instance in [self.screen.tessdatadir_user_sel_chk, self.screen.tessdatadir_userspecific_sel_chk, self.screen.tessdatadir_system_sel_chk]:
+            if instance.state == 'down':
+                if instance.text == 'Userwide folder (default)':
+                    self.screen['tessdatadir'].text = self.settings_dict['tesseract']['tessdatadir_user']
+                elif instance.text == 'Systemwide folder':
+                    self.screen['tessdatadir'].text = self.settings_dict['tesseract']['tessdatadir_system']
+                else:
+                    self.screen['tessdatadir'].text = self.settings_dict['tesseract']['tessdatadir_userspecific']
 
     def set_tesspaths(self):
         if self.settings_dict['tesseract']['tesspath'] == '':
@@ -75,23 +97,35 @@ class SettingsController:
                     logger.warning("Please set the path to tesseract.exe manually in the settings window")
                     return False
                 #self.save_settings()
-        if self.settings_dict['tesseract']['tessdatadir'] == '':
+        if self.settings_dict['tesseract']['tessdatadir_system'] == '':
             try:
                 if self.settings_dict['tesseract']['tesspath'] != '':
                     # TODO: It seems that the stderr text here is corrupted needs to be checked again
                     tessdatapath = Path(subprocess.run([self.settings_dict['tesseract']['tesspath'], "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ",1)[1].rsplit(" ",1)[0])
                     if tessdatapath.exists():
-                        self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                        self.settings_dict['tesseract']['tessdatadir_system'] = str(tessdatapath)
                     else:
                         tessdatapath = Path(Path(self.settings_dict['tesseract']['tesspath']).drive).joinpath(tessdatapath).joinpath('tessdata')
                         if tessdatapath.exists():
-                            self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                            self.settings_dict['tesseract']['tessdatadir_system'] = str(tessdatapath)
                 else:
                     tessdatapath = Path(subprocess.run(["tesseract", "-l", " ", "xxx", "xxx"], stderr=subprocess.PIPE).stderr.decode('utf-8').splitlines()[0].split("file ")[1].rsplit(" ",1)[0])
-                    self.settings_dict['tesseract']['tessdatadir'] = str(tessdatapath)
+                    self.settings_dict['tesseract']['tessdatadir_system'] = str(tessdatapath)
             except:
                 logger.warning("Could not find tesseract installation")
                 return False
+        if self.settings_dict['tesseract']['tessdatadir_user'] == '':
+            self.settings_dict['tesseract']['tessdatadir_user'] = TESSDATA_PATH
+            self.settings_dict['tesseract']['tessdatadir'] = TESSDATA_PATH
+            from os import makedirs
+            from os.path import isfile, join
+            from shutil import copyfile
+            makedirs(TESSDATA_PATH, exist_ok=True)
+            for std_model in ["osd","eng"]:
+                if isfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata")) and \
+                    not isfile(join(TESSDATA_PATH, f"{std_model}.traineddata")):
+                    copyfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata"),
+                             join(TESSDATA_PATH, f"{std_model}.traineddata"))
         return True
 
     def clear_thumbnail_cache(self, *args):

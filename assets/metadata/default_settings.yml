@@ -29,6 +29,12 @@ tesseract:
   oem: null
   tesspath: ''
   tessdatadir: ''
+  tessdatadir_user_sel: 'down'
+  tessdatadir_user: ''
+  tessdatadir_system_sel: 'normal'
+  tessdatadir_system: ''
+  tessdatadir_userspecific_sel: 'normal'
+  tessdatadir_userspecific: ''
   do_invert: true
 # Not yet configurable
 search:

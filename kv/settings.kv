@@ -107,6 +107,24 @@
                 TwoLineListItem:
                     text: 'Path to tesseract models (Tessdata)'
                     secondary_text: 'This dir is automatically found, but can be set manually too'
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    MyToggleButton:
+                        text: 'Userwide folder (default)'
+                        id: tessdatadir_user_sel_chk
+                        group: 'tessdatadir'
+                        width: dp(8)
+                    MyToggleButton
+                        text: 'Systemwide folder'
+                        id: tessdatadir_system_sel_chk
+                        group: 'tessdatadir'
+                        width: dp(8)
+                    MyToggleButton:
+                        text: 'Userspecific folder'
+                        id: tessdatadir_userspecific_sel_chk
+                        group: 'tessdatadir'
+                        width: dp(8)
                 MDTextField:
                     mode: 'rectangle'
                     id: tessdatadir

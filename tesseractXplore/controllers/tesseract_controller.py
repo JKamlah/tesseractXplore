@@ -67,9 +67,9 @@ class TesseractController(Controller):
                 self.load_tessprofile(profileparam)
 
     def get_models(self):
-        tesscmd = get_app().tesspath if get_app().tesspath != "" else "tesseract"
+        tesscmd = get_app().settings_controller.tesseract['tesspath'] if get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
         try:
-            return check_output([tesscmd, "--tessdata-dir", get_app().tessdatadir, "--list-langs"]).decode(
+            return check_output([tesscmd, "--tessdata-dir", get_app().settings_controller.tesseract['tessdatadir'], "--list-langs"]).decode(
                 'utf-8').splitlines()[1:]
         except:
             return []
@@ -134,7 +134,7 @@ class TesseractController(Controller):
         print_on_screen = profile.get("print_on_screen", self.screen.print_on_screen_chk.active)
         groupfolder = profile.get("groupfolder", self.screen.groupfolder.text)
         subfolder = profile.get("subfolder", self.screen.subfolder_chk.active)
-        proc_files, outputnames = recognize(file_list, model=model, psm=psm, oem=oem, tessdatadir=get_app().tessdatadir,
+        proc_files, outputnames = recognize(file_list, model=model, psm=psm, oem=oem, tessdatadir=get_app().settings_controller.tesseract['tessdatadir'],
                                             output_folder=self.selected_output_folder, outputformats=outputformats,
                                             print_on_screen=print_on_screen, subfolder=subfolder, groupfolder=groupfolder)
         toast(f'{proc_files} images recognized')

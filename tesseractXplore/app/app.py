@@ -91,8 +91,6 @@ class ControllerProxy:
 
         # Init controllers with references to nested screen objects
         self.settings_controller = SettingsController(screens['settings'].ids)
-        self.tessdatadir = self.settings_controller.tesseract['tessdatadir']
-        self.tesspath = self.settings_controller.tesseract['tesspath']
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
         self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
         self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)
@@ -220,7 +218,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         if self.screen_manager.current in ['settings']:
             self.settings_controller.save_settings()
         if screen_name == "model":
-            self.model_view_controller.screen.tessdatadir.text = self.tessdatadir
+            self.model_view_controller.screen.tessdatadir.text = self.settings_controller.tesseract['tessdatadir']
         self.screen_manager.current = screen_name
         self.update_toolbar(screen_name)
         self.close_nav()
