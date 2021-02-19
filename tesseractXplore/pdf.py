@@ -185,8 +185,7 @@ def extract_pdf(pdfpath):
             return pdfpath.split(".")[0]
         else:
             from tesseractXplore.unix import run_cmd_with_sudo_dialog
-            run_cmd_with_sudo_dialog(title="Installing Poppler", func=install_poppler_unix)
-            toast("Please install Poppler-utils to work convert PDFs to images with:\nsudo apt-get install poppler-utils")
+            run_cmd_with_sudo_dialog(title="Installing Poppler",func=install_poppler_unix_thread)
     else:
         pdftoolpath = Path(PDF_DIR)
         if not pdftoolpath.exists():
@@ -217,15 +216,22 @@ def start_installing_loaderprogress():
     pb.update(None, 1)
     return pb
 
-def install_poppler_unix(instance, *args):
-    pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
+def install_poppler_unix_thread(instance, *args):
     instance.parent.parent.parent.parent.dismiss()
+    dl_event = threading.Thread(target=install_poppler_unix, kwargs=({'sudopwd':instance.parent.parent.parent.parent.content_cls.children[0].text}))
+    dl_event.setDaemon(True)
+    dl_event.start()
+
+
+def install_poppler_unix(sudopwd=""):
     pb = start_installing_loaderprogress()
     install_tesseract = Popen(['sudo', '-S', 'apt-get', 'install', '-y', 'poppler-utils'],
                               stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
-    install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
+    install_tesseract.stdin.write(bytes(sudopwd, 'utf-8'))
     install_tesseract.communicate()
     pb.finish()
+    toast('Installing: Poppler succesful\n Enable: Working with PDFs')
+    logger.info(f'Installing: Succesful')
     return
 
 def install_poppler_win(pdftoolpath=None):
