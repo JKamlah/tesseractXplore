@@ -1,31 +1,36 @@
+import re
+import tempfile
 import threading
+import webbrowser
 from functools import partial
 from logging import getLogger
 from os import makedirs
 from pathlib import Path
-import re
 from subprocess import Popen, run, getstatusoutput, check_output, DEVNULL, STDOUT, PIPE
 from sys import platform as _platform
-import threading
 
+import io
+import requests
+import zipfile
 from kivymd.toast import toast
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import MDList, OneLineListItem, OneLineAvatarListItem
+from kivymd.uix.progressbar import MDProgressBar
 from kivymd.uix.textfield import MDTextField
-from kivymd.uix.boxlayout import MDBoxLayout
 
-from tesseractXplore.widgets import MyToggleButton
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.constants import PDF_DIR
+from tesseractXplore.widgets import LoaderProgressBar
+from tesseractXplore.widgets import MyToggleButton
 from tesseractXplore.widgets.lists import SwitchListItem
-from kivymd.uix.progressbar import MDProgressBar
-
 
 logger = getLogger().getChild(__name__)
 
 
 def pdf_dialog(pdfpath,cmds):
+    """ Start dialog to ocr a pdf, start a pdf viewer or convert pdf to images"""
     # Called by image_glob.py
     def close_dialog(instance, *args):
         instance.parent.parent.parent.parent.dismiss()
@@ -101,18 +106,17 @@ def pdf_dialog(pdfpath,cmds):
 
 
 def pdfimages_threading(pdfpath, cmds, instance, ocr=False, *args):
+    """ Start pdfimages in a separate thread"""
     instance.parent.parent.parent.parent.dismiss()
     pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, ocr, args))
     pdfimages_thread.setDaemon(True)
     pdfimages_thread.start()
 
 
-
 def open_pdf(fname, *args):
     """ Open a pdf via webbrowser or another external software """
     pdfviewer = get_app().settings_controller.pdfviewer
     if pdfviewer == 'webbrowser':
-        import webbrowser
         webbrowser.open(str(Path(fname).absolute()))
     else:
         try:
@@ -123,13 +127,13 @@ def open_pdf(fname, *args):
 
 
 def pdfimages(pdfpath, cmds, instance, ocr, *args):
+    """ Converts the pdf to images"""
     pb = MDProgressBar(color=get_app().theme_cls.primary_color, type="indeterminate")
     status_bar = get_app().image_selection_controller.status_bar
     status_bar.clear_widgets()
     status_bar.add_widget(pb)
     pb.start()
     if ocr:
-        import tempfile
         tmpdir = tempfile.TemporaryDirectory()
         pdfdir = Path(tmpdir.name)
     else:
@@ -175,6 +179,7 @@ def pdfimages(pdfpath, cmds, instance, ocr, *args):
 
 
 def extract_pdf(pdfpath):
+    """ Check if all necessary tools for pdf extraction are available and than start the extraction dialog or the installtion"""
     if _platform not in ["win32", "win64"]:
         if getstatusoutput("pdfimages")[0] not in [1, 127]:
             cmds ={"pdfimages":"pdfimages",
@@ -206,7 +211,7 @@ def extract_pdf(pdfpath):
     return pdfpath
 
 def start_installing_loaderprogress():
-    from tesseractXplore.widgets import LoaderProgressBar
+    """ Start a progress and set the state to 50%"""
     pb = LoaderProgressBar(color=get_app().theme_cls.primary_color)
     pb.value = 0
     pb.max = 2
@@ -217,6 +222,7 @@ def start_installing_loaderprogress():
     return pb
 
 def install_poppler_unix_thread(instance, *args):
+    """ Start poppler installation in an extra thread"""
     instance.parent.parent.parent.parent.dismiss()
     dl_event = threading.Thread(target=install_poppler_unix, kwargs=({'sudopwd':instance.parent.parent.parent.parent.content_cls.children[0].text}))
     dl_event.setDaemon(True)
@@ -224,18 +230,19 @@ def install_poppler_unix_thread(instance, *args):
 
 
 def install_poppler_unix(sudopwd=""):
+    """ Installation of poppler utils on unix os"""
     pb = start_installing_loaderprogress()
     install_tesseract = Popen(['sudo', '-S', 'apt-get', 'install', '-y', 'poppler-utils'],
                               stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
     install_tesseract.stdin.write(bytes(sudopwd, 'utf-8'))
     install_tesseract.communicate()
     pb.finish()
-    toast('Installing: Poppler succesful\n Enable: Working with PDFs')
+    toast('Installing: Poppler succesful\nEnable: Working with PDFs')
     logger.info(f'Installing: Succesful')
     return
 
 def install_poppler_win(pdftoolpath=None):
-    import requests, zipfile, io
+    """ Installation of poppler utils on win platforms"""
     toast('Installing: Poppler')
     pb = start_installing_loaderprogress()
     try:
@@ -244,7 +251,7 @@ def install_poppler_win(pdftoolpath=None):
         z = zipfile.ZipFile(io.BytesIO(r.content))
         Path(pdftoolpath).mkdir(parents=True)
         z.extractall(pdftoolpath)
-        toast('Installing: Poppler succesful\n Enable: Working with PDFs')
+        toast('Installing: Poppler succesful\nEnable: Working with PDFs')
         logger.info(f'Installing: Succesful')
     except:
         toast('Installing: Poppler not succesful')
