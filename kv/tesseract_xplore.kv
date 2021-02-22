@@ -55,12 +55,15 @@
                         MDGridLayout:
                             cols: 1
                             spacing: dp(4)
-                            OneLineListItem:
+                            OneLineRightIconListItem:
                                 id: settings_menu
                                 font_style: 'H5'
                                 markup: True
                                 text: '[size=21]Tesseract [b]Settings[/b][/size]'
                                 on_release: app.tesseract_controller.on_tesssettings_click()
+                                IconRightWidget:
+                                    icon: "folder-open"
+                                    on_release: app.tesseract_controller.on_tesssettings_click()
 
                             MDDropDownItem:
                                 id: model
