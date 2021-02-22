@@ -58,7 +58,7 @@ def install_tesseract(instance):
         toast('Download: Tesseract installer\nThe app will be closed and the installer will be started automatically!')
         dl_install_tesseract_win()
     else:
-        run_cmd_with_sudo_dialog(title="Enter sudo password to change the rights of the destination folder",func=install_tesseract_unix)
+        run_cmd_with_sudo_dialog(title="Enter sudo password to change the rights of the destination folder",func=thread_install_tesseract_unix)
 
 def dl_install_tesseract_win():
     try:
@@ -81,18 +81,17 @@ def install_tesseract_win(instance, *args):
     get_app().stop()
 
 def thread_install_tesseract_unix(instance, *args):
+    instance.parent.parent.parent.parent.dismiss()
     switch_to_home_for_dl()
     toast('Installing: Tesseract\nThe app will be closed after installation automatically!')
-    th_install = threading.Thread(target=install_tesseract_unix, args=(instance))
+    th_install = threading.Thread(target=install_tesseract_unix, kwargs={'instance':instance})
     th_install.setDaemon(True)
     th_install.start()
 
-def install_tesseract_unix(instance, *args):
-    pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
-    instance.parent.parent.parent.parent.dismiss()
+def install_tesseract_unix(instance=None):
     install_tesseract = Popen(['sudo', '-S', 'apt-get', 'install', '-y', 'tesseract-ocr'],
-                           stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
-    install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
+                           stdin=PIPE)
+    install_tesseract.stdin.write(bytes(instance.parent.parent.parent.parent.content_cls.children[0].text, 'utf-8'))
     install_tesseract.communicate()
     reset_tesspaths()
     get_app().stop()
