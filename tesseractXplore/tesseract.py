@@ -1,4 +1,6 @@
+import tempfile
 from logging import getLogger
+from os import startfile
 from sys import platform as _platform
 from subprocess import Popen, PIPE,DEVNULL, STDOUT
 from pathlib import Path
@@ -14,9 +16,16 @@ from functools import partial
 from tesseractXplore.unix import run_cmd_with_sudo_dialog
 from tesseractXplore.app import get_app
 
-
 logger = getLogger().getChild(__name__)
 
+def reset_tesspaths():
+    """ Reset tesspaths to default """
+    sc = get_app().settings_controller
+    sc.settings_dict['tesseract']['tesspath'] = ""
+    sc.settings_dict['tesseract']['tessdatadir'] = ""
+    sc.settings_dict['tesseract']['tessdatadir_system'] = ""
+    sc.settings_dict['tesseract']['tessdatadir_user'] = ""
+    sc.save_settings()
 
 def install_tesseract_dialog():
     def close_dialog(instance, *args):
@@ -56,8 +65,6 @@ def install_tesseract_win():
         else:
             url = get_app().settings_controller.tesseract['win64url']
         r = requests.get(url)
-        import tempfile
-        from os import startfile
         fout = Path(tempfile.gettempdir()).joinpath("tesseract.exe")
         logger.info(f"Creating: {fout}")
         with open(fout, 'wb') as f:
@@ -65,6 +72,7 @@ def install_tesseract_win():
         toast('Download: Succesful')
         logger.info(f'Download: Succesful')
         startfile(fout)
+        reset_tesspaths()
         get_app().stop()
     except Exception as e:
         print(e)
@@ -78,5 +86,6 @@ def install_tesseract_unix(instance, *args):
                            stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
     install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
     install_tesseract.communicate()
+    reset_tesspaths()
     get_app().stop()
     return

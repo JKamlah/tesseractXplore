@@ -1,6 +1,6 @@
 """ Basic utilities for reading and writing settings from config files """
 from logging import getLogger
-from os import makedirs
+from os import makedirs, remove
 from os.path import isfile
 from shutil import copyfile
 from typing import Dict, Any
@@ -47,6 +47,8 @@ def reset_defaults():
     """ Reset settings to defaults """
     logger.info(f'Resetting {CONFIG_PATH} to defaults')
     makedirs(DATA_DIR, exist_ok=True)
+    if isfile(CONFIG_PATH):
+        remove(CONFIG_PATH)
     copyfile(DEFAULT_CONFIG_PATH, CONFIG_PATH)
 
 
