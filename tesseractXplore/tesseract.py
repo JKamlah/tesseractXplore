@@ -1,19 +1,20 @@
+import tempfile
+from functools import partial
 from logging import getLogger
-from sys import platform as _platform
-from subprocess import Popen, PIPE,DEVNULL, STDOUT
+from os import startfile
 from pathlib import Path
+from subprocess import Popen, PIPE, DEVNULL, STDOUT
+from sys import platform as _platform
 
 import requests
-from kivymd.uix.list import OneLineListItem
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
-from kivymd.uix.button import MDFlatButton
 from kivymd.toast import toast
-from functools import partial
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import OneLineListItem
+from kivymd.uix.textfield import MDTextField
 
 from tesseractXplore.app import get_app
-
 
 logger = getLogger().getChild(__name__)
 
@@ -65,8 +66,6 @@ def install_win():
         else:
             url = get_app().settings_controller.tesseract['win64url']
         r = requests.get(url)
-        import tempfile
-        from os import startfile
         fout = Path(tempfile.gettempdir()).joinpath("tesseract.exe")
         logger.info(f"Creating: {fout}")
         with open(fout, 'wb') as f:
