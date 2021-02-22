@@ -19,10 +19,12 @@ logger = getLogger().getChild(__name__)
 
 def reset_tesspaths():
     """ Reset tesspaths to default """
-    sc = get_app().controllers.settings_controller
+    sc = get_app().settings_controller
+    sc.settings_dict['tesseract']['tesspath'] = ""
+    sc.settings_dict['tesseract']['tessdatadir'] = ""
     sc.settings_dict['tesseract']['tessdatadir_system'] = ""
     sc.settings_dict['tesseract']['tessdatadir_user'] = ""
-    sc.settings_controller()
+    sc.save_settings()
 
 def install_tesseract_dialog():
     def close_dialog(instance, *args):

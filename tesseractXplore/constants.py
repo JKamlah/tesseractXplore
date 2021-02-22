@@ -57,7 +57,7 @@ DEFAULT_CONFIG_PATH = join(METADATA_DIR, 'default_settings.yml')
 TESSPROFILE_PATH = join(DATA_DIR, 'tessprofiles.json')
 
 # Tessdata
-TESSDATA_PATH = join(DATA_DIR, 'tessdata/')
+TESSDATA_PATH = join(DATA_DIR, 'tessdata')
 
 
 # Model file

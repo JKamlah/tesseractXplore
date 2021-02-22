@@ -122,7 +122,7 @@ class SettingsController:
                 not isfile(join(TESSDATA_PATH, f"{std_model}.traineddata")):
                     copyfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata"),
                              join(TESSDATA_PATH, f"{std_model}.traineddata"))
-        self.save_settings()
+        #self.save_settings()
         return True
 
     def clear_thumbnail_cache(self, *args):
