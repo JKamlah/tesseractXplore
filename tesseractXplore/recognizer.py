@@ -80,7 +80,7 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                 # TODO: Focus function seems buggy in win
                 dialog.content_cls.focused = True
             # TODO: There should be a better way to set cursor to 0,0
-            time.sleep(1)
+            time.sleep(0.2)
             dialog.content_cls.cursor = (0, 0)
             dialog.open()
         else:
