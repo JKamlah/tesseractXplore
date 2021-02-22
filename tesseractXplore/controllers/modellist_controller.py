@@ -32,6 +32,8 @@ class ModelListController(Controller):
                 secondary_text="",
                 on_release=partial(self.set_model, model),
             )
+            if model not in self.checked_models:
+                self.checked_models[model] = False
             item.add_widget(LeftCheckbox(active=self.checked_models[model]))
             self.layout.add_widget(item)
 

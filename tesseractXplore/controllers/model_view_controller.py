@@ -2,20 +2,23 @@ import asyncio
 from logging import getLogger
 from pathlib import Path
 from typing import List
+import requests
 from sys import platform as _platform
 
-import requests
+from kivy.network.urlrequest import UrlRequest
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
+from kivymd.uix.progressbar import MDProgressBar
 from kivymd.toast import toast
 from functools import partial
 
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller, ModelBatchLoader
 from tesseractXplore.models import Model
+from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
 
 logger = getLogger().getChild(__name__)
 
@@ -89,20 +92,22 @@ class ModelViewController(Controller):
                 logger.warning("Could not create folder '%s'", outputpath)
             except:
                 logger.warning("Could not create folder '%s'", outputpath)
+        switch_to_home_for_dl()
+        toast(f"Download: {self.selected_model.model['name']}")
         self._dl_model(url,outputpath)
 
     def _dl_model(self, url, outputpath):
         try:
-            r = requests.get(url)
-            with open(outputpath, 'wb') as f:
-                f.write(r.content)
-            toast('Download: Succesful')
-            logger.info(f'Download: Succesful')
-            # Update Modelslist
-            get_app().tesseract_controller.models = get_app().tesseract_controller.get_models()
+            download_with_progress(url, outputpath, self.update_models)
         except:
             toast('Download: Error')
             logger.info(f'Download: Error while downloading')
+
+    def update_models(self, instance, *args):
+        toast('Download: Succesful')
+        logger.info(f'Download: Succesful')
+        # Update Modelslist
+        get_app().tesseract_controller.models = get_app().tesseract_controller.get_models()
 
 
     def select_model(self, model_obj: Model = None, model_dict: dict = None, id: int = None, if_empty: bool = False):

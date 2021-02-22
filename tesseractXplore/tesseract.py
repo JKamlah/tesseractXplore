@@ -1,13 +1,10 @@
 import tempfile
 from logging import getLogger
-from os import startfile
 from sys import platform as _platform
 from subprocess import Popen, PIPE,DEVNULL, STDOUT
 import threading
 from pathlib import Path
 
-import requests
-from kivy.network.urlrequest import UrlRequest
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -16,6 +13,7 @@ from kivymd.toast import toast
 from functools import partial
 
 from tesseractXplore.unix import run_cmd_with_sudo_dialog
+from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
 from tesseractXplore.app.screens import HOME_SCREEN
 from tesseractXplore.app import get_app
 
@@ -57,8 +55,7 @@ def install_tesseract_dialog():
 def install_tesseract(instance):
     instance.parent.parent.parent.parent.dismiss()
     if _platform in ["win32", "win64"]:
-        get_app().screen_manager.current = HOME_SCREEN
-        get_app().close_nav()
+        switch_to_home_for_dl()
         toast('Download: Tesseract installer\nThe app will be closed and the installer will be started automatically!')
         dl_install_tesseract_win()
     else:
@@ -70,20 +67,7 @@ def dl_install_tesseract_win():
             url = get_app().settings_controller.tesseract['win32url']
         else:
             url = get_app().settings_controller.tesseract['win64url']
-        from kivymd.uix.progressbar import MDProgressBar
-        pb = MDProgressBar(color=get_app().theme_cls.primary_color)
-        status_bar = get_app().image_selection_controller.status_bar
-        status_bar.clear_widgets()
-        status_bar.add_widget(pb)
-        pb.max = 1
-        pb.min = 0
-        pb.start()
-        def update_progress(request, current_size, total_size):
-            pb.value = current_size / total_size
-        UrlRequest(url = url, on_progress = update_progress,
-        chunk_size = 1024, on_success = install_tesseract_win,
-        file_path = Path(tempfile.gettempdir()).joinpath("tesseract.exe"))
-
+        download_with_progress(url, Path(tempfile.gettempdir()).joinpath("tesseract.exe"), install_tesseract_win)
     except Exception as e:
         print(e)
         toast('Download: Error')
@@ -92,13 +76,13 @@ def dl_install_tesseract_win():
 def install_tesseract_win(instance, *args):
     toast('Download: Succesful')
     logger.info(f'Download: Succesful')
+    from os import startfile
     startfile(Path(tempfile.gettempdir()).joinpath("tesseract.exe"))
     reset_tesspaths()
     get_app().stop()
 
 def thread_install_tesseract_unix(instance, *args):
-    get_app().screen_manager.current = HOME_SCREEN
-    get_app().close_nav()
+    switch_to_home_for_dl()
     toast('Installing: Tesseract\nThe app will be closed after installation automatically!')
     th_install = threading.Thread(target=install_tesseract_unix, args=(instance))
     th_install.setDaemon(True)
