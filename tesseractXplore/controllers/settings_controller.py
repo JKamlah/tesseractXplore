@@ -1,7 +1,10 @@
 import subprocess
 from locale import getdefaultlocale
 from logging import getLogger
+from os import makedirs, environ, path
+from os.path import isfile, join
 from pathlib import Path
+from shutil import copyfile
 from sys import platform as _platform
 
 from kivy.clock import Clock
@@ -9,16 +12,15 @@ from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 
 from tesseractXplore.app import alert
+from tesseractXplore.constants import TESSDATA_PATH
 from tesseractXplore.settings import (
     read_settings,
     write_settings,
     reset_defaults,
 )
-from tesseractXplore.constants import TESSDATA_PATH
 from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
-from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
 from tesseractXplore.tesseract import install_tesseract_dialog
-
+from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
 
 logger = getLogger().getChild(__name__)
 
@@ -73,7 +75,6 @@ class SettingsController:
     def set_tessdir_btn(self, instance, *args):
         self.set_tessdir()
 
-
     def set_tessdir(self, *args):
         for instance in [self.screen.tessdatadir_user_sel_chk, self.screen.tessdatadir_userspecific_sel_chk, self.screen.tessdatadir_system_sel_chk]:
             if instance.state == 'down':
@@ -87,7 +88,6 @@ class SettingsController:
     def set_tesspaths(self):
         if self.settings_dict['tesseract']['tesspath'] == '':
             if _platform in ["win32","win64"]:
-                from os import environ, path
                 tessfolder = 'Tesseract-OCR\\tesseract.exe'
                 if path.exists(path.join(environ['ProgramFiles(x86)'],tessfolder)):
                     self.settings_dict['tesseract']['tesspath'] = path.join(environ['ProgramFiles(x86)'],tessfolder)
@@ -96,7 +96,6 @@ class SettingsController:
                 else:
                     logger.warning("Please set the path to tesseract.exe manually in the settings window")
                     return False
-                #self.save_settings()
         if self.settings_dict['tesseract']['tessdatadir_system'] == '':
             try:
                 if self.settings_dict['tesseract']['tesspath'] != '':
@@ -117,15 +116,13 @@ class SettingsController:
         if self.settings_dict['tesseract']['tessdatadir_user'] == '':
             self.settings_dict['tesseract']['tessdatadir_user'] = TESSDATA_PATH
             self.settings_dict['tesseract']['tessdatadir'] = TESSDATA_PATH
-            from os import makedirs
-            from os.path import isfile, join
-            from shutil import copyfile
             makedirs(TESSDATA_PATH, exist_ok=True)
-            for std_model in ["osd","eng"]:
+            for std_model in ['osd','eng']:
                 if isfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata")) and \
-                    not isfile(join(TESSDATA_PATH, f"{std_model}.traineddata")):
+                not isfile(join(TESSDATA_PATH, f"{std_model}.traineddata")):
                     copyfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata"),
                              join(TESSDATA_PATH, f"{std_model}.traineddata"))
+        self.save_settings()
         return True
 
     def clear_thumbnail_cache(self, *args):

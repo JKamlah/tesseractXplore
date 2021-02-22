@@ -17,6 +17,12 @@ from tesseractXplore.app import get_app
 
 logger = getLogger().getChild(__name__)
 
+def reset_tesspaths():
+    """ Reset tesspaths to default """
+    sc = get_app().controllers.settings_controller
+    sc.settings_dict['tesseract']['tessdatadir_system'] = ""
+    sc.settings_dict['tesseract']['tessdatadir_user'] = ""
+    sc.settings_controller()
 
 def install_tesseract_dialog():
     def close_dialog(instance, *args):
@@ -49,6 +55,7 @@ def install_tesseract(instance):
     else:
         install_unix_dialog()
 
+
 def install_win():
     try:
         if _platform == "win32":
@@ -65,6 +72,7 @@ def install_win():
         toast('Download: Succesful')
         logger.info(f'Download: Succesful')
         startfile(fout)
+        reset_tesspaths()
         get_app().stop()
     except Exception as e:
         print(e)
@@ -100,5 +108,6 @@ def install_unix(instance, *args):
                            stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)
     install_tesseract.stdin.write(bytes(pwd, 'utf-8'))
     install_tesseract.communicate()
+    reset_tesspaths()
     get_app().stop()
     return
