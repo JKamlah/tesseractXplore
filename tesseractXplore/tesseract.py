@@ -3,6 +3,7 @@ from logging import getLogger
 from os import startfile
 from sys import platform as _platform
 from subprocess import Popen, PIPE,DEVNULL, STDOUT
+import threading
 from pathlib import Path
 
 import requests
@@ -15,6 +16,7 @@ from kivymd.toast import toast
 from functools import partial
 
 from tesseractXplore.unix import run_cmd_with_sudo_dialog
+from tesseractXplore.app.screens import HOME_SCREEN
 from tesseractXplore.app import get_app
 
 logger = getLogger().getChild(__name__)
@@ -55,7 +57,10 @@ def install_tesseract_dialog():
 def install_tesseract(instance):
     instance.parent.parent.parent.parent.dismiss()
     if _platform in ["win32", "win64"]:
-        install_tesseract_win()
+        get_app().screen_manager.current = HOME_SCREEN
+        get_app().close_nav()
+        toast('Download: Tesseract installer\nThe app will be closed and the installer will be started automatically!')
+        dl_install_tesseract_win()
     else:
         run_cmd_with_sudo_dialog(title="Enter sudo password to change the rights of the destination folder",func=install_tesseract_unix)
 
@@ -66,10 +71,12 @@ def dl_install_tesseract_win():
         else:
             url = get_app().settings_controller.tesseract['win64url']
         from kivymd.uix.progressbar import MDProgressBar
-        pb = MDProgressBar(color=get_app().theme_cls.primary_color, type="indeterminate")
+        pb = MDProgressBar(color=get_app().theme_cls.primary_color)
         status_bar = get_app().image_selection_controller.status_bar
         status_bar.clear_widgets()
         status_bar.add_widget(pb)
+        pb.max = 1
+        pb.min = 0
         pb.start()
         def update_progress(request, current_size, total_size):
             pb.value = current_size / total_size
@@ -82,12 +89,20 @@ def dl_install_tesseract_win():
         toast('Download: Error')
         logger.info(f'Download: Error while downloading')
 
-def install_tesseract_win():
+def install_tesseract_win(instance, *args):
     toast('Download: Succesful')
     logger.info(f'Download: Succesful')
     startfile(Path(tempfile.gettempdir()).joinpath("tesseract.exe"))
     reset_tesspaths()
     get_app().stop()
+
+def thread_install_tesseract_unix(instance, *args):
+    get_app().screen_manager.current = HOME_SCREEN
+    get_app().close_nav()
+    toast('Installing: Tesseract\nThe app will be closed after installation automatically!')
+    th_install = threading.Thread(target=install_tesseract_unix, args=(instance))
+    th_install.setDaemon(True)
+    th_install.start()
 
 def install_tesseract_unix(instance, *args):
     pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
