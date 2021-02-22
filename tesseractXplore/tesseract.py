@@ -1,21 +1,20 @@
 import tempfile
-from logging import getLogger
-from sys import platform as _platform
-from subprocess import Popen, PIPE,DEVNULL, STDOUT
 import threading
+from functools import partial
+from logging import getLogger
 from pathlib import Path
+from subprocess import Popen, PIPE, DEVNULL, STDOUT
+from sys import platform as _platform
 
-from kivymd.uix.list import OneLineListItem
-from kivymd.uix.dialog import MDDialog
+from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
-from kivymd.toast import toast
-from functools import partial
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import OneLineListItem
 
-from tesseractXplore.unix import run_cmd_with_sudo_dialog
-from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
-from tesseractXplore.app.screens import HOME_SCREEN
 from tesseractXplore.app import get_app
+from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
+from tesseractXplore.unix import run_cmd_with_sudo_dialog
 
 logger = getLogger().getChild(__name__)
 

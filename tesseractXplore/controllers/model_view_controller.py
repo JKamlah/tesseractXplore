@@ -1,24 +1,21 @@
 import asyncio
+from functools import partial
 from logging import getLogger
 from pathlib import Path
-from typing import List
-import requests
 from sys import platform as _platform
+from typing import List
 
-from kivy.network.urlrequest import UrlRequest
-from kivymd.uix.list import OneLineListItem
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.progressbar import MDProgressBar
 from kivymd.toast import toast
-from functools import partial
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import OneLineListItem
+from kivymd.uix.textfield import MDTextField
 
 from tesseractXplore.app import get_app
-from tesseractXplore.controllers import Controller, ModelBatchLoader
-from tesseractXplore.models import Model
+from tesseractXplore.controllers import Controller
 from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
+from tesseractXplore.models import Model
 
 logger = getLogger().getChild(__name__)
 
@@ -97,11 +94,7 @@ class ModelViewController(Controller):
         self._dl_model(url,outputpath)
 
     def _dl_model(self, url, outputpath):
-        try:
-            download_with_progress(url, outputpath, self.update_models)
-        except:
-            toast('Download: Error')
-            logger.info(f'Download: Error while downloading')
+        download_with_progress(url, outputpath, self.update_models)
 
     def update_models(self, instance, *args):
         toast('Download: Succesful')
