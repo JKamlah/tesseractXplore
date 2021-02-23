@@ -1,7 +1,7 @@
 from functools import partial
 
 from kivy.properties import StringProperty
-from kivymd.uix.list import OneLineListItem, OneLineAvatarIconListItem, TwoLineAvatarIconListItem, MDList
+from kivymd.uix.list import OneLineListItem, OneLineAvatarIconListItem, MDList
 
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
@@ -9,9 +9,6 @@ from tesseractXplore.widgets import LeftCheckbox
 
 class CustomOneLineListItem(OneLineListItem):
     icon = StringProperty()
-
-from kivymd.uix.list import ILeftBodyTouch
-from kivymd.uix.selectioncontrol import MDCheckbox
 
 
 class ModelListController(Controller):
@@ -39,13 +36,13 @@ class ModelListController(Controller):
 
         if self.checked_models is None:
             self.checked_models = {}
-            for model in get_app().tesseract_controller.models:
+            for model in list(get_app().tesseract_controller.modelinfos.keys()):
                 self.checked_models[model] = False
         else:
             self.chk_active_models()
         self.layout.clear_widgets()
         self.screen.modellist.clear_widgets()
-        for model in get_app().tesseract_controller.models:
+        for model in list(get_app().tesseract_controller.modelinfos.keys()):
             if search:
                 if self.screen.exact_match_chk.active:
                     if text == model[:len(text)]:

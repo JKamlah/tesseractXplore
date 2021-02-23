@@ -16,6 +16,7 @@ from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
 from tesseractXplore.models import Model
+from tesseractXplore.modelinfos import get_modelinfos, add_model_to_modelinfos
 
 logger = getLogger().getChild(__name__)
 
@@ -71,27 +72,28 @@ class ModelViewController(Controller):
 
     def download_model(self, outputpath):
         if self.screen.best_toggle.state == 'down':
-            url = self.selected_model.url['best']['url']
+            self.selected_model.url =  self.selected_model.url['best']['url'] + self.selected_model.model['name']
+            self.selected_model.model['type'] = 'best'
         else:
-            url = self.selected_model.url['fast']['url']
-        url += self.selected_model.model['name']
-        logger.info(f'Download: {url} -> {str(outputpath)}')
+            self.selected_model.url= self.selected_model.url['fast']['url'] + self.selected_model.model['name']
+            self.selected_model.model['type'] = 'fast'
+        logger.info(f'Download: {self.selected_model.url} -> {str(outputpath)}')
         if outputpath.parent.exists():
             if not self.check_folder_access(outputpath.parent):
-                return self.unlock_folder_dialog(outputpath.parent, outputpath, url)
+                return self.unlock_folder_dialog(outputpath.parent, outputpath, self.selected_model.url)
         else:
             try:
                 outputpath.parent.mkdir(parents=True)
             except PermissionError:
                 mainfolder = self.get_permitted_folder(outputpath)
                 if not self.check_folder_access(mainfolder):
-                    return self.unlock_folder_dialog(mainfolder, outputpath, url)
+                    return self.unlock_folder_dialog(mainfolder, outputpath, self.selected_model.url)
                 logger.warning("Could not create folder '%s'", outputpath)
             except:
                 logger.warning("Could not create folder '%s'", outputpath)
         switch_to_home_for_dl()
         toast(f"Download: {self.selected_model.model['name']}")
-        self._dl_model(url,outputpath)
+        self._dl_model(self.selected_model.url,outputpath)
 
     def _dl_model(self, url, outputpath):
         download_with_progress(url, outputpath, self.update_models)
@@ -100,7 +102,8 @@ class ModelViewController(Controller):
         toast('Download: Succesful')
         logger.info(f'Download: Succesful')
         # Update Modelslist
-        get_app().tesseract_controller.models = get_app().tesseract_controller.get_models()
+        add_model_to_modelinfos(get_app().tesseract_controller.modelinfos, self.selected_model)
+        get_app().tesseract_controller.modelinfos = get_modelinfos()
 
 
     def select_model(self, model_obj: Model = None, model_dict: dict = None, id: int = None, if_empty: bool = False):
@@ -207,7 +210,7 @@ class ModelViewController(Controller):
             self.screen.info_tags.add_widget(OneLineListItem(text=tag,
                                                              font_style='Subtitle2', text_color="FFFFFF"))
         self.screen.info_category.secondary_text = self.selected_model.model['category']
-        self.screen.filename.text = self.selected_model.model['name']
+        self.screen.filename.set_text(self.screen.filename ,self.selected_model.model['name'])
 
         # Star Button
         # star_icon = StarButton(

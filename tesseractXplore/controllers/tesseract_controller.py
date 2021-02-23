@@ -1,7 +1,6 @@
 import threading
 import time
 from logging import getLogger
-from subprocess import check_output, getstatusoutput
 
 from kivymd.toast import toast
 from kivymd.uix.button import MDFlatButton
@@ -14,6 +13,7 @@ from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.recognizer import recognize
 from tesseractXplore.tessprofiles import write_tessprofiles, read_tessprofiles
+from tesseractXplore.modelinfos import get_modelinfos
 
 logger = getLogger().getChild(__name__)
 
@@ -49,7 +49,7 @@ class TesseractController(Controller):
         self.screen.recognize_button.bind(on_release=self.recognize_thread)
         self.screen.pause_button.bind(on_press=self.stop_rec)
         self.screen.model.bind(on_release=get_app().image_selection_controller.get_model)
-        self.models = self.get_models()
+        self.modelinfos = get_modelinfos()
         self.print_on_screen = False
         self.ocr_event = None
         self.ocr_stop = False
@@ -65,14 +65,6 @@ class TesseractController(Controller):
         for profile, profileparam in get_app().tessprofiles.items():
             if profileparam['default'] == True:
                 self.load_tessprofile(profileparam)
-
-    def get_models(self):
-        tesscmd = get_app().settings_controller.tesseract['tesspath'] if get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
-        try:
-            return check_output([tesscmd, "--tessdata-dir", get_app().settings_controller.tesseract['tessdatadir'], "--list-langs"]).decode(
-                'utf-8').splitlines()[1:]
-        except:
-            return []
 
     def stop_rec(self, instance):
         """ Unschedule progress event and log total execution time """

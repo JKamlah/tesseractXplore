@@ -79,11 +79,11 @@ class SettingsController:
         for instance in [self.screen.tessdatadir_user_sel_chk, self.screen.tessdatadir_userspecific_sel_chk, self.screen.tessdatadir_system_sel_chk]:
             if instance.state == 'down':
                 if instance.text == 'Userwide folder (default)':
-                    self.screen['tessdatadir'].text = self.settings_dict['tesseract']['tessdatadir_user']
+                    self.screen['tessdatadir'].set_text(self.screen['tessdatadir'], self.settings_dict['tesseract']['tessdatadir_user'])
                 elif instance.text == 'Systemwide folder':
-                    self.screen['tessdatadir'].text = self.settings_dict['tesseract']['tessdatadir_system']
+                    self.screen['tessdatadir'].set_text(self.screen['tessdatadir'], self.settings_dict['tesseract']['tessdatadir_system'])
                 else:
-                    self.screen['tessdatadir'].text = self.settings_dict['tesseract']['tessdatadir_userspecific']
+                    self.screen['tessdatadir'].set_text(self.screen['tessdatadir'], self.settings_dict['tesseract']['tessdatadir_userspecific'])
 
     def set_tesspaths(self):
         if self.settings_dict['tesseract']['tesspath'] == '':

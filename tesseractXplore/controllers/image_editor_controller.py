@@ -127,7 +127,7 @@ class ImageEditorController:
             self.image.source = image
         else:
             self.image.source = image.selected_image.original_source
-        self.screen.imagename.text = Path(self.image.source).name
+        self.screen.imagename.set_text(self.screen.imagename, Path(self.image.source).name)
         self.orig_img = Image.open(self.image.source).convert("RGB")
         self.orig_thumbnail = self.orig_img.copy()
         self.thumbnail_size = int(get_app().settings_controller.controls['ie_thumbnail_size'].text)

@@ -218,7 +218,8 @@ class TesseractXplore(MDApp, ControllerProxy):
         if self.screen_manager.current in ['settings']:
             self.settings_controller.save_settings()
         if screen_name == "model":
-            self.model_view_controller.screen.tessdatadir.text = self.settings_controller.tesseract['tessdatadir']
+            self.model_view_controller.screen.tessdatadir.set_text(self.model_view_controller.screen.tessdatadir,
+                                                                   self.settings_controller.tesseract['tessdatadir'])
         self.screen_manager.current = screen_name
         self.update_toolbar(screen_name)
         self.close_nav()
