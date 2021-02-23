@@ -1,8 +1,12 @@
 from functools import partial
 
 from kivy.properties import StringProperty
-from kivymd.uix.list import OneLineListItem, OneLineAvatarIconListItem, MDList
+from kivymd.uix.list import OneLineListItem, OneLineAvatarIconListItem, TwoLineAvatarIconListItem, MDList, IconRightWidget
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.textfield import MDTextField
+from kivymd.uix.button import MDFlatButton
 
+from tesseractXplore.modelinfos import write_modelinfos
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.widgets import LeftCheckbox
@@ -24,14 +28,17 @@ class ModelListController(Controller):
         '''Lists all installed models '''
 
         def add_item(model):
-            item = OneLineAvatarIconListItem(
+            description = get_app().tesseract_controller.modelinfos.get(model).get('description','')
+            description = 'No description' if description  == '' else description
+            item = TwoLineAvatarIconListItem(
                 text=model,
-                secondary_text="",
+                secondary_text= description,
                 on_release=partial(self.set_model, model),
             )
             if model not in self.checked_models:
                 self.checked_models[model] = False
             item.add_widget(LeftCheckbox(active=self.checked_models[model]))
+            item.add_widget(IconRightWidget(icon='file-edit', on_release=partial(self.edit_description, model, description)))
             self.layout.add_widget(item)
 
         if self.checked_models is None:
@@ -55,6 +62,34 @@ class ModelListController(Controller):
             else:
                 add_item(model)
         self.screen.modellist.add_widget(self.layout)
+
+    def edit_description(self, model, description, instance, *args):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+        dialog = MDDialog(title=f"Edit the description of {model}",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=MDTextField(text=description),
+                          buttons=[
+                              MDFlatButton(
+                                  text="SAVE", on_release=partial(self.save_description, model, instance)
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        if get_app()._platform not in ['win32', 'win64']:
+        # TODO: Focus function seems buggy in win
+            dialog.content_cls.focused = True
+        dialog.open()
+
+    def save_description(self, model, model_instance, dialog_instance, *args):
+        dialog_instance.parent.parent.parent.parent.dismiss()
+        model_instance.parent.parent.children[2].children[1].text = dialog_instance.parent.parent.parent.children[2].children[0].text
+        modelinfos = get_app().tesseract_controller.modelinfos
+        modelinfos.get(model)['description'] = dialog_instance.parent.parent.parent.children[2].children[0].text
+        write_modelinfos(modelinfos)
 
     def chk_active_models(self):
         for model in self.layout.children:
