@@ -110,7 +110,8 @@
                         width: dp(400)
                         height: dp(40)
                         id: filename
-                        hint_text: 'Filename'
+                        helper_text: 'Filename'
+                        helper_text_mode: 'persistent'
 
 
                     MDBoxLayout:
@@ -121,11 +122,11 @@
                             id: best_toggle
                             text: "Best"
                             allow_no_selection: False
-                            state: 'down'
                             group: "Category"
                         MyToggleButton:
                             id: fast_toggle
                             text: "Fast"
+                            state: 'down'
                             allow_no_selection: False
                             group: "Category"
 
