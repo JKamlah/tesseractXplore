@@ -21,8 +21,12 @@ def read_settings() -> Dict[str, Any]:
     if not isfile(CONFIG_PATH):
         reset_defaults()
     logger.info(f'Reading settings from {CONFIG_PATH}')
+    # TODO: Is here a better way to make sure that new vars are updated?
+    with open(DEFAULT_CONFIG_PATH) as f:
+        default_settings = yaml.safe_load(f)
     with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
+        default_settings.update(yaml.safe_load(f))
+    return default_settings
 
 
 def write_settings(new_config: Dict[str, Any]):
