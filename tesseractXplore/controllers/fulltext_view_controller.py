@@ -82,6 +82,7 @@ class FulltextViewController:
         fdir = fpath.parent
         fname = fpath.name.rsplit(".", 1)[0]
         self.text.text = read_file(fdir.joinpath(fname + '.txt'), self.files.text)
+        self.text.font_name = get_app().settings_controller.get_font()
         self.text.cursor = (0, 0)
         if self.files.text:
             self.screen.textfiles.text = self.files.text[0][-75:]
@@ -112,6 +113,7 @@ class FulltextViewController:
                 # for word_id, word_data in word_data.items():
                 widget = HOCRLabel(text=line_data.pop('text'),
                                    bbox=line_data.pop('bbox'),
+                                   font_style=get_app().settings_controller.get_fontstyle(),
                                    par_id=par_id,
                                    line_id=line_id,
                                    on_release=partial(self.hocr_dialog),
@@ -173,7 +175,7 @@ class FulltextViewController:
         bboxlayout.add_widget(bboxvaluelayout)
         layout.add_widget(bboxlayout)
         layout.add_widget(image)
-        layout.add_widget(TextInput(text=instance.text))
+        layout.add_widget(TextInput(text=instance.text,font_name=get_app().settings_controller.get_font()))
         dialog = MDDialog(title="Snippets",
                           type='custom',
                           auto_dismiss=False,
@@ -211,7 +213,7 @@ class FulltextViewController:
         # else:
         # super(ResizableDraggablePicture, self).on_touch_down(touch
 
-    def set_file(self, filetype, instance):
+    def set_file(self, filetype, instance_button, instance):
         if filetype == 'text':
             self.screen.textfiles.set_item(instance.text[-75:])
             self.current_file.text[0] = instance.text

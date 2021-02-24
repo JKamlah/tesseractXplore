@@ -56,9 +56,12 @@ CONFIG_PATH = join(DATA_DIR, 'settings.yml')
 DEFAULT_CONFIG_PATH = join(METADATA_DIR, 'default_settings.yml')
 TESSPROFILE_PATH = join(DATA_DIR, 'tessprofiles.json')
 
-# Tessdata
-TESSDATA_PATH = join(DATA_DIR, 'tessdata')
+# Fonts
+DEFAULT_FONTS_DIR = join(ASSETS_DIR, 'fonts', '')
+FONTS_DIR = join(DATA_DIR, 'fonts')
 
+# Tessdata
+TESSDATA_DIR = join(DATA_DIR, 'tessdata')
 
 # Model file
 MODEL_PATH = join(DATA_DIR, 'metadata_modellist.yml')

@@ -5,7 +5,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import MDList, OneLineListItem
 
-from tesseractXplore.app import alert
+from tesseractXplore.app import alert, get_app
 from tesseractXplore.stdout_cache import read_stdout_cache
 
 
@@ -66,7 +66,6 @@ def select_text(stdout_keys, instance, *args):
 
 def set_item(instance, instance_menu, instance_menu_item):
     instance.text = instance_menu.text
-    instance_menu.text = "HEY"
     instance_menu.dismiss()
 
 
@@ -101,13 +100,15 @@ def diff_result(text, image):
     from kivymd.uix.label import MDLabel
     for textline in text.split("\n"):
         item = MDLabel(
-            text=textline, markup=True, theme_text_color="Primary"
+            text=textline,
+            markup=True,
+            font_style=get_app().settings_controller.get_fontstyle(),
+            theme_text_color="Primary"
         )
         item.bg_color = (0, 0, 0, 1)
         item.size_hint_y = None
         item.height = 40
         layoutlist.add_widget(item)
-    from tesseractXplore.app import get_app
     get_app().diffstdout_controller.screen['scrollview'].add_widget(layoutlist)
     get_app().diffstdout_controller.screen['image'].source = image
     get_app().switch_screen('diffstdout')

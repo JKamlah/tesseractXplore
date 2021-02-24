@@ -45,6 +45,34 @@
              #      id: regex
              #      mode: 'rectangle'
              #      hint_text: 'Set Regex to find files'
+
+                TwoLineListItem:
+                    font_style: 'H6'
+                    text: 'Font'
+                    secondary_text: 'Select which font should be used.'
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    MyToggleButton
+                        text: 'System font'
+                        id: system_font_chk
+                        group: 'font'
+                        width: dp(8)
+                    MyToggleButton:
+                        text: 'App font'
+                        id: app_font_chk
+                        group: 'font'
+                        width: dp(8)
+                OneLineListItem:
+                    font_style: 'H6'
+                    text: 'Select font'
+                MDDropDownItem:
+                    id: fontname
+                    text: 'Select a font'
+                    padding: dp(10)
+                    on_release: app.settings_controller.font_menu.open()
+
+
              # TODO: Needs further testings
              #  TwoLineListItem:
              #      font_style: 'H6'

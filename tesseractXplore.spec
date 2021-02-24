@@ -27,8 +27,9 @@ a = Analysis(
     binaries=binaries,
     datas=[
         ('assets\\metadata\\*.yml' , 'assets\\metadata'),
+        ('assets\\fonts\\*.ttf' , 'assets\\fonts'),
         ('assets\\*.png' , 'assets'),
-	('assets\\*.ico' , 'assets'),
+	    ('assets\\*.ico' , 'assets'),
         ('kv\\*.kv', 'kv'),
         ('venv\\Lib\\site-packages\\kivy_garden\\contextmenu\\*', 'kivy_garden\\contextmenu'),
     ],

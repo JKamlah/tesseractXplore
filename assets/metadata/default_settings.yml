@@ -6,6 +6,9 @@ display:
   pil_textprovider: 'normal'
   pygame_textprovider: 'normal'
   pango_textprovider: 'normal'
+  system_font: 'down'
+  app_font: 'normal'
+  fontname: 'JuniusX-Regular.ttf'
   # Not yet configurable
   md_primary_palette: 'Teal'
   md_accent_palette: 'Cyan'

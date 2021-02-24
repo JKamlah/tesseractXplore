@@ -4,7 +4,7 @@ from logging import getLogger
 from os import makedirs, environ, path
 from os.path import isfile, join
 from pathlib import Path
-from shutil import copyfile
+from shutil import copyfile, copytree
 from sys import platform as _platform
 
 from kivy.clock import Clock
@@ -12,7 +12,7 @@ from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 
 from tesseractXplore.app import alert
-from tesseractXplore.constants import TESSDATA_PATH
+from tesseractXplore.constants import TESSDATA_DIR, FONTS_DIR, DEFAULT_FONTS_DIR
 from tesseractXplore.settings import (
     read_settings,
     write_settings,
@@ -66,11 +66,51 @@ class SettingsController:
         self.screen.clear_stdout_cache_button.bind(on_release=self.clear_stdout_cache)
         self.screen.clear_thumbnail_cache_button.bind(on_release=self.clear_thumbnail_cache)
 
+        if not Path(FONTS_DIR).exists():
+            copytree(DEFAULT_FONTS_DIR, FONTS_DIR)
+        self.fonts = [font.name for font in Path(FONTS_DIR).glob('*.*')]
+        self.font_menu = self.create_dropdown(self.screen.fontname, [{'text': font} for font in self.fonts], self.set_font)
+
         self.screen.tessdatadir_user_sel_chk.bind(on_release=self.set_tessdir)
         self.screen.tessdatadir_userspecific_sel_chk.bind(on_release=self.set_tessdir)
         self.screen.tessdatadir_system_sel_chk.bind(on_release=self.set_tessdir)
 
         Clock.schedule_once(self.update_cache_sizes, 5)
+
+
+    def get_font(self):
+        if self.screen.app_font_chk.state == 'down':
+            return str(Path(FONTS_DIR).joinpath(self.screen.fontname.text).absolute())
+        else:
+            return 'Roboto'
+
+    def get_fontstyle(self):
+        from kivy.core.text import LabelBase
+        from kivymd.font_definitions import theme_font_styles
+        from tesseractXplore.app import get_app
+        font = self.get_font()
+        if '.' in font:
+            fontname = Path(font).name.split('.',1)[0]
+            LabelBase.register(
+                name=fontname,
+                fn_regular=font)
+            theme_font_styles.append(fontname)
+            get_app().theme_cls.font_styles[fontname] = [fontname, 21, False, 0.15]
+            return fontname
+        else:
+            return "Body1"
+
+    def create_dropdown(self, caller, item, callback):
+        from kivymd.uix.menu import MDDropdownMenu
+        menu = MDDropdownMenu(caller=caller,
+                              items=item,
+                              width_mult=20)
+        menu.bind(on_release=callback)
+        return menu
+
+    def set_font(self, menu, instance, *args):
+        self.screen.fontname.set_item(instance.text)
+        self.font_menu.dismiss()
 
     def set_tessdir_btn(self, instance, *args):
         self.set_tessdir()
@@ -114,14 +154,14 @@ class SettingsController:
                 logger.warning("Could not find tesseract installation")
                 return False
         if self.settings_dict['tesseract']['tessdatadir_user'] == '':
-            self.settings_dict['tesseract']['tessdatadir_user'] = TESSDATA_PATH
-            self.settings_dict['tesseract']['tessdatadir'] = TESSDATA_PATH
-            makedirs(TESSDATA_PATH, exist_ok=True)
+            self.settings_dict['tesseract']['tessdatadir_user'] = TESSDATA_DIR
+            self.settings_dict['tesseract']['tessdatadir'] = TESSDATA_DIR
+            makedirs(TESSDATA_DIR, exist_ok=True)
             for std_model in ['osd','eng']:
                 if isfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata")) and \
-                not isfile(join(TESSDATA_PATH, f"{std_model}.traineddata")):
+                not isfile(join(TESSDATA_DIR, f"{std_model}.traineddata")):
                     copyfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata"),
-                             join(TESSDATA_PATH, f"{std_model}.traineddata"))
+                             join(TESSDATA_DIR, f"{std_model}.traineddata"))
         #self.save_settings()
         return True
 
@@ -191,11 +231,11 @@ class SettingsController:
         # The setting (from file) may not have a corresponding widget on the Settings screen
         if setting_name not in self.controls:
             return None, None, None
-
+        from kivymd.uix.dropdownitem import MDDropDownItem
         control_widget = self.controls[setting_name]
         if hasattr(control_widget, 'active'):
             return control_widget, 'active', bool
-        elif hasattr(control_widget, 'state'):
+        elif hasattr(control_widget, 'state') and not isinstance(control_widget, MDDropDownItem):
             return control_widget, 'state', str
         elif hasattr(control_widget, 'text'):
             return control_widget, 'text', str

@@ -32,6 +32,8 @@ class ModelViewController(Controller):
         # self.model_link = screen.model_links.ids.selected_model_link_button
         self.download_button = screen.model_links.ids.download_button
         self.download_button.bind(on_release=lambda x: self.check_download_model())
+        self.download_via_url_button = screen.model_links.ids.download_via_url_button
+        self.download_via_url_button.bind(on_release=lambda x: self.download_via_url_dialog())
 
         # Outputs
         self.selected_model = None
@@ -39,11 +41,11 @@ class ModelViewController(Controller):
     def check_download_model(self):
         outputpath = Path(self.screen.tessdatadir.text).joinpath(self.screen.filename.text).absolute()
         if outputpath.exists():
-            self.overwrite_existing_file_dialog(outputpath)
+            self.overwrite_existing_file_dialog(self.start_download_model,outputpath)
         else:
             self.download_model(outputpath)
 
-    def overwrite_existing_file_dialog(self, outputpath):
+    def overwrite_existing_file_dialog(self,overwrite_func, outputpath):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
         layout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
@@ -54,7 +56,7 @@ class ModelViewController(Controller):
                           content_cls=layout,
                           buttons=[
                               MDFlatButton(
-                                  text="OVERWRITE", on_release=partial(self.start_download_model, outputpath)
+                                  text="OVERWRITE", on_release=partial(overwrite_func, outputpath)
                               ),
                               MDFlatButton(
                                   text="DISCARD", on_release=close_dialog
@@ -94,6 +96,65 @@ class ModelViewController(Controller):
         switch_to_home_for_dl()
         toast(f"Download: {self.selected_model.model['name']}")
         self._dl_model(self.selected_model.url,outputpath)
+
+    def download_via_url_dialog(self):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+        layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
+        layout.add_widget(OneLineListItem(text="Overwrite existing destination file?"))
+        layout.add_widget(OneLineListItem(text="URL to model"))
+        layout.add_widget(MDTextField(text=""))
+        layout.add_widget(OneLineListItem(text="Downloadpath"))
+        layout.add_widget(MDTextField(text=self.screen.tessdatadir.text))
+        layout.add_widget(OneLineListItem(text="Modelname (default: filename)"))
+        layout.add_widget(MDTextField(text=""))
+        dialog = MDDialog(title="",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=layout,
+                          buttons=[
+                              MDFlatButton(
+                                  text="DOWNLOAD", on_release=partial(self.check_download_via_url)
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        if get_app()._platform not in ['win32', 'win64']:
+            # TODO: Focus function seems buggy in win
+            dialog.content_cls.focused = True
+        dialog.open()
+
+    def check_download_via_url(self, instance, *args):
+        instance.parent.parent.parent.parent.dismiss()
+        parentinstance = instance.parent.parent.parent.children[2].children[0]
+
+        url = parentinstance.children[4].text
+        outputpath = parentinstance.children[2].text
+        modelname = parentinstance.children[0].text
+        if modelname == "":
+            modelname = Path(url).name
+        outputpath = Path(outputpath+modelname)
+        self.selected_model = Model.from_dict({'modelgroup':'',
+                                               'name': modelname.rsplit('.',1)[0],
+                                               'url': url,
+                                               'model': {'name': modelname,
+                                                         'tags': [''],
+                                                         'description': '',
+                                                         'category': '',
+                                                         'type': '',
+                                                         'fonts': ['']}})
+        if outputpath.exists():
+            self.overwrite_existing_file_dialog(self.download_via_url, outputpath)
+        else:
+            self.download_via_url(outputpath)
+
+    def download_via_url(self, outputpath):
+        switch_to_home_for_dl()
+        toast(f"Download: {self.selected_model.url}")
+        self._dl_model(self.selected_model.url, outputpath)
+
 
     def _dl_model(self, url, outputpath):
         download_with_progress(url, outputpath, self.update_models)
