@@ -13,7 +13,6 @@ from kivymd.uix.textfield import MDTextField
 
 from tesseractXplore.app import get_app
 from tesseractXplore.evaluate import evaluate_report
-from tesseractXplore.models.meta_metadata import MetaMetadata
 from tesseractXplore.stdout_cache import write_stdout_cache
 from tesseractXplore.widgets import LoaderProgressBar
 
@@ -145,9 +144,3 @@ def cache_stdout(image, text, params, instance, *args):
     id = instance.parent.parent.parent.parent.content_cls.text
     write_stdout_cache(image, id, text, params)
     instance.parent.parent.parent.parent.dismiss()
-
-
-def tag_image(image_path, keywords):
-    metadata = MetaMetadata(image_path)
-    metadata.update_keywords(keywords)
-    return metadata

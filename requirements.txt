@@ -7,7 +7,6 @@ appdirs
 attrs
 click-help-colors
 pillow
-pyexiv2
 pyyaml
 lxml
 requests

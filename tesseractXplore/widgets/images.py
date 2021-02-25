@@ -1,5 +1,6 @@
 """ Classes to extend image container functionality for caching, metadata, etc. """
 from io import BytesIO
+from os.path import basename
 from logging import getLogger
 
 from kivy.properties import ObjectProperty, BooleanProperty
@@ -7,7 +8,7 @@ from kivy.uix.image import AsyncImage
 from kivymd.uix.imagelist import SmartTile, SmartTileWithLabel
 
 from tesseractXplore.app.cache import cache_async_thumbnail
-from tesseractXplore.models import get_icon_path, MetaMetadata
+from tesseractXplore.models import get_icon_path
 from tesseractXplore.thumbnails import get_thumbnail_if_exists, get_format, get_thumbnail
 
 logger = getLogger().getChild(__name__)
@@ -82,16 +83,15 @@ class IconicTaxaIcon(SmartTile):
 
 class ImageMetaTile(SmartTileWithLabel):
     """ Class that contains an image thumbnail to display plus its associated metadata """
-    metadata = ObjectProperty()
 
     def __init__(self, source, **kwargs):
         super().__init__(source=get_thumbnail(source), **kwargs)
         self.original_source = source
-        self.metadata = MetaMetadata(source)
+        self.text = basename(source)
 
     def on_metadata(self, *args):
         """ Triggered whenever metadata changes """
-        self.text = self.metadata.summary
+        self.text = self.text
         self.set_box_color()
 
     def set_box_color(self):

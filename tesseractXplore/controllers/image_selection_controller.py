@@ -203,8 +203,8 @@ class ImageSelectionController(Controller):
 
     def remove_image(self, image):
         """ Remove an image from file list and image previews """
-        logger.info(f'Main: Removing image {image.metadata.image_path}')
-        self.file_list.remove(image.metadata.image_path)
+        logger.info(f'Main: Removing image {image.original_source}')
+        self.file_list.remove(image.original_source)
         image.parent.remove_widget(image)
 
     def clear(self, *args):

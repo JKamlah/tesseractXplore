@@ -10,12 +10,7 @@ binaries = []
 hiddenimports = []
 kivy_bins = []
 if is_win:
-    binaries = [
-        # ( 'lib\\exiv2.dll', '.' ),
-        # ( 'lib\\exiv2api.pyd', '.' ),
-        ('venv\\Lib\\site-packages\\pyexiv2\\lib\\exiv2.dll', '.'),
-        ('venv\\Lib\\site-packages\\pyexiv2\\lib\\py38-win\\exiv2api.pyd', '.'),
-    ]
+    binaries = []
     hiddenimports = ['win32timezone']
     kivy_bins = [Tree(p) for p in (sdl2.dep_bins + angle.dep_bins)]
 

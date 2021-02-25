@@ -49,7 +49,6 @@ setup(
         'attrs',
         'click-help-colors',
         'pillow>=7.0',
-        'pyexiv2',
         'pyyaml',
         'lxml',
         'requests',
