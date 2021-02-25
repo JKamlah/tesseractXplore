@@ -9,6 +9,7 @@ display:
   system_font: 'down'
   app_font: 'normal'
   fontname: 'JuniusX-Regular.ttf'
+  fontsize: '21'
   # Not yet configurable
   md_primary_palette: 'Teal'
   md_accent_palette: 'Cyan'

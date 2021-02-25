@@ -8,10 +8,15 @@ from shutil import copyfile, copytree
 from sys import platform as _platform
 
 from kivy.clock import Clock
+from kivy.core.text import LabelBase
 from kivy.uix.widget import Widget
 from kivymd.app import MDApp
+from kivymd.font_definitions import theme_font_styles
+from kivymd.uix.dropdownitem import MDDropDownItem
+from kivymd.uix.menu import MDDropdownMenu
 
 from tesseractXplore.app import alert
+from tesseractXplore.app import get_app
 from tesseractXplore.constants import TESSDATA_DIR, FONTS_DIR, DEFAULT_FONTS_DIR
 from tesseractXplore.settings import (
     read_settings,
@@ -85,9 +90,6 @@ class SettingsController:
             return 'Roboto'
 
     def get_fontstyle(self):
-        from kivy.core.text import LabelBase
-        from kivymd.font_definitions import theme_font_styles
-        from tesseractXplore.app import get_app
         font = self.get_font()
         if '.' in font:
             fontname = Path(font).name.split('.',1)[0]
@@ -101,7 +103,6 @@ class SettingsController:
             return "Body1"
 
     def create_dropdown(self, caller, item, callback):
-        from kivymd.uix.menu import MDDropdownMenu
         menu = MDDropdownMenu(caller=caller,
                               items=item,
                               width_mult=20)
@@ -231,7 +232,6 @@ class SettingsController:
         # The setting (from file) may not have a corresponding widget on the Settings screen
         if setting_name not in self.controls:
             return None, None, None
-        from kivymd.uix.dropdownitem import MDDropDownItem
         control_widget = self.controls[setting_name]
         if hasattr(control_widget, 'active'):
             return control_widget, 'active', bool

@@ -1,7 +1,9 @@
 import asyncio
+import os
 from functools import partial
 from logging import getLogger
 from pathlib import Path
+from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from sys import platform as _platform
 from typing import List
 
@@ -15,8 +17,8 @@ from kivymd.uix.textfield import MDTextField
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
-from tesseractXplore.models import Model
 from tesseractXplore.modelinfos import get_modelinfos, add_model_to_modelinfos
+from tesseractXplore.models import Model
 
 logger = getLogger().getChild(__name__)
 
@@ -48,9 +50,10 @@ class ModelViewController(Controller):
     def overwrite_existing_file_dialog(self,overwrite_func, outputpath):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
-        layout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
-        layout.add_widget(OneLineListItem(text=str(outputpath.absolute())))
-        dialog = MDDialog(title="Overwrite existing destination file?",
+        layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
+        layout.add_widget(OneLineListItem(text="Overwrite existing destination file?", font_style="H6"))
+        layout.add_widget(MDTextField(text=str(outputpath.absolute()), multiline=True, readonly=True))
+        dialog = MDDialog(title="",
                           type='custom',
                           auto_dismiss=False,
                           content_cls=layout,
@@ -101,7 +104,7 @@ class ModelViewController(Controller):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
         layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
-        layout.add_widget(OneLineListItem(text="Overwrite existing destination file?"))
+        layout.add_widget(OneLineListItem(text="Options for download via URL", font_style="H6"))
         layout.add_widget(OneLineListItem(text="URL to model"))
         layout.add_widget(MDTextField(text=""))
         layout.add_widget(OneLineListItem(text="Downloadpath"))
@@ -190,7 +193,6 @@ class ModelViewController(Controller):
         get_app().select_model_from_photo(self.selected_model.id)
 
     def check_folder_access(self, folderpath):
-        import os
         if not os.access(folderpath, os.W_OK):
             return False
         return True
@@ -205,9 +207,10 @@ class ModelViewController(Controller):
     def unlock_folder_dialog(self, folderpath, outputpath, url):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
-        layout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
+        layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
+        layout.add_widget(MDTextField(text="Sudo password to change the rights of the destination folder", font_style="H6"))
         layout.add_widget(MDTextField(hint_text="Password",password=True))
-        dialog = MDDialog(title="Enter sudo password to change the rights of the destination folder",
+        dialog = MDDialog(title="",
                           type='custom',
                           auto_dismiss=False,
                           content_cls=layout,
@@ -226,9 +229,8 @@ class ModelViewController(Controller):
         dialog.open()
 
     def unlock_folder(self, folderpath, outputpath, url, instance, *args):
-        from subprocess import Popen, PIPE,DEVNULL, STDOUT
-        pwd = instance.parent.parent.parent.parent.content_cls.children[0].text
         instance.parent.parent.parent.parent.dismiss()
+        pwd = instance.parent.parent.parent.parent.content_cls.children[1].text
         if _platform not in ["win32", "win64"]:
             set_userrights = Popen(['sudo', '-S', 'chmod', 'o+rw', str(folderpath.absolute())],
                                stdin=PIPE, stdout=DEVNULL, stderr=STDOUT)

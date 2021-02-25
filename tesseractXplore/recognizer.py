@@ -67,7 +67,8 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                                                     size_hint_y=None,
                                                     height=get_app()._window.size[1]-150,
                                                     readonly=True,
-                                                    font_name=get_app().settings_controller.get_font()),
+                                                    font_name=get_app().settings_controller.get_font(),
+                                                    font_size=int(get_app().settings_controller.screen.fontsize.text)),
                               buttons=[
                                   MDFlatButton(
                                       text="EVALUATE", on_release=partial(evaluate_report, stdout)
@@ -84,7 +85,7 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                 # TODO: Focus function seems buggy in win
                 dialog.content_cls.focused = True
             # TODO: There should be a better way to set cursor to 0,0
-            time.sleep(0.2)
+            time.sleep(1)
             dialog.content_cls.cursor = (0, 0)
             dialog.open()
         else:

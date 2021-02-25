@@ -2,6 +2,7 @@
     name: 'settings'
     BoxLayout:
         orientation: 'vertical'
+        padding: dp(25)
         ScrollViewY:
             MDList:
                 size_hint_min_x: 400
@@ -13,17 +14,17 @@
                     font_style: 'H6'
                     text: 'Username'
                 MDTextField:
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     id: username_input
                     size_hint_min_x: 100
                     #icon_left: 'account'
-                    #hint_text: 'Username'
+                    hint_text: 'Username'
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'Password'
                 MDTextField:
                     id: password
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     password: True
                     hint_text: 'Password'
                 OneLineListItem:
@@ -35,7 +36,7 @@
                     text: 'Image filetypes'
                 MDTextField:
                     id: filetypes
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     hint_text: 'Set filetypes'
              # TODO: ATM not used
              #  OneLineListItem:
@@ -65,12 +66,18 @@
                         width: dp(8)
                 OneLineListItem:
                     font_style: 'H6'
-                    text: 'Select font'
+                    text: 'App font selection'
                 MDDropDownItem:
                     id: fontname
                     text: 'Select a font'
                     padding: dp(10)
                     on_release: app.settings_controller.font_menu.open()
+                OneLineListItem:
+                    font_style: 'H6'
+                    text: 'Font size'
+                MDTextField:
+                    id: fontsize
+                    hint_text: 'Set font size'
 
 
              # TODO: Needs further testings
@@ -107,14 +114,14 @@
                     secondary_text: 'Default: webbrowser'
                 MDTextField:
                     id: pdfviewer
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     hint_text: 'Set path or cli-cmd to pdfviewer'
                 TwoLineListItem:
                     font_style: 'H6'
                     text: 'Image-Editor'
                 MDTextField:
                     id: ie_thumbnail_size
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     input_filter: 'int'
                     hint_text: 'Thumbnail size'
                 OneLineListItem:
@@ -130,7 +137,7 @@
                     text: 'Path to tesseract'
                     secondary_text: 'This dir is automatically found, but can be set manually too'
                 MDTextField:
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     id: tesspath
                 TwoLineListItem:
                     text: 'Path to tesseract models (Tessdata)'
@@ -154,7 +161,7 @@
                         group: 'tessdatadir'
                         width: dp(8)
                 MDTextField:
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     id: tessdatadir
                 # TODO: ATM not used
                 #OneLineAvatarListItem:
@@ -171,7 +178,7 @@
                     text: 'DPI'
                 MDTextField:
                     id: dpi
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     hint_text: 'Set DPI (default: auto)'
                     input_filter: 'int'
                     #on_release: app.tesseract_controller.dpi_menu.open()
@@ -187,7 +194,7 @@
                     text: 'Extra parameter'
                 MDTextField:
                     id: extra_param
-                    mode: 'rectangle'
+                    #mode: 'rectangle'
                     hint_text: 'Set parameter (e.g. load_system_dawg=1)'
                     #on_release: app.tesseract_controller.dpi_menu.open()
                 OneLineListItem:

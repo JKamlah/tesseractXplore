@@ -253,6 +253,7 @@ def evaluate_report(text, *args):
                                             size_hint_y=None,
                                             height=get_app()._window.size[1]-150,
                                             font=get_app().settings_controller.get_font(),
+                                            font_size=int(get_app().settings_controller.screen.fontsize.text),
                                             readonly=True),
                       buttons=[
                           MDFlatButton(
