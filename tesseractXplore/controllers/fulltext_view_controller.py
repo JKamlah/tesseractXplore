@@ -83,6 +83,8 @@ class FulltextViewController:
         fname = fpath.name.rsplit(".", 1)[0]
         self.text.text = read_file(fdir.joinpath(fname + '.txt'), self.files.text)
         self.text.font_name = get_app().settings_controller.get_font()
+        self.screen.fontsize.text = get_app().settings_controller.screen.fontsize.text
+        self.text.font_size = int(get_app().settings_controller.screen.fontsize.text)
         self.text.cursor = (0, 0)
         if self.files.text:
             self.screen.textfiles.text = self.files.text[0][-75:]
@@ -92,6 +94,8 @@ class FulltextViewController:
                                                        partial(self.set_file, "text"))
         self.screen.fontsize.text = str(self.text.font_size)
         self.alto.text = read_file(fdir.joinpath(fname + '.xml'), self.files.alto)
+        self.alto.font_name = get_app().settings_controller.get_font()
+        self.alto.font_size = int(get_app().settings_controller.screen.fontsize.text)
         self.alto.cursor = (0, 0)
         read_file(fdir.joinpath(fname + '.hocr'), self.files.hocr)
         if self.files.hocr:
@@ -102,6 +106,8 @@ class FulltextViewController:
                                                        partial(self.set_file, "hocr"))
             self.interactive_hocr(self.current_file.hocr[0])
         self.tsv.text = read_file(fdir.joinpath(fname + '.tsv'), self.files.tsv)
+        self.tsv.font_name = get_app().settings_controller.get_font()
+        self.tsv.font_size = int(get_app().settings_controller.screen.fontsize.text)
         self.tsv.cursor = (0, 0)
 
     def interactive_hocr(self, hocrfile):
