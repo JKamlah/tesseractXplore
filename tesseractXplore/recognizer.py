@@ -15,7 +15,7 @@ from tesseractXplore.app import get_app
 from tesseractXplore.evaluate import evaluate_report
 from tesseractXplore.stdout_cache import write_stdout_cache
 from tesseractXplore.widgets import LoaderProgressBar
-from tesseractXplore.font import get_font
+from tesseractXplore.font import get_font, fontproperties_dialog
 
 
 def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_folder=None, outputformats=None,
@@ -70,6 +70,9 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                                                     font_name=get_font(),
                                                     font_size=int(get_app().settings_controller.screen.fontsize.text)),
                               buttons=[
+                                  MDFlatButton(
+                                      text="SET FONT", on_release=fontproperties_dialog
+                                  ),
                                   MDFlatButton(
                                       text="EVALUATE", on_release=partial(evaluate_report, stdout)
                                   ),

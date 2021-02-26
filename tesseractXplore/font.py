@@ -48,3 +48,47 @@ def get_fontstyle():
         return fontname
     except:
         return "Body1"
+
+def fontproperties_dialog(instance, *args):
+    from kivymd.uix.list import MDList, OneLineListItem
+    from kivymd.uix.button import MDFlatButton
+    from kivymd.uix.dialog import MDDialog
+    from kivymd.uix.textfield import MDTextField
+    from tesseractXplore.widgets.spinner import FntSpinner
+    from functools import partial
+    def close_dialog(instance, *args):
+        instance.parent.parent.parent.parent.dismiss()
+    layout = MDList()
+    item = OneLineListItem(text="Change font")
+    layout.add_widget(item)
+    item = FntSpinner(text=get_app().settings_controller.screen.fontname.text,
+                      size_hint_y= None,
+                      height= 50,
+                      values=get_font_list())
+    layout.add_widget(item)
+    item = OneLineListItem(text="Change fontsize")
+    layout.add_widget(item)
+    item = MDTextField(text=get_app().settings_controller.screen.fontsize.text)
+    layout.add_widget(item)
+    dialog = MDDialog(title="Set font properties",
+                      type='custom',
+                      auto_dismiss=False,
+                      content_cls=layout,
+                      buttons=[
+                          MDFlatButton(
+                              text="SET", on_release=partial(set_fontproperties, instance, layout)
+                          ),
+                          MDFlatButton(
+                              text="DISCARD", on_release=close_dialog
+                          ),
+                      ],
+                      )
+    dialog.open()
+
+def set_fontproperties(text_instance ,layout, properties_instance, *args):
+    properties_instance.parent.parent.parent.parent.dismiss()
+    fontsize = layout.children[0].text
+    fontname = layout.children[2].text
+    text = text_instance.parent.parent.parent.children[2].children[0]
+    text.font_size = fontsize
+    text.font_name = fontname

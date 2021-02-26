@@ -52,15 +52,13 @@
                     font_style: 'H6'
                     text: 'Font'
                     secondary_text: 'Select which font should be used to display ocr results.'
-                MDBoxLayout:
-                    orientation: 'horizontal'
+                Spinner:
+                    id: fontname
                     size_hint_y: None
                     height: 50
-                    Spinner:
-                        id: fontname
-                        text: 'RobotoMono-Regular'
-                        font_name: self.text if self.text else self.font_name
-                        option_cls: Factory.FntSpinnerOption
+                    text: 'RobotoMono-Regular'
+                    font_name: self.text if self.text else self.font_name
+                    option_cls: Factory.FntSpinnerOption
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'Font size'
