@@ -3,7 +3,11 @@ from kivy.uix.spinner import Spinner, SpinnerOption
 class FntSpinnerOption(SpinnerOption):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.font_name= self.text if self.text else self.font_name
+        try:
+            if self.text not in ["Gargi","Gubbi","Navilu","NotoColorEmoji","Sarai"]:
+                self.font_name= self.text if self.text else self.font_name
+        except:
+            pass
     pass
 
 class FntSpinner(Spinner):
