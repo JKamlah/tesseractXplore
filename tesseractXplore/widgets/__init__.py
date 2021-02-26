@@ -24,5 +24,6 @@ from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, P
     ListContextMenuItem, TessprofileContextMenuItem
 from tesseractXplore.widgets.model_autocomplete import ModelAutocompleteSearch
 from tesseractXplore.widgets.progress_bar import LoaderProgressBar
+from tesseractXplore.widgets.spinner import FntSpinnerOption
 from tesseractXplore.widgets.tabs import Tab
 from tesseractXplore.widgets.zoom import Zoom

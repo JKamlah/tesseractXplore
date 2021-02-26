@@ -1,6 +1,7 @@
 import subprocess
 from locale import getdefaultlocale
 from logging import getLogger
+import os
 from os import makedirs, environ, path
 from os.path import isfile, join
 from pathlib import Path
@@ -10,6 +11,10 @@ from sys import platform as _platform
 from kivy.clock import Clock
 from kivy.core.text import LabelBase
 from kivy.uix.widget import Widget
+from kivy.utils import reify
+from kivy.uix.spinner import Spinner
+from kivy.core.text import Label as CoreLabel
+from kivy.resources import resource_find, resource_add_path
 from kivymd.app import MDApp
 from kivymd.font_definitions import theme_font_styles
 from kivymd.uix.dropdownitem import MDDropDownItem
@@ -73,8 +78,7 @@ class SettingsController:
 
         if not Path(FONTS_DIR).exists():
             copytree(DEFAULT_FONTS_DIR, FONTS_DIR)
-        self.fonts = [font.name for font in Path(FONTS_DIR).glob('*.*')]
-        self.font_menu = self.create_dropdown(self.screen.fontname, [{'text': font} for font in self.fonts], self.set_font)
+        self.screen.fontname.values = self.get_font_list
 
         self.screen.tessdatadir_user_sel_chk.bind(on_release=self.set_tessdir)
         self.screen.tessdatadir_userspecific_sel_chk.bind(on_release=self.set_tessdir)
@@ -82,25 +86,44 @@ class SettingsController:
 
         Clock.schedule_once(self.update_cache_sizes, 5)
 
+    @reify
+    def get_font_list(self):
+        '''Get a list of all the fonts available on this system.
+        '''
+        CoreLabel._fonts_dirs.append(FONTS_DIR)
+        fonts_path = CoreLabel.get_system_fonts_dir()
+        flist = []
+        resource_add_path(FONTS_DIR)
+
+        for fdir in fonts_path:
+            for fpath in sorted(os.listdir(fdir)):
+                if fpath.endswith('.ttf'):
+                    flist.append(fpath[:-4])
+        return sorted(flist)
+
 
     def get_font(self):
-        if self.screen.app_font_chk.state == 'down':
-            return str(Path(FONTS_DIR).joinpath(self.screen.fontname.text).absolute())
-        else:
-            return 'Roboto'
+        return self.screen.fontname.text
+
 
     def get_fontstyle(self):
-        font = self.get_font()
-        if '.' in font:
-            fontname = Path(font).name.split('.',1)[0]
+        fontname = self.get_font()
+        filename = resource_find(fontname)
+        if not filename and not fontname.endswith('.ttf'):
+            fontname = '{}.ttf'.format(fontname)
+            filename = resource_find(fontname)
+        try:
             LabelBase.register(
                 name=fontname,
-                fn_regular=font)
+                fn_regular=filename)
             theme_font_styles.append(fontname)
-            get_app().theme_cls.font_styles[fontname] = [fontname, 21, False, 0.15]
+            get_app().theme_cls.font_styles[fontname] = [fontname, int(self.screen.fontsize.text), False, 0.15]
             return fontname
-        else:
+        except:
             return "Body1"
+
+
+
 
     def create_dropdown(self, caller, item, callback):
         menu = MDDropdownMenu(caller=caller,
@@ -235,7 +258,8 @@ class SettingsController:
         control_widget = self.controls[setting_name]
         if hasattr(control_widget, 'active'):
             return control_widget, 'active', bool
-        elif hasattr(control_widget, 'state') and not isinstance(control_widget, MDDropDownItem):
+        elif hasattr(control_widget, 'state') and not isinstance(control_widget, MDDropDownItem) and not \
+            isinstance(control_widget, Spinner):
             return control_widget, 'state', str
         elif hasattr(control_widget, 'text'):
             return control_widget, 'text', str

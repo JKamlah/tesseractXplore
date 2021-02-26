@@ -1,3 +1,4 @@
+#: import Factory kivy.factory.Factory
 <SettingsScreen>:
     name: 'settings'
     BoxLayout:
@@ -50,28 +51,16 @@
                 TwoLineListItem:
                     font_style: 'H6'
                     text: 'Font'
-                    secondary_text: 'Select which font should be used.'
+                    secondary_text: 'Select which font should be used to display ocr results.'
                 MDBoxLayout:
                     orientation: 'horizontal'
-                    adaptive_height: True
-                    MyToggleButton
-                        text: 'System font'
-                        id: system_font_chk
-                        group: 'font'
-                        width: dp(8)
-                    MyToggleButton:
-                        text: 'App font'
-                        id: app_font_chk
-                        group: 'font'
-                        width: dp(8)
-                OneLineListItem:
-                    font_style: 'H6'
-                    text: 'App font selection'
-                MDDropDownItem:
-                    id: fontname
-                    text: 'Select a font'
-                    padding: dp(10)
-                    on_release: app.settings_controller.font_menu.open()
+                    size_hint_y: None
+                    height: 50
+                    Spinner:
+                        id: fontname
+                        text: 'RobotoMono-Regular'
+                        font_name: self.text if self.text else self.font_name
+                        option_cls: Factory.FntSpinnerOption
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'Font size'
