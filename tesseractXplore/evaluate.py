@@ -8,6 +8,7 @@ from kivy.uix.textinput import TextInput
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from tesseractXplore.app import get_app
+from tesseractXplore.font import get_font
 
 
 def get_defaultdict(resultslvl: Dict, newlvl, instance=OrderedDict) -> None:
@@ -252,7 +253,7 @@ def evaluate_report(text, *args):
                       content_cls=TextInput(text=report,
                                             size_hint_y=None,
                                             height=get_app()._window.size[1]-150,
-                                            font=get_app().settings_controller.get_font(),
+                                            font=get_font(),
                                             font_size=int(get_app().settings_controller.screen.fontsize.text),
                                             readonly=True),
                       buttons=[

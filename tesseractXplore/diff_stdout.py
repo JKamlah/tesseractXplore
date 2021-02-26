@@ -7,6 +7,7 @@ from kivymd.uix.list import MDList, OneLineListItem
 
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.stdout_cache import read_stdout_cache
+from tesseractXplore.font import get_fontstyle
 
 
 def close_dialog(instance, *args):
@@ -102,7 +103,7 @@ def diff_result(text, image):
         item = MDLabel(
             text=textline,
             markup=True,
-            font_style=get_app().settings_controller.get_fontstyle(),
+            font_style=get_fontstyle(),
             theme_text_color="Primary"
         )
         item.bg_color = (0, 0, 0, 1)

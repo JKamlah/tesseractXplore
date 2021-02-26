@@ -9,19 +9,13 @@ from shutil import copyfile, copytree
 from sys import platform as _platform
 
 from kivy.clock import Clock
-from kivy.core.text import LabelBase
 from kivy.uix.widget import Widget
-from kivy.utils import reify
 from kivy.uix.spinner import Spinner
-from kivy.core.text import Label as CoreLabel
-from kivy.resources import resource_find, resource_add_path
 from kivymd.app import MDApp
-from kivymd.font_definitions import theme_font_styles
 from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
 
 from tesseractXplore.app import alert
-from tesseractXplore.app import get_app
 from tesseractXplore.constants import TESSDATA_DIR, FONTS_DIR, DEFAULT_FONTS_DIR
 from tesseractXplore.settings import (
     read_settings,
@@ -31,6 +25,7 @@ from tesseractXplore.settings import (
 from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_size
 from tesseractXplore.tesseract import install_tesseract_dialog
 from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
+from tesseractXplore.font import get_font_list
 
 logger = getLogger().getChild(__name__)
 
@@ -78,52 +73,12 @@ class SettingsController:
 
         if not Path(FONTS_DIR).exists():
             copytree(DEFAULT_FONTS_DIR, FONTS_DIR)
-        self.screen.fontname.values = self.get_font_list
-
+        self.screen.fontname.values = get_font_list()
         self.screen.tessdatadir_user_sel_chk.bind(on_release=self.set_tessdir)
         self.screen.tessdatadir_userspecific_sel_chk.bind(on_release=self.set_tessdir)
         self.screen.tessdatadir_system_sel_chk.bind(on_release=self.set_tessdir)
 
         Clock.schedule_once(self.update_cache_sizes, 5)
-
-    @reify
-    def get_font_list(self):
-        '''Get a list of all the fonts available on this system.
-        '''
-        CoreLabel._fonts_dirs.append(FONTS_DIR)
-        fonts_path = CoreLabel.get_system_fonts_dir()
-        flist = []
-        resource_add_path(FONTS_DIR)
-
-        for fdir in fonts_path:
-            for fpath in sorted(os.listdir(fdir)):
-                if fpath.endswith('.ttf'):
-                    flist.append(fpath[:-4])
-        return sorted(flist)
-
-
-    def get_font(self):
-        return self.screen.fontname.text
-
-
-    def get_fontstyle(self):
-        fontname = self.get_font()
-        filename = resource_find(fontname)
-        if not filename and not fontname.endswith('.ttf'):
-            fontname = '{}.ttf'.format(fontname)
-            filename = resource_find(fontname)
-        try:
-            LabelBase.register(
-                name=fontname,
-                fn_regular=filename)
-            theme_font_styles.append(fontname)
-            get_app().theme_cls.font_styles[fontname] = [fontname, int(self.screen.fontsize.text), False, 0.15]
-            return fontname
-        except:
-            return "Body1"
-
-
-
 
     def create_dropdown(self, caller, item, callback):
         menu = MDDropdownMenu(caller=caller,
@@ -131,10 +86,6 @@ class SettingsController:
                               width_mult=20)
         menu.bind(on_release=callback)
         return menu
-
-    def set_font(self, menu, instance, *args):
-        self.screen.fontname.set_item(instance.text)
-        self.font_menu.dismiss()
 
     def set_tessdir_btn(self, instance, *args):
         self.set_tessdir()

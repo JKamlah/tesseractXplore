@@ -12,6 +12,7 @@ from kivymd.uix.menu import MDDropdownMenu
 
 from tesseractXplore.app import get_app
 from tesseractXplore.hocr import get_text_and_bbox, save_hocr
+from tesseractXplore.font import get_font, get_fontsize, get_fontstyle
 from tesseractXplore.widgets.labels import HOCRLabel
 
 
@@ -82,9 +83,9 @@ class FulltextViewController:
         fdir = fpath.parent
         fname = fpath.name.rsplit(".", 1)[0]
         self.text.text = read_file(fdir.joinpath(fname + '.txt'), self.files.text)
-        self.text.font_name = get_app().settings_controller.get_font()
-        self.screen.fontsize.text = get_app().settings_controller.screen.fontsize.text
-        self.text.font_size = int(get_app().settings_controller.screen.fontsize.text)
+        self.text.font_name = get_font()
+        self.screen.fontsize.text = get_fontsize()
+        self.text.font_size = int(get_fontsize())
         self.text.cursor = (0, 0)
         if self.files.text:
             self.screen.textfiles.text = self.files.text[0][-75:]
@@ -94,7 +95,7 @@ class FulltextViewController:
                                                        partial(self.set_file, "text"))
         self.screen.fontsize.text = str(self.text.font_size)
         self.alto.text = read_file(fdir.joinpath(fname + '.xml'), self.files.alto)
-        self.alto.font_name = get_app().settings_controller.get_font()
+        self.alto.font_name = get_font()
         self.alto.font_size = int(get_app().settings_controller.screen.fontsize.text)
         self.alto.cursor = (0, 0)
         read_file(fdir.joinpath(fname + '.hocr'), self.files.hocr)
@@ -106,7 +107,7 @@ class FulltextViewController:
                                                        partial(self.set_file, "hocr"))
             self.interactive_hocr(self.current_file.hocr[0])
         self.tsv.text = read_file(fdir.joinpath(fname + '.tsv'), self.files.tsv)
-        self.tsv.font_name = get_app().settings_controller.get_font()
+        self.tsv.font_name = get_font()
         self.tsv.font_size = int(get_app().settings_controller.screen.fontsize.text)
         self.tsv.cursor = (0, 0)
 
@@ -119,7 +120,7 @@ class FulltextViewController:
                 # for word_id, word_data in word_data.items():
                 widget = HOCRLabel(text=line_data.pop('text'),
                                    bbox=line_data.pop('bbox'),
-                                   font_style=get_app().settings_controller.get_fontstyle(),
+                                   font_style=get_fontstyle(),
                                    par_id=par_id,
                                    line_id=line_id,
                                    on_release=partial(self.hocr_dialog),
@@ -181,7 +182,7 @@ class FulltextViewController:
         bboxlayout.add_widget(bboxvaluelayout)
         layout.add_widget(bboxlayout)
         layout.add_widget(image)
-        layout.add_widget(TextInput(text=instance.text,font_name=get_app().settings_controller.get_font()))
+        layout.add_widget(TextInput(text=instance.text,font_name=get_font()))
         dialog = MDDialog(title="Snippets",
                           type='custom',
                           auto_dismiss=False,
