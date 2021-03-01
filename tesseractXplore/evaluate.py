@@ -111,17 +111,17 @@ def report_subsection(report, subsection: str, result: DefaultDict, header="", s
                     if isinstance(subkey, int) or len(subkey) == 1:
                         subkey = ord(subkey)
                         report += f"""
-                            {print_unicodeinfo(subval, subkey)}"""
+            {print_unicodeinfo(subval, subkey)}"""
                     else:
                         report += f"""
-                            {print_unicodeinfo(subval, chr(subkey))}"""
+            {print_unicodeinfo(subval, chr(subkey))}"""
             else:
                 if isinstance(key, int):
                     report += f"""
-                        {print_unicodeinfo(val, chr(key))}"""
+            {print_unicodeinfo(val, chr(key))}"""
                 else:
                     report += f"""
-                        {print_unicodeinfo(val, key)}"""
+            {print_unicodeinfo(val, key)}"""
     report += f"""
     \n{"-" * 60}\n"""
     return report
@@ -253,9 +253,8 @@ def evaluate_report(text, *args):
                       content_cls=TextInput(text=report,
                                             size_hint_y=None,
                                             height=get_app()._window.size[1]-150,
-                                            font=get_font(),
-                                            font_size=int(get_app().settings_controller.screen.fontsize.text),
-                                            readonly=True),
+                                            readonly=True,
+                                            font_name="RobotoMono-Regular",),
                       buttons=[
                           MDFlatButton(
                               text="DISCARD", on_release=close_dialog
