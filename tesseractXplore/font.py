@@ -3,6 +3,7 @@ import os
 
 from kivy.core.text import LabelBase
 from kivy.utils import reify
+from kivy.uix.label import Label
 from kivy.core.text import Label as CoreLabel
 from kivy.resources import resource_find, resource_add_path
 from kivymd.font_definitions import theme_font_styles
@@ -92,3 +93,14 @@ def set_fontproperties(text_instance ,layout, properties_instance, *args):
     text = text_instance.parent.parent.parent.children[2].children[0]
     text.font_size = fontsize
     text.font_name = fontname
+
+def chk_font_renderabilty(font):
+    try:
+        # Test if renderable
+        container = Label()._label
+        container.options['font_name'] = font
+        container.refresh()
+        return True
+    except:
+        logger.warning(f" {font} is not renderable")
+        return False

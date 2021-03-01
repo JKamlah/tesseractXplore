@@ -1,12 +1,17 @@
 from kivy.uix.spinner import Spinner, SpinnerOption
+from tesseractXplore.font import chk_font_renderabilty
 
 class FntSpinnerOption(SpinnerOption):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         try:
-            if self.text not in ["Gargi","Gubbi","Navilu","NotoColorEmoji","Sarai"]:
+            # TODO: Find a method to check if a font can get rendered before crash
+            if chk_font_renderabilty(self.text):
                 self.font_name= self.text if self.text else self.font_name
-        except:
+            else:
+                self.text = "Font is renderable"
+                pass
+        except Exception as e:
             pass
     pass
 
