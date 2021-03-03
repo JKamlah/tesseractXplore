@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TesseractXplore"
-!define PRODUCT_VERSION "0.1.6"
+!define PRODUCT_VERSION "0.1.7"
 !define PRODUCT_PUBLISHER "UB Mannheim"
 !define PRODUCT_WEB_SITE "https://github.com/UB-Mannheim"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tesseractXplore.exe"
@@ -1586,7 +1586,7 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Möchten Sie TesseractXplore und alle seinen Komponenten deinstallieren?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Mï¿½chten Sie TesseractXplore und alle seinen Komponenten deinstallieren?" IDYES +2
   Abort
 FunctionEnd
 
