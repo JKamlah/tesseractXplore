@@ -127,6 +127,7 @@ class ModelSearchController(Controller):
     @staticmethod
     def on_selection(instance, metadata: dict):
         """ Handle clicking a model search result from the autocomplete dropdown """
+        get_app().model_search_controller.model_search_input.text_input.text = metadata['name']
         get_app().select_model(model_dict=metadata)
 
     @staticmethod

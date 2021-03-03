@@ -50,7 +50,7 @@
                     # TODO: Move input/search to a separate screen
                     MDBoxLayout:
                         size_hint_y: 1.0
-                        size_hint_min_y: 410
+                        size_hint_min_y: 370
                         md_bg_color: .1, .1, .1, .1
                         MDGridLayout:
                             cols: 1
@@ -138,16 +138,6 @@
                                     #width: dp(400)
                                     SwitchListItem:
                                         id: subfolder_chk
-                            MDGridLayout:
-                                orientation: 'lr-tb'
-                                cols: 3
-                                MDRoundFlatIconButton:
-                                    text: 'Find a new model'
-                                    disabled: False
-                                    icon: 'magnify'
-                                    #width: dp(400)
-                                    on_press:
-                                        app.switch_screen('model')
                                # MDRoundFlatIconButton:
                                #    text: 'Train a model'
                                #    disabled: True

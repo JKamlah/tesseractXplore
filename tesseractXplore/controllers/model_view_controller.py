@@ -261,6 +261,7 @@ class ModelViewController(Controller):
         # icon_path = None #get_icon_path(self.selected_model.scrip)
         # if icon_path:
         #    item.add_widget(ImageLeftWidget(source=icon_path))
+        self.screen.model_header.text = 'Model: '+self.selected_model.name
         self.screen.basic_info.text = self.selected_model.name
         self.screen.basic_info.secondary_text = self.selected_model.modelgroup
 

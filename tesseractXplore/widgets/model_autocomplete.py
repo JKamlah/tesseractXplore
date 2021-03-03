@@ -4,7 +4,7 @@ from tesseractXplore.widgets import AutocompleteSearch
 
 
 class ModelAutocompleteSearch(AutocompleteSearch):
-    """ Autocomplete search for iNaturalist taxa """
+    """ Autocomplete search for TesseractXplore models """
     async def get_autocomplete(self, search_str):
         """ Get taxa autocomplete search results, as display text + other metadata """
         async def _get_model_autocomplete():

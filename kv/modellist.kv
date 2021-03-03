@@ -12,6 +12,13 @@
             orientation: 'vertical'
             spacing: dp(10)
             padding: dp(20)
+            MDRoundFlatIconButton:
+                text: 'Find a new model'
+                disabled: False
+                icon: 'magnify'
+                #width: dp(400)
+                on_press:
+                    app.switch_screen('model')
             OneLineAvatarIconListItem:
                 text: 'Exact match'
                 height: dp(50)
