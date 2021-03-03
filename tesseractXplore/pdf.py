@@ -36,7 +36,7 @@ def pdf_dialog(pdfpath,cmds):
         instance.parent.parent.parent.parent.dismiss()
 
     layout = MDList()
-    pdfinfos = check_output([cmds["pdfimages"], "-list", pdfpath], universal_newlines=True)
+    pdfinfos = str(check_output([cmds["pdfimages"], "-list", pdfpath], universal_newlines=True))
     pdfinfos = re.sub(r' +', ' ', pdfinfos)
     pdfinfos = pdfinfos.split("\n")[2:-1]
     pages = str(len(pdfinfos))
@@ -45,8 +45,10 @@ def pdf_dialog(pdfpath,cmds):
         from collections import Counter
         dpi = Counter(dpis).most_common(1)[0][0]
     else:
-        pdfinfos = check_output([cmds["pdfinfo"], pdfpath], universal_newlines=True)
-        pages = pdfinfos.split("\n")[9].split(": ")[-1].strip()
+        pdfinfos = str(check_output([cmds["pdfinfo"], pdfpath], universal_newlines=True))
+        for info in pdfinfos.split("\n"):
+            if "Pages:" in info[:7]:
+                pages = info.split(": ")[-1].strip()
         dpi = 300
     layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
     layout.add_widget(OneLineListItem(text='First page'))
@@ -68,9 +70,9 @@ def pdf_dialog(pdfpath,cmds):
     layout.add_widget(OneLineListItem(text='Process to convert PDF to images'))
     # id="converting",
     boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
-    boxlayout.add_widget(MyToggleButton(text="rendering", group="converting"))
-    defaulttoggle = MyToggleButton(text="extraction", group="converting")
+    defaulttoggle = MyToggleButton(text="rendering", group="converting")
     boxlayout.add_widget(defaulttoggle)
+    boxlayout.add_widget(MyToggleButton(text="extraction", group="converting"))
     layout.add_widget(boxlayout)
     # id='include_pagenumber',
     pagenumbers = OneLineAvatarListItem(text='Include page numbers in output file names')
