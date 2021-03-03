@@ -1,7 +1,6 @@
 import subprocess
 from locale import getdefaultlocale
 from logging import getLogger
-import os
 from os import makedirs, environ, path
 from os.path import isfile, join
 from pathlib import Path
