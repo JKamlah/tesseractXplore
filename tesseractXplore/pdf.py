@@ -36,7 +36,7 @@ def pdf_dialog(pdfpath,cmds):
         instance.parent.parent.parent.parent.dismiss()
 
     layout = MDList()
-    pdfinfos = check_output([cmds["pdfimages"], "-list", pdfpath]).decode('utf-8')
+    pdfinfos = check_output([cmds["pdfimages"], "-list", pdfpath], universal_newlines=True)
     pdfinfos = re.sub(r' +', ' ', pdfinfos)
     pdfinfos = pdfinfos.split("\n")[2:-1]
     pages = str(len(pdfinfos))
@@ -45,7 +45,7 @@ def pdf_dialog(pdfpath,cmds):
         from collections import Counter
         dpi = Counter(dpis).most_common(1)[0][0]
     else:
-        pdfinfos = check_output([cmds["pdfinfo"], pdfpath]).decode('utf-8')
+        pdfinfos = check_output([cmds["pdfinfo"], pdfpath], universal_newlines=True)
         pages = pdfinfos.split("\n")[9].split(": ")[-1].strip()
         dpi = 300
     layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
