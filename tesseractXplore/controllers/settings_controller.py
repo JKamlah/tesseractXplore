@@ -131,13 +131,20 @@ class SettingsController:
             self.settings_dict['tesseract']['tessdatadir_user'] = TESSDATA_DIR
             self.settings_dict['tesseract']['tessdatadir'] = TESSDATA_DIR
             makedirs(TESSDATA_DIR, exist_ok=True)
-            for std_model in ['osd','eng']:
-                if isfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata")) and \
-                not isfile(join(TESSDATA_DIR, f"{std_model}.traineddata")):
-                    copyfile(join(self.settings_dict['tesseract']['tessdatadir'], f"{std_model}.traineddata"),
-                             join(TESSDATA_DIR, f"{std_model}.traineddata"))
-        #self.save_settings()
+        self.copy_models(self.settings_dict['tesseract']['tessdatadir_system'], TESSDATA_DIR, ['osd', 'eng'])
         return True
+
+    def copy_models(self, from_dir, to_dir, modellist):
+        for std_model in modellist:
+            if isfile(join(from_dir, f"{std_model}.traineddata")) and \
+                    not isfile(join(to_dir, f"{std_model}.traineddata")):
+                try:
+                    copyfile(join(from_dir, f"{std_model}.traineddata"),
+                         join(to_dir, f"{std_model}.traineddata"))
+                except:
+                    logger.info(f"Could not copy {std_model} from {from_dir} to {to_dir}")
+        return
+
 
     def clear_thumbnail_cache(self, *args):
         logger.info('Settings: Clearing thumbnail cache')

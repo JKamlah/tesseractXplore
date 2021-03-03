@@ -65,6 +65,7 @@ TESSDATA_DIR = join(DATA_DIR, 'tessdata')
 
 # Model file
 MODEL_PATH = join(DATA_DIR, 'metadata_modellist.yml')
+MODELINFO_PATH = join(DATA_DIR, 'modelinfo.json')
 DEFAULT_MODEL_PATH = join(METADATA_DIR, 'default_metadata_modellist.yml')
 
 # URLs / API settings

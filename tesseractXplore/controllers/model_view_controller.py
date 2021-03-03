@@ -17,7 +17,6 @@ from kivymd.uix.textfield import MDTextField
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
-from tesseractXplore.modelinfos import get_modelinfos, add_model_to_modelinfos
 from tesseractXplore.models import Model
 
 logger = getLogger().getChild(__name__)
@@ -166,8 +165,8 @@ class ModelViewController(Controller):
         toast('Download: Succesful')
         logger.info(f'Download: Succesful')
         # Update Modelslist
-        add_model_to_modelinfos(get_app().tesseract_controller.modelinfos, self.selected_model)
-        get_app().tesseract_controller.modelinfos = get_modelinfos()
+        get_app().modelinformations.add_model_to_modelinfos(self.selected_model)
+
 
 
     def select_model(self, model_obj: Model = None, model_dict: dict = None, id: int = None, if_empty: bool = False):

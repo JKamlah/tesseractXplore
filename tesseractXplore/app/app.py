@@ -34,6 +34,7 @@ from kivymd.app import MDApp
 from tesseractXplore.app import alert
 from tesseractXplore.app.screens import HOME_SCREEN, Root, load_screens
 from tesseractXplore.tessprofiles import read_tessprofiles
+from tesseractXplore.modelinfos import Modelinformations
 from tesseractXplore.constants import (
     INIT_WINDOW_POSITION,
     INIT_WINDOW_SIZE,
@@ -88,6 +89,7 @@ class ControllerProxy:
 
         # Read profile settings
         self.tessprofiles = read_tessprofiles()
+        self.modelinformations = Modelinformations()
 
         # Init controllers with references to nested screen objects
         self.settings_controller = SettingsController(screens['settings'].ids)

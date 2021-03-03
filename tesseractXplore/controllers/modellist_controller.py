@@ -6,7 +6,6 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
 
-from tesseractXplore.modelinfos import write_modelinfos
 from tesseractXplore.app import get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.widgets import LeftCheckbox
@@ -28,7 +27,7 @@ class ModelListController(Controller):
         '''Lists all installed models '''
 
         def add_item(model):
-            description = get_app().tesseract_controller.modelinfos.get(model).get('description','')
+            description = get_app().modelinformations.get_modelinfos().get(model).get('description','')
             description = 'No description' if description  == '' else description
             item = TwoLineAvatarIconListItem(
                 text=model,
@@ -43,13 +42,13 @@ class ModelListController(Controller):
 
         if self.checked_models is None:
             self.checked_models = {}
-            for model in list(get_app().tesseract_controller.modelinfos.keys()):
+            for model in list(get_app().modelinformations.get_modelinfos().keys()):
                 self.checked_models[model] = False
         else:
             self.chk_active_models()
         self.layout.clear_widgets()
         self.screen.modellist.clear_widgets()
-        for model in list(get_app().tesseract_controller.modelinfos.keys()):
+        for model in list(get_app().modelinformations.get_modelinfos().keys()):
             if search:
                 if self.screen.exact_match_chk.active:
                     if text == model[:len(text)]:
@@ -87,9 +86,10 @@ class ModelListController(Controller):
     def save_description(self, model, model_instance, dialog_instance, *args):
         dialog_instance.parent.parent.parent.parent.dismiss()
         model_instance.parent.parent.children[2].children[1].text = dialog_instance.parent.parent.parent.children[2].children[0].text
-        modelinfos = get_app().tesseract_controller.modelinfos
-        modelinfos.get(model)['description'] = dialog_instance.parent.parent.parent.children[2].children[0].text
-        write_modelinfos(modelinfos)
+        modelinfo = get_app().modelinformations.get_modelinfos().get(model)
+        modelinfo['description'] = dialog_instance.parent.parent.parent.children[2].children[0].text
+        get_app().modelinformations.update_modelinformations(model, modelinfo)
+        get_app().modelinformations.write_modelinfos()
 
     def chk_active_models(self):
         for model in self.layout.children:

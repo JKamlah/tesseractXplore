@@ -13,7 +13,6 @@ from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.recognizer import recognize
 from tesseractXplore.tessprofiles import write_tessprofiles, read_tessprofiles
-from tesseractXplore.modelinfos import get_modelinfos
 
 logger = getLogger().getChild(__name__)
 
@@ -49,7 +48,7 @@ class TesseractController(Controller):
         self.screen.recognize_button.bind(on_release=self.recognize_thread)
         self.screen.pause_button.bind(on_press=self.stop_rec)
         self.screen.model.bind(on_release=get_app().image_selection_controller.get_model)
-        self.modelinfos = get_modelinfos()
+        #elf.modelinfos = get_modelinfos()
         self.print_on_screen = False
         self.ocr_event = None
         self.ocr_stop = False
