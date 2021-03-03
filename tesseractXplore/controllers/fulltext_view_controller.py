@@ -93,6 +93,9 @@ class FulltextViewController:
             self.textfiles_menu = self.create_dropdown(self.screen.textfiles,
                                                        [{'text': textfile} for textfile in self.files.text],
                                                        partial(self.set_file, "text"))
+        else:
+            self.screen.textfiles.text = "No text files available"
+            self.textfiles_menu = self.create_dropdown(self.screen.textfiles,[],partial(self.set_file, "text"))
         self.screen.fontsize.text = str(self.text.font_size)
         self.alto.text = read_file(fdir.joinpath(fname + '.xml'), self.files.alto)
         self.alto.font_name = get_font()
@@ -106,6 +109,9 @@ class FulltextViewController:
                                                        [{'text': hocrfile} for hocrfile in self.files.hocr],
                                                        partial(self.set_file, "hocr"))
             self.interactive_hocr(self.current_file.hocr[0])
+        else:
+            self.screen.hocrfiles.text = "No hocr files available"
+            self.hocrfiles_menu = self.create_dropdown(self.screen.hocrfiles,[],partial(self.set_file, "hocr"))
         self.tsv.text = read_file(fdir.joinpath(fname + '.tsv'), self.files.tsv)
         self.tsv.font_name = get_font()
         self.tsv.font_size = int(get_app().settings_controller.screen.fontsize.text)

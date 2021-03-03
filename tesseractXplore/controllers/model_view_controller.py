@@ -137,6 +137,8 @@ class ModelViewController(Controller):
         modelname = parentinstance.children[0].text
         if modelname == "":
             modelname = Path(url).name
+        if ".traineddata" not in modelname:
+            modelname += ".traineddata"
         outputpath = Path(outputpath+modelname)
         self.selected_model = Model.from_dict({'modelgroup':'',
                                                'name': modelname.rsplit('.',1)[0],

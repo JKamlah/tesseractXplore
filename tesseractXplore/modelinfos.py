@@ -32,7 +32,7 @@ class Modelinformations():
 
     def add_model_to_modelinfos(self, model):
         self.modelinfos[self.current_tessdatadir][model.name] = {'url': model.url,
-                                     'hash': self.sha1sum(Path(get_app().settings_controller.tesseract['tessdatadir']).joinpath(model.name +'.traineddata')),
+                                     'hash': self.sha1sum(Path(get_app().settings_controller.tesseract['tessdatadir']).joinpath(model.model['name'])),
                                      'tags': model.model.get('tags', ['']),
                                      'description': model.model.get('description', ''),
                                      'category': model.model.get('category', ''),
