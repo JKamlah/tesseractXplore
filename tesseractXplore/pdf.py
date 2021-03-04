@@ -36,74 +36,79 @@ def pdf_dialog(pdfpath,cmds):
         instance.parent.parent.parent.parent.dismiss()
 
     layout = MDList()
-    pdfinfos = str(check_output([cmds["pdfimages"], "-list", pdfpath], universal_newlines=True))
-    pdfinfos = re.sub(r' +', ' ', pdfinfos)
-    pdfinfos = pdfinfos.split("\n")[2:-1]
-    pages = str(len(pdfinfos))
-    if pages != "0":
-        dpis = [pdfinfo.split(" ")[-3] for pdfinfo in pdfinfos]
-        from collections import Counter
-        dpi = Counter(dpis).most_common(1)[0][0]
-    else:
-        pdfinfos = str(check_output([cmds["pdfinfo"], pdfpath], universal_newlines=True))
-        for info in pdfinfos.split("\n"):
-            if "Pages:" in info[:7]:
-                pages = info.split(": ")[-1].strip()
-        dpi = 300
-    layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
-    layout.add_widget(OneLineListItem(text='First page'))
-    # id first
-    layout.add_widget(MDTextField(text="0", hint_text="First page", height=(get_app()._window.size[1])//2))
-    layout.add_widget(OneLineListItem(text='Last page'))
-    # id last
-    layout.add_widget(MDTextField(text=pages, hint_text="Last page", height=(get_app()._window.size[1])//2))
-    layout.add_widget(OneLineListItem(text='Imageformat (jpg, jp2, png, ppm(default), tiff)'))
-    # id = "fileformat"
-    boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
-    boxlayout.add_widget(MyToggleButton(text="jpeg", group="imageformat"))
-    boxlayout.add_widget(MyToggleButton(text="jp2", group="imageformat"))
-    defaulttoggle = MyToggleButton(text="ppm", group="imageformat")
-    boxlayout.add_widget(defaulttoggle)
-    boxlayout.add_widget(MyToggleButton(text="png", group="imageformat"))
-    boxlayout.add_widget(MyToggleButton(text="tiff", group="imageformat"))
-    layout.add_widget(boxlayout)
-    layout.add_widget(OneLineListItem(text='Process to convert PDF to images'))
-    # id="converting",
-    boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
-    defaulttoggle = MyToggleButton(text="rendering", group="converting")
-    boxlayout.add_widget(defaulttoggle)
-    boxlayout.add_widget(MyToggleButton(text="extraction", group="converting"))
-    layout.add_widget(boxlayout)
-    # id='include_pagenumber',
-    pagenumbers = OneLineAvatarListItem(text='Include page numbers in output file names')
-    # id = 'include_pagenumber_chk'
-    pagenumbers.add_widget(SwitchListItem())
-    layout.add_widget(pagenumbers)
-    dialog = MDDialog(title="Extract images from PDF",
-                      type='custom',
-                      auto_dismiss=False,
-                      text=pdfpath,
-                      content_cls=layout,
-                      buttons=[
-                          MDFlatButton(
-                              text="OCR", on_release=partial(pdfimages_threading, pdfpath, cmds, ocr=True)
-                          ),
-                          MDFlatButton(
-                              text="CREATE IMAGES", on_release=partial(pdfimages_threading, pdfpath, cmds)
-                          ),
-                          MDFlatButton(
-                              text="VIEW PDF", on_release=partial(open_pdf, pdfpath)
-                          ),
-                          MDFlatButton(
-                              text="DISCARD", on_release=close_dialog
-                          ),
-                      ],
-                      )
-    defaulttoggle.state = 'down'
-    if get_app()._platform not in ['win32', 'win64']:
-    # TODO: Focus function seems buggy in win
-        dialog.content_cls.focused = True
-    dialog.open()
+    try:
+        pdfinfos = str(check_output([cmds["pdfimages"], "-list", pdfpath], universal_newlines=True))
+        pdfinfos = re.sub(r' +', ' ', pdfinfos)
+        pdfinfos = pdfinfos.split("\n")[2:-1]
+        pages = str(len(pdfinfos))
+        if pages != "0":
+            dpis = [pdfinfo.split(" ")[-3] for pdfinfo in pdfinfos]
+            from collections import Counter
+            dpi = Counter(dpis).most_common(1)[0][0]
+        else:
+            pdfinfos = str(check_output([cmds["pdfinfo"], pdfpath], universal_newlines=True))
+            for info in pdfinfos.split("\n"):
+                if "Pages:" in info[:7]:
+                    pages = info.split(": ")[-1].strip()
+            dpi = 300
+        layout.add_widget(OneLineListItem(text=f'The detected resolution is: {dpi}'))
+        layout.add_widget(OneLineListItem(text='First page'))
+        # id first
+        layout.add_widget(MDTextField(text="0", hint_text="First page", height=(get_app()._window.size[1])//2))
+        layout.add_widget(OneLineListItem(text='Last page'))
+        # id last
+        layout.add_widget(MDTextField(text=pages, hint_text="Last page", height=(get_app()._window.size[1])//2))
+        layout.add_widget(OneLineListItem(text='Imageformat (jpg, jp2, png, ppm(default), tiff)'))
+        # id = "fileformat"
+        boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
+        boxlayout.add_widget(MyToggleButton(text="jpeg", group="imageformat"))
+        boxlayout.add_widget(MyToggleButton(text="jp2", group="imageformat"))
+        defaulttoggle = MyToggleButton(text="ppm", group="imageformat")
+        boxlayout.add_widget(defaulttoggle)
+        boxlayout.add_widget(MyToggleButton(text="png", group="imageformat"))
+        boxlayout.add_widget(MyToggleButton(text="tiff", group="imageformat"))
+        layout.add_widget(boxlayout)
+        layout.add_widget(OneLineListItem(text='Process to convert PDF to images'))
+        # id="converting",
+        boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
+        defaulttoggle = MyToggleButton(text="rendering", group="converting")
+        boxlayout.add_widget(defaulttoggle)
+        boxlayout.add_widget(MyToggleButton(text="extraction", group="converting"))
+        layout.add_widget(boxlayout)
+        # id='include_pagenumber',
+        pagenumbers = OneLineAvatarListItem(text='Include page numbers in output file names')
+        # id = 'include_pagenumber_chk'
+        pagenumbers.add_widget(SwitchListItem())
+        layout.add_widget(pagenumbers)
+        dialog = MDDialog(title="Extract images from PDF",
+                          type='custom',
+                          auto_dismiss=False,
+                          text=pdfpath,
+                          content_cls=layout,
+                          buttons=[
+                              MDFlatButton(
+                                  text="OCR", on_release=partial(pdfimages_threading, pdfpath, cmds, ocr=True)
+                              ),
+                              MDFlatButton(
+                                  text="CREATE IMAGES", on_release=partial(pdfimages_threading, pdfpath, cmds)
+                              ),
+                              MDFlatButton(
+                                  text="VIEW PDF", on_release=partial(open_pdf, pdfpath)
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        defaulttoggle.state = 'down'
+
+        if get_app()._platform not in ['win32', 'win64']:
+        # TODO: Focus function seems buggy in win
+            dialog.content_cls.focused = True
+        dialog.open()
+    except:
+        logger.error(f"Error while reading information from {pdfpath}")
+        toast(f"Error while reading information from {pdfpath}")
 
 
 

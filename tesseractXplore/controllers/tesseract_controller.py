@@ -45,8 +45,10 @@ class TesseractController(Controller):
             ext=[""],
         )
         self.selected_output_folder = None
-        self.screen.recognize_button.bind(on_release=self.recognize_thread)
-        self.screen.pause_button.bind(on_press=self.stop_rec)
+        self.screen.recognize_button_fst.bind(on_release=self.recognize_thread)
+        self.screen.recognize_button_snd.bind(on_release=self.recognize_thread)
+        self.screen.pause_button_fst.bind(on_press=self.stop_rec)
+        self.screen.pause_button_snd.bind(on_press=self.stop_rec)
         self.screen.model.bind(on_release=get_app().image_selection_controller.get_model)
         #elf.modelinfos = get_modelinfos()
         self.print_on_screen = False
@@ -78,12 +80,16 @@ class TesseractController(Controller):
         self.oem_menu = self.create_dropdown(screen.oem, [{'text': 'OEM: ' + oem} for oem in self.oems], self.set_oem)
 
     def disable_rec(self, instance, *args):
-        self.screen.recognize_button.disabled = True
-        self.screen.pause_button.disabled = False
+        self.screen.recognize_button_fst.disabled = True
+        self.screen.recognize_button_snd.disabled = True
+        self.screen.pause_button_fst.disabled = False
+        self.screen.pause_button_snd.disabled = False
 
     def enable_rec(self, instance, *args):
-        self.screen.recognize_button.disabled = False
-        self.screen.pause_button.disabled = True
+        self.screen.recognize_button_fst.disabled = False
+        self.screen.recognize_button_snd.disabled = False
+        self.screen.pause_button_fst.disabled = True
+        self.screen.pause_button_snd.disabled = True
 
     def recognize_thread(self, instance, *args, file_list=None, profile=None):
         self.disable_rec(instance, *args)

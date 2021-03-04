@@ -33,6 +33,9 @@ def download_with_progress(url, file_path, on_success, color="#54B3FF"):
         pb.value = current_size / total_size
         if pb.value == 1:
             pb.stop()
-    UrlRequest(url=requests.get(url).url, on_progress=update_progress,
+    try:
+        UrlRequest(url=requests.get(url).url, on_progress=update_progress,
                chunk_size=1024, on_success=on_success, on_failure=download_error,
                file_path=file_path)
+    except:
+        download_error()
