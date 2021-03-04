@@ -18,11 +18,6 @@ class Modelinformations():
     def __init__(self):
         self.modelinfos = self.read_modelinfos()
 
-    def get_modelinfos(self):
-        if self.current_tessdatadir not in self.modelinfos:
-            self.create_blank_modelinformations()
-        return self.modelinfos.get(self.current_tessdatadir, {})
-
     @property
     def current_tessdatadir(self):
         return get_app().settings_controller.screen['tessdatadir'].text
@@ -58,20 +53,26 @@ class Modelinformations():
         with open(MODELINFO_PATH, encoding="utf-8") as fin:
             return json.load(fin)
 
-    def create_blank_modelinformations(self):
-        modelinfos = {}
-        tesscmd = get_app().settings_controller.tesseract['tesspath'] if get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
-        for model in check_output([tesscmd, "--tessdata-dir", get_app().settings_controller.tesseract['tessdatadir'], "--list-langs"]).decode('utf-8').splitlines()[1:]:
-            if modelinfos.get(model, None) is None:
-                modelinfos[model] = {'url': '',
+    @property
+    def installed_models(self):
+        tesscmd = get_app().settings_controller.tesseract['tesspath'] if \
+            get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
+        return check_output(
+            [tesscmd, "--tessdata-dir", self.current_tessdatadir, "--list-langs"], universal_newlines=True).splitlines()[1:]
+
+    def get_modelinfos(self):
+        missing_models = set(self.installed_models).difference(set(self.modelinfos[self.current_tessdatadir].keys()))
+        if missing_models:
+            for model in missing_models:
+                self.modelinfos[self.current_tessdatadir][model] = {'url': '',
                                      'hash': self.sha1sum(Path(get_app().settings_controller.tesseract['tessdatadir']).joinpath(model +'.traineddata')),
                                      'tags': [''],
                                      'description': '',
                                      'category': '',
                                      'type': '',
                                      'fonts': ['']}
-        self.modelinfos[self.current_tessdatadir] = modelinfos
-        return
+            self.write_modelinfos()
+        return self.modelinfos[self.current_tessdatadir]
 
     def sha1sum(self, filename):
         h = hashlib.sha1()
