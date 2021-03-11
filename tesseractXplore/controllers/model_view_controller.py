@@ -33,7 +33,7 @@ class ModelViewController(Controller):
         # self.model_link = screen.model_links.ids.selected_model_link_button
         self.download_button = screen.model_links.ids.download_button
         self.download_button.bind(on_release=lambda x: self.check_download_model())
-        self.download_via_url_button = screen.model_links.ids.download_via_url_button
+        self.download_via_url_button = screen.search_tab.ids.download_via_url_button
         self.download_via_url_button.bind(on_release=lambda x: self.download_via_url_dialog())
 
         # Outputs

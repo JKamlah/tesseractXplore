@@ -9,11 +9,12 @@
     TabHeader:
         text: 'Search'
     ModelAutocompleteSearch:
+        size_hint_min_y: 150
         id: model_search_input
         hint_text: 'Model search'
         helper_text: 'Enter a search term'
     ScrollViewY:
-        size_hint_min_y: 500
+        size_hint_min_y: 300
         MDBoxLayout:
             orientation: 'vertical'
             SectionHeader:
@@ -80,6 +81,11 @@
                     icon: 'restart'
                     text: 'Reset Filters'
                     width: dp(220)
+                TooltipIconButton:
+                    id: download_via_url_button
+                    icon: 'arrow-down-circle-outline'
+                    text: 'Download via URL'
+                    width: dp(300)
     # Temp spacer
 #    MDBoxLayout:
 #        height: 300
