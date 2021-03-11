@@ -56,9 +56,14 @@ def install_tesseract(instance):
     if _platform in ["win32", "win64"]:
         switch_to_home_for_dl()
         toast('Download: Tesseract installer\nThe app will be closed and the installer will be started automatically!')
-        dl_install_tesseract_win()
+        thread_install_tesseract_win()
     else:
         run_cmd_with_sudo_dialog(title="Enter sudo password to change the rights of the destination folder",func=thread_install_tesseract_unix)
+
+def thread_install_tesseract_win():
+    wininstall_thread = threading.Thread(target=dl_install_tesseract_win)
+    wininstall_thread.setDaemon(True)
+    wininstall_thread.start()
 
 def dl_install_tesseract_win():
     try:
@@ -67,8 +72,7 @@ def dl_install_tesseract_win():
         else:
             url = get_app().settings_controller.tesseract['win64url']
         download_with_progress(url, Path(tempfile.gettempdir()).joinpath("tesseract.exe"), install_tesseract_win)
-    except Exception as e:
-        print(e)
+    except:
         toast('Download: Error')
         logger.info(f'Download: Error while downloading')
 

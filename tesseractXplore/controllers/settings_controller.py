@@ -38,7 +38,7 @@ class SettingsController:
         self.settings_dict = read_settings()
 
         # Set tessdatapath
-        if self.set_tesspaths():
+        if self.set_tesspaths() and Path(self.settings_dict['tesseract']['tessdatadir_system']).exists():
             self.screen.install_tesseract_btn.disabled = True
 
         # Install tesseract

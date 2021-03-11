@@ -5,6 +5,7 @@ from logging import getLogger
 from pathlib import Path
 from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from sys import platform as _platform
+import threading
 from typing import List
 
 from kivymd.toast import toast
@@ -160,15 +161,17 @@ class ModelViewController(Controller):
         self._dl_model(self.selected_model.url, outputpath)
 
 
+
     def _dl_model(self, url, outputpath):
-        download_with_progress(url, outputpath, self.update_models)
+        dl_model_thread = threading.Thread(target=download_with_progress, args=[url, outputpath, self.update_models])
+        dl_model_thread.setDaemon(True)
+        dl_model_thread.start()
 
     def update_models(self, instance, *args):
         toast('Download: Succesful')
         logger.info(f'Download: Succesful')
         # Update Modelslist
         get_app().modelinformations.add_model_to_modelinfos(self.selected_model)
-
 
 
     def select_model(self, model_obj: Model = None, model_dict: dict = None, id: int = None, if_empty: bool = False):
