@@ -144,7 +144,7 @@ class ImageSelectionController(Controller):
     def add_file_chooser_images(self, *args):
         """ Add one or more files and/or dirs selected via a FileChooser """
         if not self.file_chooser.selection:
-            self.add_images(self.file_chooser.files[1:])
+            self.add_images([fname for fname in self.file_chooser.files[1:] if fname[-4:] != ".pdf"])
         self.add_images(self.file_chooser.selection)
 
     def add_image(self, path):
@@ -153,7 +153,9 @@ class ImageSelectionController(Controller):
 
     def add_images(self, paths):
         """ Add one or more files and/or dirs, with deduplication """
-        asyncio.run(self.load_images(paths))
+        # TODO: Loading in one step seems buggy - asyncio.run(self.load_images(paths))
+        for path in paths:
+            asyncio.run(self.load_images(path))
 
     async def load_images(self, paths):
         # Determine images to load, ignoring duplicates
@@ -167,6 +169,7 @@ class ImageSelectionController(Controller):
         # Start batch loader + progress bar
         loader = ImageBatchLoader()
         self.start_progress(len(new_images), loader)
+        #for new_image in new_images:
         loader.add_batch(new_images, parent=self.image_previews)
         loader.start_thread()
 
