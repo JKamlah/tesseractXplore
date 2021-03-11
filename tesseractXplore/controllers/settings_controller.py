@@ -132,7 +132,21 @@ class SettingsController:
             self.settings_dict['tesseract']['tessdatadir'] = TESSDATA_DIR
             makedirs(TESSDATA_DIR, exist_ok=True)
         self.copy_models(self.settings_dict['tesseract']['tessdatadir_system'], TESSDATA_DIR, ['osd', 'eng'])
+        self.copy_folder([join(self.settings_dict['tesseract']['tessdatadir_system'],'configs'),
+                          join(self.settings_dict['tesseract']['tessdatadir_system'],'tessconfigs')],
+                          TESSDATA_DIR)
         return True
+
+    def copy_folder(self, folder_dir_list, to_dir, overwrite=False):
+        try:
+            to_dir = Path(to_dir)
+            if to_dir.exists:
+                for folder_dir in folder_dir_list:
+                    folder_dir = Path(folder_dir)
+                    if folder_dir.exists() and (overwrite == True or not to_dir.joinpath(folder_dir.name).exists()):
+                        copytree(folder_dir, to_dir.joinpath(folder_dir.name), dirs_exist_ok=True)
+        except:
+            logger.info(f"Could not copy {folder_dir_list} to {to_dir}")
 
     def copy_models(self, from_dir, to_dir, modellist):
         for std_model in modellist:
