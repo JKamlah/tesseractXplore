@@ -47,9 +47,9 @@ class Modelinformations():
         Returns:
             Stored config state
         """
+        logger.info(f'Reading modelinfos {MODELINFO_PATH}')
         if not isfile(MODELINFO_PATH):
             return {}
-        logger.info(f'Reading modelinfos {MODELINFO_PATH}')
         with open(MODELINFO_PATH, encoding="utf-8") as fin:
             return json.load(fin)
 
@@ -61,6 +61,8 @@ class Modelinformations():
             [tesscmd, "--tessdata-dir", self.current_tessdatadir, "--list-langs"], universal_newlines=True).splitlines()[1:]
 
     def get_modelinfos(self):
+        if self.current_tessdatadir not in self.modelinfos:
+            self.modelinfos[self.current_tessdatadir] = {}
         missing_models = set(self.installed_models).difference(set(self.modelinfos[self.current_tessdatadir].keys()))
         if missing_models:
             for model in missing_models:
