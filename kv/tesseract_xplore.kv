@@ -42,17 +42,6 @@
                         col_default_width: 200
                         col_force_default: True
 
-                AnchorLayout:
-                    anchor_x: 'right'
-                    anchor_y: 'bottom'
-                    id: process_manager
-                    MDList:
-                        #size_hint: None, None
-                        #size: 200, 50
-                        id: process_list
-                        padding: 0
-
-
                 #Options + file chooser
                 MDBoxLayout:
                     orientation: 'vertical'
@@ -223,6 +212,15 @@
             StatusBar:
                 id: status_bar
 
+
+        AnchorLayout:
+            anchor_x: 'right'
+            anchor_y: 'bottom'
+            pos_hint: {'x':0.3,'y':0.05}
+            id: process_manager
+            MDList:
+                id: process_list
+                padding: 0
 
         MDBoxLayout:
             cols: 4
