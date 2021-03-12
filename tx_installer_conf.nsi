@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TesseractXplore"
-!define PRODUCT_VERSION "0.1.8"
+!define PRODUCT_VERSION "0.1.9"
 !define PRODUCT_PUBLISHER "UB Mannheim"
 !define PRODUCT_WEB_SITE "https://github.com/UB-Mannheim"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tesseractXplore.exe"
@@ -38,13 +38,13 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "TesseractXplore.exe"
+OutFile "TesseractXplore-Setup.exe"
 InstallDir "$PROGRAMFILES\TesseractXplore"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
-Section "TesseractXplore" SEC01
+Section "Hauptgruppe" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite try
   File "dist\tesseractXplore\api-ms-win-core-console-l1-1-0.dll"
@@ -502,6 +502,7 @@ Section "TesseractXplore" SEC01
   File "dist\tesseractXplore\PIL\_imagingtk.cp38-win_amd64.pyd"
   File "dist\tesseractXplore\PIL\_webp.cp38-win_amd64.pyd"
   SetOutPath "$INSTDIR"
+  File "dist\tesseractXplore\process_manager.py"
   File "dist\tesseractXplore\pyexpat.pyd"
   File "dist\tesseractXplore\python38.dll"
   File "dist\tesseractXplore\pythoncom38.dll"
@@ -1511,6 +1512,7 @@ Section "TesseractXplore" SEC01
   File "dist\tesseractXplore\widgets\mdtabs.py"
   File "dist\tesseractXplore\widgets\menus.py"
   File "dist\tesseractXplore\widgets\model_autocomplete.py"
+  File "dist\tesseractXplore\widgets\process_manager.py"
   File "dist\tesseractXplore\widgets\progress_bar.py"
   File "dist\tesseractXplore\widgets\search_itemlist.py"
   File "dist\tesseractXplore\widgets\spinner.py"
@@ -1586,7 +1588,7 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Mï¿½chten Sie TesseractXplore und alle seinen Komponenten deinstallieren?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Möchten Sie TesseractXplore und alle seinen Komponenten deinstallieren?" IDYES +2
   Abort
 FunctionEnd
 
@@ -1636,6 +1638,7 @@ Section Uninstall
   Delete "$INSTDIR\widgets\spinner.py"
   Delete "$INSTDIR\widgets\search_itemlist.py"
   Delete "$INSTDIR\widgets\progress_bar.py"
+  Delete "$INSTDIR\widgets\process_manager.py"
   Delete "$INSTDIR\widgets\model_autocomplete.py"
   Delete "$INSTDIR\widgets\menus.py"
   Delete "$INSTDIR\widgets\mdtabs.py"
@@ -2586,6 +2589,7 @@ Section Uninstall
   Delete "$INSTDIR\pythoncom38.dll"
   Delete "$INSTDIR\python38.dll"
   Delete "$INSTDIR\pyexpat.pyd"
+  Delete "$INSTDIR\process_manager.py"
   Delete "$INSTDIR\PIL\_webp.cp38-win_amd64.pyd"
   Delete "$INSTDIR\PIL\_imagingtk.cp38-win_amd64.pyd"
   Delete "$INSTDIR\PIL\_imagingft.cp38-win_amd64.pyd"

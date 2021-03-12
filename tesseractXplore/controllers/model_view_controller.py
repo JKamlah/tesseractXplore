@@ -77,7 +77,7 @@ class ModelViewController(Controller):
 
     def download_model(self, outputpath):
         if self.screen.best_toggle.state == 'down':
-            self.selected_model.url =  self.selected_model.url['best']['url'] + self.selected_model.model['name']
+            self.selected_model.url = self.selected_model.url['best']['url'] + self.selected_model.model['name']
             self.selected_model.model['type'] = 'best'
         else:
             self.selected_model.url= self.selected_model.url['fast']['url'] + self.selected_model.model['name']
@@ -164,7 +164,7 @@ class ModelViewController(Controller):
 
     def _dl_model(self, url, outputpath):
         from tesseractXplore.process_manager import create_threadprocess
-        create_threadprocess("Start download model", download_with_progress, [url, outputpath, self.update_models])
+        create_threadprocess("Start download model", download_with_progress, url, outputpath, self.update_models)
 
     def update_models(self, instance, *args):
         toast('Download: Succesful')

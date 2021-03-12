@@ -14,14 +14,17 @@ def processmanager(processname:str):
     boxlayout = BoxLayout(orientation="vertical")
     main_label = MDLabel(
         text="Process running",
-        theme_text_color="Secondary",
+        theme_text_color= "Custom",
+        text_color= (1, 1, 1, 1),
         size_hint_y= None,
         adaptive_height= True,
         )
     boxlayout.add_widget(main_label)
     sep = MDSeparator(height= "1dp", color='cyan')
     boxlayout.add_widget(sep)
-    process_label = MDLabel(text= processname)
+    process_label = MDLabel(text= processname,
+                            theme_text_color= "Custom",
+                            text_color= (1, 1, 1, 1),)
     boxlayout.add_widget(process_label)
     boxlayout2 = BoxLayout(orientation= "vertical")
     pb = MDProgressBar(type= "determinate", running_duration= 1, catching_duration= 1.5)
@@ -31,9 +34,7 @@ def processmanager(processname:str):
     pm.add_widget(boxlayout)
     return pm
 
-def create_threadprocess(processname:str,func,*args:list,**kwargs:dict):
-    if isinstance(args,list):
-        args = args[0]
+def create_threadprocess(processname:str,func, *args, **kwargs):
     new_thread = threading.Thread(target=func, args=args, kwargs=kwargs)
     new_thread.setDaemon(True)
     new_thread.start()

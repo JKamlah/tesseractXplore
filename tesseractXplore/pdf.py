@@ -116,7 +116,7 @@ def pdf_dialog(pdfpath,cmds):
 def pdfimages_threading(pdfpath, cmds, instance, ocr=False, *args):
     """ Start pdfimages in a separate thread"""
     instance.parent.parent.parent.parent.dismiss()
-    create_threadprocess("Working with pdf", pdfimages, [pdfpath, cmds, instance, ocr, args])
+    create_threadprocess("Working with pdf", pdfimages, pdfpath, cmds, instance, ocr, args)
     #pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, ocr, args))
     #pdfimages_thread.setDaemon(True)
     #pdfimages_thread.start()
@@ -205,7 +205,7 @@ def extract_pdf(pdfpath):
         if not pdftoolpath.exists():
             # TODO: Don work atm properly and use the official site
             try:
-                create_threadprocess("Installing poppler utils", install_poppler_win,[],**{'pdftoolpath':str(pdftoolpath.absolute())})
+                create_threadprocess("Installing poppler utils", install_poppler_win,str(pdftoolpath.absolute()))
                 #dl_event = threading.Thread(target=install_poppler_win, kwargs=())
                 #dl_event.setDaemon(True)
                 #dl_event.start()
@@ -251,7 +251,7 @@ def install_poppler_unix(sudopwd=""):
     logger.info(f'Installing: Succesful')
     return
 
-def install_poppler_win(pdftoolpath=None):
+def install_poppler_win(pdftoolpath,*args, **kwargs):
     """ Installation of poppler utils on win platforms"""
     try:
         url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'

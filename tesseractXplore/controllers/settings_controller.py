@@ -13,6 +13,7 @@ from kivy.uix.spinner import Spinner
 from kivymd.app import MDApp
 from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.toast import toast
 
 from tesseractXplore.app import alert
 from tesseractXplore.constants import TESSDATA_DIR, FONTS_DIR, DEFAULT_FONTS_DIR
@@ -40,6 +41,8 @@ class SettingsController:
         # Set tessdatapath
         if self.set_tesspaths() and Path(self.settings_dict['tesseract']['tessdatadir_system']).exists():
             self.screen.install_tesseract_btn.disabled = True
+        else:
+            toast("Please install Tesseract to use the offline version!")
 
         # Install tesseract
         self.install_tesseract_dialog = install_tesseract_dialog

@@ -55,10 +55,15 @@ class Modelinformations():
 
     @property
     def installed_models(self):
-        tesscmd = get_app().settings_controller.tesseract['tesspath'] if \
-            get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
-        return check_output(
-            [tesscmd, "--tessdata-dir", self.current_tessdatadir, "--list-langs"], universal_newlines=True).splitlines()[1:]
+        try:
+            tesscmd = get_app().settings_controller.tesseract['tesspath'] if \
+                get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
+            return check_output(
+                [tesscmd, "--tessdata-dir", self.current_tessdatadir, "--list-langs"], universal_newlines=True).splitlines()[1:]
+        except:
+            from kivymd.toast import toast
+            toast("Please install Tesseract!")
+            return {}
 
     def get_modelinfos(self):
         if self.current_tessdatadir not in self.modelinfos:
