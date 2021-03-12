@@ -33,6 +33,8 @@ class ModelListController(Controller):
                 text=model,
                 secondary_text= description,
                 on_release=partial(self.set_model, model),
+                size_hint=(None, None),
+                size=(600,1)
             )
             if model not in self.checked_models:
                 self.checked_models[model] = False
