@@ -111,7 +111,7 @@ def get_format(source: str) -> str:
         source = source.decode('utf-8')
     # Strip off request params if path is a URL
     source = source.split('?')[0]
-    ext = splitext(source)[-1] or THUMBNAIL_DEFAULT_FORMAT
+    ext = THUMBNAIL_DEFAULT_FORMAT
     # Note: PIL only accepts 'jpeg' (not 'jpg'), and Kivy is the opposite
     return ext.lower().replace('.', '').replace('jpeg', 'jpg') or 'jpg'
 
