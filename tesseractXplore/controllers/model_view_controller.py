@@ -163,9 +163,8 @@ class ModelViewController(Controller):
 
 
     def _dl_model(self, url, outputpath):
-        dl_model_thread = threading.Thread(target=download_with_progress, args=[url, outputpath, self.update_models])
-        dl_model_thread.setDaemon(True)
-        dl_model_thread.start()
+        from tesseractXplore.process_manager import create_threadprocess
+        create_threadprocess("Start download model", download_with_progress, [url, outputpath, self.update_models])
 
     def update_models(self, instance, *args):
         toast('Download: Succesful')

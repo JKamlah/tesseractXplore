@@ -14,6 +14,7 @@ from kivymd.uix.list import OneLineListItem
 
 from tesseractXplore.app import get_app
 from tesseractXplore.downloader import download_with_progress, switch_to_home_for_dl
+from tesseractXplore.process_manager import create_threadprocess
 from tesseractXplore.unix import run_cmd_with_sudo_dialog
 
 logger = getLogger().getChild(__name__)
@@ -61,9 +62,7 @@ def install_tesseract(instance):
         run_cmd_with_sudo_dialog(title="Enter sudo password to change the rights of the destination folder",func=thread_install_tesseract_unix)
 
 def thread_install_tesseract_win():
-    wininstall_thread = threading.Thread(target=dl_install_tesseract_win)
-    wininstall_thread.setDaemon(True)
-    wininstall_thread.start()
+    create_threadprocess("Prepare downloading tesseract", dl_install_tesseract_win)
 
 def dl_install_tesseract_win():
     try:

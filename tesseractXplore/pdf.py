@@ -25,6 +25,7 @@ from tesseractXplore.constants import PDF_DIR
 from tesseractXplore.widgets import LoaderProgressBar
 from tesseractXplore.widgets import MyToggleButton
 from tesseractXplore.widgets.lists import SwitchListItem
+from tesseractXplore.process_manager import create_threadprocess
 
 logger = getLogger().getChild(__name__)
 
@@ -115,9 +116,10 @@ def pdf_dialog(pdfpath,cmds):
 def pdfimages_threading(pdfpath, cmds, instance, ocr=False, *args):
     """ Start pdfimages in a separate thread"""
     instance.parent.parent.parent.parent.dismiss()
-    pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, ocr, args))
-    pdfimages_thread.setDaemon(True)
-    pdfimages_thread.start()
+    create_threadprocess("Working with pdf", pdfimages, [pdfpath, cmds, instance, ocr, args])
+    #pdfimages_thread = threading.Thread(target=pdfimages, args=(pdfpath, cmds, instance, ocr, args))
+    #pdfimages_thread.setDaemon(True)
+    #pdfimages_thread.start()
 
 
 def open_pdf(fname, *args):
@@ -203,9 +205,10 @@ def extract_pdf(pdfpath):
         if not pdftoolpath.exists():
             # TODO: Don work atm properly and use the official site
             try:
-                dl_event = threading.Thread(target=install_poppler_win, kwargs=({'pdftoolpath':str(pdftoolpath.absolute())}))
-                dl_event.setDaemon(True)
-                dl_event.start()
+                create_threadprocess("Installing poppler utils", install_poppler_win,[],**{'pdftoolpath':str(pdftoolpath.absolute())})
+                #dl_event = threading.Thread(target=install_poppler_win, kwargs=())
+                #dl_event.setDaemon(True)
+                #dl_event.start()
             except:
                 logger.info(f'Download: Error while downloading')
         else:
@@ -250,8 +253,6 @@ def install_poppler_unix(sudopwd=""):
 
 def install_poppler_win(pdftoolpath=None):
     """ Installation of poppler utils on win platforms"""
-    toast('Installing: Poppler')
-    pb = start_installing_loaderprogress()
     try:
         url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'
         r = requests.get(url, stream=True)
@@ -263,4 +264,3 @@ def install_poppler_win(pdftoolpath=None):
     except:
         toast('Installing: Poppler not succesful')
         logger.info(f'Download: Not succesful')
-    pb.finish()

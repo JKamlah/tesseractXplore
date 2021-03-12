@@ -35,6 +35,7 @@ from tesseractXplore.app import alert
 from tesseractXplore.app.screens import HOME_SCREEN, Root, load_screens
 from tesseractXplore.tessprofiles import read_tessprofiles
 from tesseractXplore.modelinfos import Modelinformations
+from tesseractXplore.app import get_app
 from tesseractXplore.constants import (
     INIT_WINDOW_POSITION,
     INIT_WINDOW_SIZE,
@@ -82,6 +83,9 @@ class ControllerProxy:
     def init_controllers(self, screens):
         # Basic app information
         self._window = Window
+
+        # Processthreads
+        self.active_threads = {}
 
         # Init OS-specific errorcodes
         self._platform = _platform
@@ -199,7 +203,19 @@ class TesseractXplore(MDApp, ControllerProxy):
         # TODO: Currently not necessary, but will be in future version
         # Image(source=f'{ATLAS_APP_ICONS}/')
         # Image(source=f'{ATLAS_TAXON_ICONS}/')
+
+        # Start checking active threads for processmanager
+        Clock.schedule_interval(self.check_threads, 1)
+
         return self.root
+
+    def check_threads(self, dt):
+        import threading
+        active_threads = get_app().active_threads.copy()
+        for active_thread, pm in active_threads.items():
+            if active_thread not in threading.enumerate():
+                del get_app().active_threads[active_thread]
+                pm.parent.remove_widget(pm)
 
     def process_dropped_files(self, *args):
         self.image_selection_controller.add_images(self.dropped_files)
