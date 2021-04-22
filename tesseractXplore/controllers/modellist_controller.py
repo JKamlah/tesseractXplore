@@ -70,7 +70,7 @@ class ModelListController(Controller):
         dialog = MDDialog(title=f"Edit the description of {model}",
                           type='custom',
                           auto_dismiss=False,
-                          content_cls=MDTextField(text=description),
+                          content_cls=MDTextField(text=description,mode="rectangle"),
                           buttons=[
                               MDFlatButton(
                                   text="SAVE", on_release=partial(self.save_description, model, instance)

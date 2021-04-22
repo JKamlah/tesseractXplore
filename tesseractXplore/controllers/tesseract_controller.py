@@ -186,7 +186,7 @@ class TesseractController(Controller):
         dialog = MDDialog(title="Name of the profile",
                           type='custom',
                           auto_dismiss=False,
-                          content_cls=MDTextField(text=""),
+                          content_cls=MDTextField(text="",mode="rectangle"),
                           buttons=[
                               MDFlatButton(
                                   text="SAVE", on_release=self.save_tessprofile

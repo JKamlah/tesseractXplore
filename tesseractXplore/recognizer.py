@@ -128,7 +128,7 @@ def cache_stdout_dialog(image: Path, text: str, params: list, instance, *args):
     dialog = MDDialog(title=image.name,
                       type='custom',
                       auto_dismiss=False,
-                      content_cls=MDTextField(text=""),
+                      content_cls=MDTextField(text="",mode="rectangle",hint_text="Name to store the result"),
                       buttons=[
                           MDFlatButton(
                               text="SAVE", on_release=partial(cache_stdout, image, text, params)

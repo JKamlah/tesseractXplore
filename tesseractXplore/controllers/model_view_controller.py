@@ -52,7 +52,7 @@ class ModelViewController(Controller):
             instance.parent.parent.parent.parent.dismiss()
         layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
         layout.add_widget(OneLineListItem(text="Overwrite existing destination file?", font_style="H6"))
-        layout.add_widget(MDTextField(text=str(outputpath.absolute()), multiline=True, readonly=True))
+        layout.add_widget(MDTextField(text=str(outputpath.absolute()), multiline=True, readonly=True,mode="rectangle"))
         dialog = MDDialog(title="",
                           type='custom',
                           auto_dismiss=False,
@@ -106,11 +106,11 @@ class ModelViewController(Controller):
         layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
         layout.add_widget(OneLineListItem(text="Options for download via URL", font_style="H6"))
         layout.add_widget(OneLineListItem(text="URL to model"))
-        layout.add_widget(MDTextField(text=""))
+        layout.add_widget(MDTextField(text="",mode="rectangle"))
         layout.add_widget(OneLineListItem(text="Downloadpath"))
-        layout.add_widget(MDTextField(text=self.screen.tessdatadir.text))
+        layout.add_widget(MDTextField(text=self.screen.tessdatadir.text,mode="rectangle"))
         layout.add_widget(OneLineListItem(text="Modelname (default: filename)"))
-        layout.add_widget(MDTextField(text=""))
+        layout.add_widget(MDTextField(text="",mode="rectangle"))
         dialog = MDDialog(title="",
                           type='custom',
                           auto_dismiss=False,
@@ -212,7 +212,7 @@ class ModelViewController(Controller):
             instance.parent.parent.parent.parent.dismiss()
         layout = MDBoxLayout(orientation="vertical", adaptive_height=True)
         layout.add_widget(MDTextField(text="Sudo password to change the rights of the destination folder", font_style="H6"))
-        layout.add_widget(MDTextField(hint_text="Password",password=True))
+        layout.add_widget(MDTextField(hint_text="Password",password=True,mode="rectangle"))
         dialog = MDDialog(title="",
                           type='custom',
                           auto_dismiss=False,
