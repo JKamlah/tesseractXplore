@@ -140,7 +140,7 @@ class ModelViewController(Controller):
             modelname = Path(url).name
         if ".traineddata" not in modelname:
             modelname += ".traineddata"
-        outputpath = Path(outputpath+modelname)
+        outputpath = Path(outputpath).joinpath(modelname)
         self.selected_model = Model.from_dict({'modelgroup':'',
                                                'name': modelname.rsplit('.',1)[0],
                                                'url': url,
