@@ -32,7 +32,7 @@ from kivy.properties import ObjectProperty
 from kivymd.app import MDApp
 
 from tesseractXplore.app import alert
-from tesseractXplore.app.screens import HOME_SCREEN, Root, load_screens
+from tesseractXplore.app.screens import HOME_SCREEN, HOME_SCREEN_ONLINE, Root, load_screens
 from tesseractXplore.tessprofiles import read_tessprofiles
 from tesseractXplore.modelinfos import Modelinformations
 from tesseractXplore.app import get_app
@@ -40,15 +40,19 @@ from tesseractXplore.constants import (
     INIT_WINDOW_POSITION,
     INIT_WINDOW_SIZE,
     MD_PRIMARY_PALETTE,
+    MD_PRIMARY_PALETTE_ONLINE,
     MD_ACCENT_PALETTE,
+    MD_ACCENT_PALETTE_ONLINE,
     BACKSPACE,
     ENTER,
     F11, TRIGGER_DELAY,
 )
 from tesseractXplore.controllers import (
     ImageSelectionController,
+    ImageSelectionOnlineController,
     FulltextViewController,
     ImageEditorController,
+    JobsController,
     SettingsController,
     ModelListController,
     ModelSearchController,
@@ -56,6 +60,7 @@ from tesseractXplore.controllers import (
     ModelViewController,
     TessprofilesController,
     TesseractController,
+    TesseractOnlineController,
     DiffStdoutController,
 )
 from tesseractXplore.widgets import ModelListItem
@@ -69,6 +74,7 @@ class ControllerProxy:
     This also just serves as documentation for these interactions so I don't lose track of them.
     """
     image_selection_controller = ObjectProperty()
+    image_selection_online_controller = ObjectProperty()
     fulltext_view_controller = ObjectProperty()
     image_edit_controller = ObjectProperty()
     model_search_controller = ObjectProperty()
@@ -77,6 +83,8 @@ class ControllerProxy:
     modellist_controller = ObjectProperty()
     tessprofiles_controller = ObjectProperty()
     tesseract_controller = ObjectProperty()
+    tesseract_online_controller = ObjectProperty()
+    jobs_controller = ObjectProperty()
     settings_controller = ObjectProperty()
     diffstdout_controller = ObjectProperty()
 
@@ -99,6 +107,9 @@ class ControllerProxy:
         self.settings_controller = SettingsController(screens['settings'].ids)
         self.image_selection_controller = ImageSelectionController(screens[HOME_SCREEN].ids)
         self.tesseract_controller = TesseractController(screens[HOME_SCREEN].ids)
+        self.image_selection_online_controller = ImageSelectionOnlineController(screens[HOME_SCREEN_ONLINE].ids)
+        self.tesseract_online_controller = TesseractOnlineController(screens[HOME_SCREEN_ONLINE].ids)
+        self.jobs_controller = JobsController(screens['jobs'].ids)
         self.fulltext_view_controller = FulltextViewController(screens['fulltext'].ids)
         self.image_editor_controller = ImageEditorController(screens['imageeditor'].ids)
         self.model_selection_controller = ModelSelectionController(screens['model'].ids)
@@ -124,9 +135,11 @@ class ControllerProxy:
         self.locale = self.settings_controller.locale
         self.username = self.settings_controller.username
         self.password = self.settings_controller.password
+        self.token = None
 
 
         self.image_selection_controller.post_init()
+        self.image_selection_online_controller.post_init()
         self.model_selection_controller.post_init()
 
     def get_model_list_item(self, *args, **kwargs):
@@ -150,6 +163,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         super().__init__(*args, **kwargs)
         self.bg_loop = None
         self.root = None
+        self.home_screen = HOME_SCREEN
         self.nav_drawer = None
         self.screen_manager = None
         self.toolbar = None
@@ -178,6 +192,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         self.nav_drawer = self.root.ids.nav_drawer
         self.screen_manager = self.root.ids.screen_manager
         self.toolbar = self.root.ids.toolbar
+        self.init_toolbar(HOME_SCREEN)
 
         for screen_name, screen in screens.items():
             self.screen_manager.add_widget(screen)
@@ -222,7 +237,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         self.dropped_files = []
 
     def home(self, *args):
-        self.switch_screen(HOME_SCREEN)
+        self.switch_screen(self.home_screen)
 
     def open_nav(self, *args):
         self.nav_drawer.set_state('open')
@@ -278,14 +293,14 @@ class TesseractXplore(MDApp, ControllerProxy):
     # TODO: current_screen_*() may be better organized as controller methods (inherited/overridden as needed)
     def current_screen_action(self):
         """ Run the current screen's main action """
-        if self.screen_manager.current == HOME_SCREEN:
+        if self.screen_manager.current == self.home_screen:
             self.tesseract_controller.recognize(None)
         elif self.screen_manager.current == 'model':
             self.model_search_controller.search()
 
     def current_screen_clear(self):
         """ Clear the settings on the current screen, if applicable """
-        if self.screen_manager.current == HOME_SCREEN:
+        if self.screen_manager.current == self.home_screen:
             self.image_selection_controller.clear()
         elif self.screen_manager.current == 'model':
             self.model_search_controller.reset_all_search_inputs()
@@ -301,7 +316,7 @@ class TesseractXplore(MDApp, ControllerProxy):
             # self.select_gt(id=gt_id)
             alert(f'GT {gt_id} selected')
 
-        if self.screen_manager.current == HOME_SCREEN:
+        if self.screen_manager.current == self.home_screen:
             if gt_id:
                 self.image_selection_controller.screen.gt_id_input.text = str(gt_id)
                 self.image_selection_controller.screen.model_id_input.text = ''
@@ -312,11 +327,14 @@ class TesseractXplore(MDApp, ControllerProxy):
     def update_toolbar(self, screen_name: str):
         """ Modify toolbar in-place so it can be shared by all screens """
         self.toolbar.title = screen_name.title().replace('_', ' ')
-        if screen_name == HOME_SCREEN:
+        if screen_name in [HOME_SCREEN, HOME_SCREEN_ONLINE]:
             self.toolbar.left_action_items = [['menu', self.open_nav]]
         else:
             self.toolbar.left_action_items = [["arrow-left", self.home]]
+
+    def init_toolbar(self, screen_name:str):
         self.toolbar.right_action_items = [
+            ['cast', self.toggle_online_offline],
             ['border-none-variant', self.toggle_border],
             ['fullscreen', self.toggle_fullscreen],
             ['dots-vertical', self.open_settings],
@@ -328,27 +346,44 @@ class TesseractXplore(MDApp, ControllerProxy):
             is_active = self.settings_controller.display['dark_mode']
         self.theme_cls.theme_style = 'Dark' if is_active else 'Light'
 
+    def toggle_online_offline(self, *args):
+        """ Enable or disable fullscreen, and change icon"""
+        # Window fullscreen doesn't work with two displays
+        if self.toolbar.right_action_items[0][0] == 'cast':
+            self.theme_cls.primary_palette = MD_PRIMARY_PALETTE_ONLINE
+            self.theme_cls.accent_palette = MD_ACCENT_PALETTE_ONLINE
+            self.switch_screen(HOME_SCREEN_ONLINE)
+            self.home_screen = HOME_SCREEN_ONLINE
+            icon = 'cast-connected'
+        else:
+            self.theme_cls.primary_palette = MD_PRIMARY_PALETTE
+            self.theme_cls.accent_palette = MD_ACCENT_PALETTE
+            self.switch_screen(HOME_SCREEN)
+            self.home_screen = HOME_SCREEN
+            icon = 'cast'
+        self.toolbar.right_action_items[0] = [icon, self.toggle_online_offline]
+
     def toggle_border(self, *args):
         """ Enable or disable fullscreen, and change icon"""
         # Window fullscreen doesn't work with two displays
-        if self.toolbar.right_action_items[0][0] == 'border-all-variant':
+        if self.toolbar.right_action_items[1][0] == 'border-all-variant':
             Window.borderless = 0
             icon = 'border-none-variant'
         else:
             Window.borderless = 1
             icon = 'border-all-variant'
-        self.toolbar.right_action_items[0] = [icon, self.toggle_border]
+        self.toolbar.right_action_items[1] = [icon, self.toggle_border]
 
     def toggle_fullscreen(self, *args):
         """ Enable or disable fullscreen, and change icon"""
         # Window fullscreen doesn't work with two displays
-        if self.toolbar.right_action_items[1][0] == 'fullscreen-exit':
+        if self.toolbar.right_action_items[2][0] == 'fullscreen-exit':
             Window.restore()
             icon = 'fullscreen'
         else:
             Window.maximize()
             icon = 'fullscreen-exit'
-        self.toolbar.right_action_items[1] = [icon, self.toggle_fullscreen]
+        self.toolbar.right_action_items[2] = [icon, self.toggle_fullscreen]
 
 
 def main():

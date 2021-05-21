@@ -10,6 +10,8 @@ from kivymd.uix.screen import MDScreen
 from tesseractXplore.constants import KV_SRC_DIR
 
 HOME_SCREEN = 'tesseract_xplore'
+HOME_SCREEN_ONLINE = 'tesseract_xplore_online'
+
 # TODO: Load kv files in corresponding widget modules instead?
 SCREEN_COMPONENTS = [
     'widgets',
@@ -29,6 +31,9 @@ class Root(BoxLayout):
 class ImageSelectionScreen(MDScreen):
     pass
 
+class ImageSelectionOnlineScreen(MDScreen):
+    pass
+
 class SettingsScreen(MDScreen):
     pass
 
@@ -44,6 +49,9 @@ class TessprofilesScreen(MDScreen):
 class ImageEditorScreen(MDScreen):
     pass
 
+class JobsScreen(MDScreen):
+    pass
+
 class ModelScreen(MDScreen):
     pass
 
@@ -56,15 +64,16 @@ class GTScreen(MDScreen):
 
 SCREENS = {
     HOME_SCREEN: ImageSelectionScreen,
+    HOME_SCREEN_ONLINE: ImageSelectionOnlineScreen,
     'settings': SettingsScreen,
     'fulltext': FulltextViewScreen,
     'imageeditor': ImageEditorScreen,
+    'jobs': JobsScreen,
     'model': ModelScreen,
     'modellist': ModelListScreen,
     'tessprofiles': TessprofilesScreen,
     'groundtruth': GTScreen,
     'diffstdout': DiffStdoutScreen,
-
 }
 
 

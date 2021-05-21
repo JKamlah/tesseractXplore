@@ -41,3 +41,11 @@ def create_threadprocess(processname:str,func, *args, **kwargs):
     pm = processmanager(processname)
     get_app().active_threads[new_thread] = pm
     get_app().image_selection_controller.screen.process_list.add_widget(pm)
+
+def create_online_threadprocess(processname:str,func, *args, **kwargs):
+    new_thread = threading.Thread(target=func, args=args, kwargs=kwargs)
+    new_thread.setDaemon(True)
+    new_thread.start()
+    pm = processmanager(processname)
+    get_app().active_threads[new_thread] = pm
+    get_app().image_selection_online_controller.screen.process_list.add_widget(pm)

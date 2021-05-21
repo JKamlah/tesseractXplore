@@ -7,6 +7,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDFlatButton
 
 from tesseractXplore.app import get_app
+from tesseractXplore.app.screens import HOME_SCREEN_ONLINE
 from tesseractXplore.controllers import Controller
 from tesseractXplore.widgets import LeftCheckbox
 
@@ -21,13 +22,14 @@ class ModelListController(Controller):
         self.screen = screen
         self.layout = MDList()
         self.checked_models = None
+        self.modelinfos = {}
         self.screen['model_selection_button'].bind(on_release=self.set_model_btn)
 
     def set_list(self, text="", search=False):
-        '''Lists all installed models '''
+        ''' Lists all installed models '''
 
         def add_item(model):
-            description = get_app().modelinformations.get_modelinfos().get(model).get('description','')
+            description = self.modelinfos.get(model).get('description','')
             description = 'No description' if description  == '' else description
             item = TwoLineAvatarIconListItem(
                 text=model,
@@ -50,8 +52,11 @@ class ModelListController(Controller):
             self.chk_active_models()
         self.layout.clear_widgets()
         self.screen.modellist.clear_widgets()
-        for model in list(get_app().modelinformations.get_modelinfos().keys()):
-            if search:
+        self.modelinfos = get_app().modelinformations.get_modelinfos()
+        for model in list(self.modelinfos.keys()):
+            if text == '!all':
+                add_item(model)
+            if search and len(text) > 1:
                 if self.screen.exact_match_chk.active:
                     if text == model[:len(text)]:
                         add_item(model)
@@ -60,8 +65,9 @@ class ModelListController(Controller):
                     if sum([True if textpart.lower() in model.lower() else False for textpart in textparts]) == len(
                             textparts):
                         add_item(model)
-            else:
-                add_item(model)
+                    elif sum([True if textpart.lower() in " ".join(self.modelinfos.get(model).get('tags', [''])).lower() else False for textpart in textparts]) == len(
+                            textparts):
+                        add_item(model)
         self.screen.modellist.add_widget(self.layout)
 
     def edit_description(self, model, description, instance, *args):
@@ -107,5 +113,8 @@ class ModelListController(Controller):
         for chk_model, state in self.checked_models.items():
             if state and chk_model != model:
                 selected_models.append(chk_model)
-        get_app().tesseract_controller.screen.model.set_item('Model: ' + '+'.join(selected_models))
-        get_app().switch_screen('tesseract_xplore')
+        if get_app().home_screen == HOME_SCREEN_ONLINE:
+            get_app().tesseract_online_controller.screen.model.set_item('Model: ' + '+'.join(selected_models))
+        else:
+            get_app().tesseract_controller.screen.model.set_item('Model: ' + '+'.join(selected_models))
+        get_app().switch_screen(get_app().home_screen)

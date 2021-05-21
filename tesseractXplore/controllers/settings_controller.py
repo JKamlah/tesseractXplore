@@ -257,7 +257,7 @@ class SettingsController:
 
     @property
     def password(self):
-        return self.account.get('preferred_place_id')
+        return self.account.get('password')
 
     @property
     def account(self):

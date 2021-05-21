@@ -8,7 +8,7 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
 
 from tesseractXplore.app import alert, get_app
-from tesseractXplore.controllers import Controller, ImageBatchLoader
+from tesseractXplore.controllers import Controller, ImageBatchLoaderOnline
 from tesseractXplore.controllers.fulltext_view_controller import find_file
 from tesseractXplore.diff_stdout import diff_dialog
 from tesseractXplore.image_glob import get_images_from_paths
@@ -17,7 +17,7 @@ from tesseractXplore.pdf import open_pdf
 logger = getLogger().getChild(__name__)
 
 
-class ImageSelectionController(Controller):
+class ImageSelectionOnlineController(Controller):
     """ Controller class to manage image selector screen """
 
     def __init__(self, screen):
@@ -101,7 +101,7 @@ class ImageSelectionController(Controller):
 
     def post_init(self):
         # Load and save start dir from file chooser with the rest of the app settings
-        get_app().add_control_widget(self.file_chooser, 'start_dir', 'photos')
+        get_app().add_control_widget(self.file_chooser, 'start_dir_online', 'photos')
 
     def delete_file_chooser_selection_dialog(self, *args):
         def close_dialog(instance, *args):
@@ -167,7 +167,7 @@ class ImageSelectionController(Controller):
         self.file_list.extend(new_images)
 
         # Start batch loader + progress bar
-        loader = ImageBatchLoader()
+        loader = ImageBatchLoaderOnline()
         self.start_progress(len(new_images), loader)
         #for new_image in new_images:
         loader.add_batch(new_images, parent=self.image_previews)
@@ -284,9 +284,9 @@ class ImageSelectionController(Controller):
     def get_model(instance):
         get_app().switch_screen('modellist')
         get_app().modellist_controller.search = True
-        get_app().screens.modellist_controller.screen.find_model_btn.disabled = False
+        get_app().modellist_controller.screen.find_model_btn.disabled = True
         get_app().modellist_controller.set_list("")
 
     @staticmethod
     def tesseractxplore(instance):
-        get_app().switch_screen('tesseractxplore')
+        get_app().switch_screen('tesseractxplore_online')

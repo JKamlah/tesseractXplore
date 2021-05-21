@@ -51,6 +51,12 @@ ALL_ATLASES = [ATLAS_APP_ICONS, ATLAS_TAXON_ICONS, ATLAS_TAXON_PHOTOS, ATLAS_LOC
 CACHE_DIR = join(DATA_DIR, 'stdout')
 # CACHE_BACKEND = 'sqlite'
 
+# Download directory
+DOWNLOAD_DIR = join(DATA_DIR, 'download')
+
+# Job directory
+JOBS_DIR = join(DATA_DIR, 'jobs')
+
 # Config files
 CONFIG_PATH = join(DATA_DIR, 'settings.yml')
 DEFAULT_CONFIG_PATH = join(METADATA_DIR, 'default_settings.yml')
@@ -70,12 +76,15 @@ DEFAULT_MODEL_PATH = join(METADATA_DIR, 'default_metadata_modellist.yml')
 
 # URLs / API settings
 USER_AGENT = f'tesseract-xplore/{__version__};'.lower()
+URL_TESSERACTXPLORE_ONLINE = 'http://127.0.0.1:8000'
 
 # Theme/window settings
 INIT_WINDOW_POSITION = ('custom', 100, 100)
 INIT_WINDOW_SIZE = (1500, 900)
 MD_PRIMARY_PALETTE = 'Teal'
 MD_ACCENT_PALETTE = 'Cyan'
+MD_PRIMARY_PALETTE_ONLINE = 'BlueGray'
+MD_ACCENT_PALETTE_ONLINE = 'Cyan'
 MAX_LABEL_CHARS = 80
 
 # Key codes; reference: https://gist.github.com/Enteleform/a2e4daf9c302518bf31fcc2b35da4661

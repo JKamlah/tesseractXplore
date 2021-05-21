@@ -212,3 +212,19 @@ class ImageBatchLoader(WidgetBatchLoader):
     @mainthread
     def bind_click(self, widget):
         widget.bind(on_touch_down=get_app().image_selection_controller.on_image_click)
+
+
+class ImageBatchLoaderOnline(WidgetBatchLoader):
+    """ Loads batches of ImageMetaTiles for online version"""
+
+    def __init__(self, **kwargs):
+        super().__init__(widget_cls=ImageMetaTile, **kwargs)
+
+    def add_widget(self, widget: Widget, parent: Widget):
+        """ Add an ImageMetaTiles to its parent view and bind its click event """
+        super().add_widget(widget, parent)
+        self.bind_click(widget)
+
+    @mainthread
+    def bind_click(self, widget):
+        widget.bind(on_touch_down=get_app().image_selection_online_controller.on_image_click)

@@ -8,6 +8,7 @@ from typing import Dict, Any
 
 
 from tesseractXplore.app import alert, get_app
+from tesseractXplore.app.screens import HOME_SCREEN_ONLINE
 from tesseractXplore.constants import MODELINFO_PATH
 
 
@@ -20,6 +21,8 @@ class Modelinformations():
 
     @property
     def current_tessdatadir(self):
+        if get_app().home_screen == HOME_SCREEN_ONLINE:
+            return HOME_SCREEN_ONLINE
         return get_app().settings_controller.screen['tessdatadir'].text
 
     def update_modelinformations(self, model, modelinfo):
@@ -65,9 +68,26 @@ class Modelinformations():
             toast("Please install Tesseract!")
             return {}
 
+    def update_online_models(self):
+        from tesseractXplore.metamodels import read_metamodels
+        if not self.modelinfos.get(HOME_SCREEN_ONLINE, None):
+            self.modelinfos[HOME_SCREEN_ONLINE] = {}
+        for metamodel in read_metamodels()['tessdata']['models'].values():
+            modelname = metamodel.get('name').rsplit('.',1)[0]
+            if not self.modelinfos[HOME_SCREEN_ONLINE].get(modelname, None):
+                self.modelinfos[HOME_SCREEN_ONLINE][modelname] = metamodel
+        self.write_modelinfos()
+        return
+
+
     def get_modelinfos(self):
         if self.current_tessdatadir not in self.modelinfos:
-            self.modelinfos[self.current_tessdatadir] = {}
+            if self.current_tessdatadir == HOME_SCREEN_ONLINE:
+                self.update_online_models()
+            else:
+                self.modelinfos[self.current_tessdatadir] = {}
+        if self.current_tessdatadir == HOME_SCREEN_ONLINE:
+            return self.modelinfos[self.current_tessdatadir]
         missing_models = set(self.installed_models).difference(set(self.modelinfos[self.current_tessdatadir].keys()))
         if missing_models:
             for model in missing_models:
