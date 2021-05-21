@@ -103,7 +103,7 @@ tessdata:
             description: 'Model for Tibetan language'
             category: 'Language'
             type: ['fast','best']
-            fonts: ['']
+            fot.nts: ['']
         bos:
             name: 'bos.traineddata'
             tags: ['Bosnio','Bosnisch','Bosnien','Bosnian']

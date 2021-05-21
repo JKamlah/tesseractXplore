@@ -11,12 +11,15 @@ display:
   # Not yet configurable
   md_primary_palette: 'Teal'
   md_accent_palette: 'Cyan'
+  md_primary_palette_online: 'Lightsteelblue'
+  md_accent_palette_online: 'Yellow'
 account:
   username: null
   password: null
   locale: null
 photos:
   start_dir: '/'
+  start_dir_online: '/'
   # Not yet configurable
   filetypes: ['jpg', 'jpeg', 'jp2', 'png', 'ppm', 'gif', 'tif', 'tiff', 'pdf']
 viewer:
