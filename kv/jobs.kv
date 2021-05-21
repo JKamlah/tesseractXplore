@@ -1,0 +1,31 @@
+<JobsScreen>:
+    name: 'jobs'
+
+    BoxLayout:
+        #adaptive_height: True
+        size_hint_y: None
+        pos_hint: {'x': .3}
+        MDFillRoundFlatButton:
+            text: "Update"
+            id: update_btn
+            adaptive_height: True
+
+        MDFillRoundFlatButton:
+            text: "Download"
+            id: download_btn
+            adaptive_height: True
+
+        MDFillRoundFlatButton:
+            text: "Download as folder"
+            id: download_folder_btn
+            adaptive_height: True
+
+        MDFillRoundFlatButton:
+            text: "Remove"
+            id: remove_btn
+            adaptive_height: True
+
+    MDBoxLayout
+        orientation: "vertical"
+        MDBoxLayout:
+            id: job_data

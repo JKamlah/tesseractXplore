@@ -3,6 +3,36 @@
 #: import PhotoContextMenuItem tesseractXplore.widgets.TessprofileContextMenuItem
 #: import ListContextMenuItem tesseractXplore.widgets.ListContextMenuItem
 
+<PhotoContextMenuOnline@ObjectContextMenu>:
+    visible: False
+    PhotoContextMenuItem:
+        id: recognize_ctx
+        text: "Recognize"
+    PhotoContextMenuItem:
+        id: edit_image_ctx
+        text: "Edit image"
+    PhotoContextMenuItem:
+        id: edit_fulltext_ctx
+        text: "Edit fulltext"
+    PhotoContextMenuItem:
+        id: open_pdf_ctx
+        text: "Open PDF"
+    PhotoContextMenuItem:
+        id: diff_stdout_ctx
+        text: "Compare stdout"
+    PhotoContextMenuItem:
+        id: remove_ctx
+        text: "Remove from selection"
+    # Just some ideas for future features
+#    ContextMenuDivider:
+#        text: "More options"
+#    ContextMenuTextItem:
+#        text: "Model"
+#        ContextMenu:
+#            ContextMenuTextItem:
+#                text: "Search for gts of this model"
+#            ContextMenuTextItem:
+#                text: "Search for similar species"
 
 <PhotoContextMenu@ObjectContextMenu>:
     visible: False
@@ -35,6 +65,20 @@
 #            ContextMenuTextItem:
 #                text: "Search for similar species"
 
+<TessprofileContextMenuOnline@ObjectContextMenu>:
+    visible: False
+    TessprofileContextMenuItem:
+        id: load_tessprofile_ctx
+        text: "Load profile"
+        on_release: app.tesseract_controller.search_tessprofile()
+    TessprofileContextMenuItem:
+        id: save_tessprofile_ctx
+        text: "Save profile"
+        on_release: app.tesseract_controller.save_tessprofile_dialog()
+    TessprofileContextMenuItem:
+        id: reset_settings_ctx
+        text: "Reset"
+        on_release: app.tesseract_controller.reset_settings()
 
 <TessprofileContextMenu@ObjectContextMenu>:
     visible: False

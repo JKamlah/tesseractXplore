@@ -1,0 +1,229 @@
+#: import ObjectContextMenu tesseractXplore.widgets.ListItemWithCheckbox
+
+<ListItemWithCheckbox>:
+    RightCheckbox:
+
+<ImageSelectionOnlineScreen>:
+    name: 'tesseract_xplore_online'
+    #name: 'image_selection'
+
+    FloatLayout:
+        id: layout
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, .2
+            Rectangle:
+                # self here refers to the widget i.e BoxLayout
+                pos: self.pos
+                size: self.size
+        # Right-click context menu for images
+        PhotoContextMenuOnline:
+            id: context_menu
+            cancel_handler_widget: layout
+        # Right-click context menu on tesseract-settings
+        TessprofileContextMenuOnline:
+            id: tessprofile_menu
+            cancel_handler_widget: layout
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                # Image viewer
+                ScrollViewY:
+                    id: image_scrollview
+                    MDGridLayout:
+                        id: image_previews
+                        adaptive_height: True
+                        cols: max(int(self.width / 200), 1)
+                        padding: dp(4), dp(4)
+                        spacing: dp(4)
+                        row_default_height: 200
+                        col_default_width: 200
+                        col_force_default: True
+
+                #Options + file chooser
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    size_hint_x: .4
+                    size_hint_min_x: 520
+                    col: 2
+                    # Text input fields
+                    # TODO: Move input/search to a separate screen
+
+                    MDBoxLayout:
+                        size_hint_y: 1.0
+                        size_hint_min_y: 430
+                        md_bg_color: .1, .1, .1, .1
+                        MDGridLayout:
+                            cols: 1
+                            spacing: dp(4)
+                            OneLineRightIconListItem:
+                                id: settings_menu
+                                font_style: 'H5'
+                                markup: True
+                                text: '[size=21]Tesseract [b]Settings[/b][/size]'
+                                on_release: app.tesseract_online_controller.on_tesssettings_click()
+                                IconRightWidget:
+                                    icon: "folder-open"
+                                    on_release: app.tesseract_online_controller.on_tesssettings_click()
+
+                            MDDropDownItem:
+                                id: model
+                                text: 'Select model (default: eng)'
+
+                            MDDropDownItem:
+                                id: psm
+                                size_hint_x: .4
+                                size_hint_max_x: 450
+                                text: 'Select page segmentation mode (PSM) (default: 3)'
+                                on_release: app.tesseract_online_controller.psm_menu.open()
+
+                            MDBoxLayout:
+                                orientation: 'vertical'
+                                adaptive_height: True
+                                #size_y: dp(60)
+                                #size_hint_min_y: dp(60)
+                                col:2
+                                MDBoxLayout:
+                                    size_hint_y: None
+                                    height: dp(30)
+                                    MDLabel:
+                                        text: ' Select output format (default: print text on screen)'
+                                        theme_text_color: 'Primary'
+                                MDBoxLayout:
+                                    orientation: 'horizontal'
+                                    adaptive_height: True
+                                    MyToggleButton:
+                                        text:'TXT'
+                                        id: txt
+                                    MyToggleButton:
+                                        text:'HOCR'
+                                        id: hocr
+                                    MyToggleButton:
+                                        text:'ALTO'
+                                        id: alto
+                                    MyToggleButton:
+                                        text:'PDF'
+                                        id: pdf
+                                    MyToggleButton:
+                                        text:'TSV'
+                                        id: tsv
+                                OneLineAvatarIconListItem:
+                                    text: 'Print on screen'
+                                    height: dp(50)
+                                    #width: dp(400)
+                                    SwitchListItem:
+                                        id: print_on_screen_chk
+                                OneLineAvatarIconListItem:
+                                    text: 'Overwrite existing job'
+                                    height: dp(50)
+                                    #width: dp(400)
+                                    SwitchListItem:
+                                        id: overwrite_job_chk
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                adaptive_height: True
+                                MDTextField:
+                                    id: jobname
+                                    hint_text: 'Jobname (default: Job_01)'
+                            MDBoxLayout:
+                                orientation: 'horizontal'
+                                adaptive_height: True
+                                col: 2
+                                MDRoundFlatIconButton:
+                                    id: recognize_button
+                                    text: "Run job"
+                                    icon: 'play'
+                                MDRoundFlatIconButton:
+                                    id: jobs_button
+                                    text: "Jobs"
+                                    icon: 'cloud-search-outline'
+                    # File Chooser
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        md_bg_color: .1, .1, .1, .75
+                        OneLineListItem:
+                            font_style: 'H5'
+                            markup: True
+                            text: '[color=#ffffff][size=21]Image [b]Selection[/b][/size][/color]'
+
+                        FileChooserListView:
+                            id: file_chooser
+                            dirselect: True
+                            filters: IMAGE_FILETYPES
+
+                        # Buttons; TODO: Make this less ugly
+                        MDBoxLayout:
+                            size_hint_y: None
+                            height: dp(50)
+                            spacing: dp(5)
+                            #MDRaisedButton:
+                            #    id: debug_button
+                            #    text: 'Debug'
+                            #    md_bg_color: app.theme_cls.primary_dark
+                            MDBoxLayout:
+                                md_bg_color: app.theme_cls.primary_dark
+                                adaptive_height: True
+                                padding: dp(0), dp(5.5)
+                                MDRaisedButton:
+                                    id: load_button
+                                    text: 'Load Selected File/Folder'
+                                    height: dp(50)
+                                    theme_text_color: 'Primary'
+                                    md_bg_color: app.theme_cls.primary_dark
+                            MDBoxLayout:
+                                md_bg_color: app.theme_cls.primary_dark
+                                adaptive_height: True
+                                padding: dp(10), dp(0)
+                                MDSwitch:
+                                    id: recursive_chk
+                                MDLabel:
+                                    text: 'Recursive'
+                                    halign: 'center'
+                                    font_style: 'Button'
+                                    theme_text_color: 'ContrastParentBackground'
+                            MDIconButton:
+                                id: delete_button
+                                icon: 'trash-can'
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Delete Selected File/Folder'
+                                halign: 'bottom'
+
+            StatusBar:
+                id: status_bar
+
+
+        AnchorLayout:
+            anchor_x: 'right'
+            anchor_y: 'bottom'
+            pos_hint: {'x':0.3,'y':0.05}
+            id: process_manager
+            MDList:
+                id: process_list
+                padding: 0
+
+        MDBoxLayout:
+            cols: 4
+            spacing: dp(4)
+            padding: dp(4)
+            pos_hint: {'y':0.02}
+
+            ControlTooltipButton:
+                id: clear_button
+                icon: 'trash-can'
+                tooltip_text: 'Clear image selection'
+
+            ControlTooltipButton:
+                id: sort_button
+                icon: 'sort'
+                text: 'Sort Up'
+                tooltip_text: 'Sort image selection'
+
+            ControlTooltipButton:
+                id: zoomin_button
+                icon: 'magnify-plus'
+                tooltip_text: 'Zoom in'
+
+            ControlTooltipButton:
+                id: zoomout_button
+                icon: 'magnify-minus'
+                tooltip_text: 'Zoom out'
