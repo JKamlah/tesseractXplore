@@ -81,6 +81,7 @@ class ModelListController(Controller):
         self.modelinfos = get_app().modelinformations.get_modelinfos()
 
         for model in list(self.modelinfos.keys()):
+            if model == "osd": continue
             if self.screen.show_all_chk.active and len(text) == 0:
                 add_item(model)
             if search and len(text) > 1:
