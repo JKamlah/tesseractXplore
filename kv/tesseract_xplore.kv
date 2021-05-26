@@ -184,16 +184,6 @@
                             MDBoxLayout:
                                 md_bg_color: app.theme_cls.primary_dark
                                 adaptive_height: True
-                                padding: dp(0), dp(5.5)
-                                MDRaisedButton:
-                                    id: load_button
-                                    text: 'Load Selected File/Folder'
-                                    height: dp(50)
-                                    theme_text_color: 'Primary'
-                                    md_bg_color: app.theme_cls.primary_dark
-                            MDBoxLayout:
-                                md_bg_color: app.theme_cls.primary_dark
-                                adaptive_height: True
                                 padding: dp(10), dp(0)
                                 MDSwitch:
                                     id: recursive_chk
@@ -202,6 +192,18 @@
                                     halign: 'center'
                                     font_style: 'Button'
                                     theme_text_color: 'ContrastParentBackground'
+                            MDIconButton:
+                                id: load_button
+                                icon: "upload"
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Load Selected File/Folder'
+                                halign: 'bottom'
+                            MDIconButton:
+                                id: open_folder_button
+                                icon: "folder-open"
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Open Folder'
+                                halign: 'bottom'
                             MDIconButton:
                                 id: delete_button
                                 icon: 'trash-can'

@@ -1,6 +1,7 @@
 from functools import partial
 
 from kivy.properties import StringProperty
+from kivy.clock import Clock
 from kivymd.uix.list import OneLineListItem, OneLineAvatarIconListItem, TwoLineAvatarIconListItem, MDList, IconRightWidget
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
@@ -24,14 +25,39 @@ class ModelListController(Controller):
         self.checked_models = None
         self.modelinfos = {}
         self.screen.model_selection_button.bind(on_release=self.set_model_btn)
-        self.screen.show_all_chk.bind(active=partial(self.set_list))
+        self.screen.show_all_chk.bind(active=partial(self.thread_set_list))
+
+    def thread_set_list(self, *args, text="", search=False):
+        import threading
+        # TODO: Why is threading still blocking the ui and the pb not working?
+        if not args[0].active:
+            self.layout.clear_widgets()
+            self.screen.modellist.clear_widgets()
+            self.screen.modellist.add_widget(self.layout)
+            return
+        self.ocr_single_event = threading.Thread(target=self.process_set_list, args=(args),
+                                                 kwargs={'text': text,
+                                                         'search': search})
+        self.ocr_single_event.setDaemon(True)
+        self.ocr_single_event.start()
+        return
+
+    def process_set_list(self, *args, text="", search=False):
+        from kivymd.uix.progressbar import MDProgressBar
+        pb = MDProgressBar(type="determinate", running_duration=1, catching_duration=1.5)
+        status_bar = get_app().modellist_controller.screen.status_bar
+        status_bar.clear_widgets()
+        status_bar.add_widget(pb)
+        pb.start()
+        Clock.schedule_once(partial(self.set_list, self, *args, text=text, search=search))
+        pb.stop()
 
     def set_list(self, *args, text="", search=False):
         ''' Lists all installed models '''
 
         def add_item(model):
             description = self.modelinfos.get(model).get('description','')
-            description = 'No description' if description  == '' else description
+            description = 'No description' if description == '' else description
             item = TwoLineAvatarIconListItem(
                 text=model,
                 secondary_text= description,
@@ -44,7 +70,6 @@ class ModelListController(Controller):
             item.add_widget(LeftCheckbox(active=self.checked_models[model]))
             item.add_widget(IconRightWidget(icon='file-edit', on_release=partial(self.edit_description, model, description)))
             self.layout.add_widget(item)
-
         if self.checked_models is None:
             self.checked_models = {}
             for model in list(get_app().modelinformations.get_modelinfos().keys()):
@@ -54,6 +79,7 @@ class ModelListController(Controller):
         self.layout.clear_widgets()
         self.screen.modellist.clear_widgets()
         self.modelinfos = get_app().modelinformations.get_modelinfos()
+
         for model in list(self.modelinfos.keys()):
             if self.screen.show_all_chk.active and len(text) == 0:
                 add_item(model)
@@ -69,7 +95,9 @@ class ModelListController(Controller):
                     elif sum([True if textpart.lower() in " ".join(self.modelinfos.get(model).get('tags', [''])).lower() else False for textpart in textparts]) == len(
                             textparts):
                         add_item(model)
-        self.screen.modellist.add_widget(self.layout)
+        Clock.schedule_once(partial(self.screen.modellist.add_widget, self.layout))
+
+
 
     def edit_description(self, model, description, instance, *args):
         def close_dialog(instance, *args):

@@ -196,9 +196,11 @@
                     text: 'Display settings'
                 OneLineAvatarIconListItem:
                     text: 'Dark Mode'
+                    id: dark_mode_button
                     SwitchListItem:
                         id: dark_mode_chk
                     IconRight:
+                        id: dark_mode_icon
                         icon: 'theme-light-dark'
                 OneLineListItem:
                     font_style: 'H6'
@@ -211,12 +213,14 @@
                     id: clear_stdout_cache_button
                     text: 'Clear stdout cache'
                     IconLeft:
+                        id: clear_stdout_cache_icon
                         icon: 'delete'
                 ThreeLineAvatarListItem:
                     id: clear_thumbnail_cache_button
                     text: 'Clear thumbnail cache'
                     secondary_text: 'Clear all cached thumbnails'
                     IconLeft:
+                        id: clear_thumbnail_cache_icon
                         icon: 'delete'
                 OneLineListItem:
                     font_style: 'H6'
@@ -226,6 +230,7 @@
                     id: reset_default_button
                     text: 'Reset to defaults'
                     IconLeft:
+                        id: reset_default_icon
                         icon: 'backup-restore'
         StatusBar:
             id: status_bar

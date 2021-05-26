@@ -1,7 +1,9 @@
 import asyncio
 import os
 import shutil
+import webbrowser
 from logging import getLogger
+from pathlib import Path
 
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
@@ -41,6 +43,7 @@ class ImageSelectionOnlineController(Controller):
         # Other widget events
         self.screen.clear_button.bind(on_release=self.clear)
         self.screen.load_button.bind(on_release=self.add_file_chooser_images)
+        self.screen.open_folder_button.bind(on_release=self.open_folder)
         self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection_dialog)
         self.screen.sort_button.bind(on_release=self.sort_previews)
         self.screen.zoomin_button.bind(on_release=self.zoomin)
@@ -54,11 +57,19 @@ class ImageSelectionOnlineController(Controller):
         # TODO: Not working atm only on main window atm (see app.py)
         # self.screen.image_scrollview.bind(on_keyboard=self.on_keyboard)
 
+    def open_folder(self, *args):
+        if self.file_chooser.selection:
+            folder = Path(self.file_chooser.selection[0])
+            if folder.is_dir():
+                webbrowser.open(str(folder.resolve()))
+            else:
+                webbrowser.open(str(folder.parent.resolve()))
+
     def update_filechooser_filter(self):
         # TODO: Rework this
         self.file_chooser.filters = ["*" + filter.strip() for filter in
-                                     get_app().settings_controller.controls['filetypes'].text[1:-1].replace("'",
-                                                                                                            "").split(
+                                     get_app().settings_controller.controls['filetypes'].text.replace("'",
+                                                                                                      "").split(
                                          ',')]
         self.file_chooser._update_files()
 
@@ -122,7 +133,7 @@ class ImageSelectionOnlineController(Controller):
                           ],
                           )
         if get_app()._platform not in ['win32', 'win64']:
-        # TODO: Focus function seems buggy in win
+            # TODO: Focus function seems buggy in win
             dialog.content_cls.focused = True
         dialog.open()
 
@@ -169,7 +180,7 @@ class ImageSelectionOnlineController(Controller):
         # Start batch loader + progress bar
         loader = ImageBatchLoaderOnline()
         self.start_progress(len(new_images), loader)
-        #for new_image in new_images:
+        # for new_image in new_images:
         loader.add_batch(new_images, parent=self.image_previews)
         loader.start_thread()
 
@@ -282,10 +293,12 @@ class ImageSelectionOnlineController(Controller):
 
     @staticmethod
     def get_model(instance):
-        get_app().switch_screen('modellist')
+        get_app().modellist_controller.screen.show_all_chk.active = False
         get_app().modellist_controller.search = True
         get_app().modellist_controller.screen.find_model_btn.disabled = True
         get_app().modellist_controller.set_list("")
+        get_app().switch_screen('modellist')
+
 
     @staticmethod
     def tesseractxplore(instance):

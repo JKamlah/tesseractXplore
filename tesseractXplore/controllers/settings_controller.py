@@ -15,7 +15,7 @@ from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.toast import toast
 
-from tesseractXplore.app import alert
+from tesseractXplore.app import alert, get_app
 from tesseractXplore.constants import TESSDATA_DIR, FONTS_DIR, DEFAULT_FONTS_DIR
 from tesseractXplore.settings import (
     read_settings,
@@ -55,11 +55,14 @@ class SettingsController:
         #    on_release=lambda *x: webbrowser.open(PLACES_BASE_URL)
         # )
         self.screen.dark_mode_chk.bind(active=MDApp.get_running_app().set_theme_mode)
+        self.screen.dark_mode_button.bind(on_release=self.change_colormode)
+        self.screen.dark_mode_icon.bind(on_release=self.change_colormode)
 
         self.set_tessdir()
 
         # Bind buttons (with no persisted value)
         self.screen.reset_default_button.bind(on_release=self.clear_settings)
+        self.screen.reset_default_icon.bind(on_release=self.clear_settings)
 
         # Control widget ids should match the options in the settings file (with suffixes)
         self.controls = {
@@ -71,7 +74,9 @@ class SettingsController:
         # Bind buttons
         self.screen.cache_size_output.bind(on_release=self.update_cache_sizes)
         self.screen.clear_stdout_cache_button.bind(on_release=self.clear_stdout_cache)
+        self.screen.clear_stdout_cache_icon.bind(on_release=self.clear_stdout_cache)
         self.screen.clear_thumbnail_cache_button.bind(on_release=self.clear_thumbnail_cache)
+        self.screen.clear_thumbnail_cache_icon.bind(on_release=self.clear_thumbnail_cache)
 
         if not Path(FONTS_DIR).exists():
             copytree(DEFAULT_FONTS_DIR, FONTS_DIR)
@@ -81,6 +86,10 @@ class SettingsController:
         self.screen.tessdatadir_system_sel_chk.bind(on_release=self.set_tessdir)
 
         Clock.schedule_once(self.update_cache_sizes, 5)
+
+    def change_colormode(self, *args):
+        self.screen.dark_mode_chk.active = not self.screen.dark_mode_chk.active
+        get_app().get_running_app().set_theme_mode(is_active=self.screen.dark_mode_chk.active)
 
     def create_dropdown(self, caller, item, callback):
         menu = MDDropdownMenu(caller=caller,
@@ -215,12 +224,16 @@ class SettingsController:
 
     def get_control_value(self, setting_name):
         """ Get the value of the control widget corresponding to a setting """
-        control_widget, property, _ = self.get_control_widget(setting_name)
-        return getattr(control_widget, property) if control_widget else None
+        control_widget, property, setting_type = self.get_control_widget(setting_name)
+        ret = getattr(control_widget, property) if control_widget else None
+        if ret is not None and control_widget == "filetypes": ret = ret.split(',')
+        return ret
 
     def set_control_value(self, setting_name, value):
         """ Set the value of the control widget corresponding to a setting """
         control_widget, property, setting_type = self.get_control_widget(setting_name)
+        if isinstance(value, list) and setting_type is str:
+            value = ",".join(value)
         if control_widget:
             setattr(control_widget, property, setting_type(value))
 
