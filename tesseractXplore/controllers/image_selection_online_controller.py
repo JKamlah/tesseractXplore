@@ -295,6 +295,7 @@ class ImageSelectionOnlineController(Controller):
     def get_model(instance):
         get_app().modellist_controller.screen.show_all_chk.active = False
         get_app().modellist_controller.search = True
+        get_app().modellist_controller.screen.search_field.text = ""
         get_app().modellist_controller.screen.find_model_btn.disabled = True
         get_app().modellist_controller.set_list("")
         get_app().switch_screen('modellist')

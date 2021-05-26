@@ -22,6 +22,8 @@ if is_win:
 	    ('assets\\*.ico' , 'assets'),
         ('kv\\*.kv', 'kv'),
         ('venv\\Lib\\site-packages\\kivy_garden\\contextmenu\\*', 'kivy_garden\\contextmenu'),
+        ('venv\\Lib\\site-packages\\kivy\\*', 'kivy'),
+        ('venv\\Lib\\site-packages\\kivymd\\*', 'kivymd'),
     ],
     hiddenimports=hiddenimports,
     hookspath=[kivymd_hooks_path],

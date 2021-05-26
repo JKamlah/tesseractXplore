@@ -96,7 +96,7 @@ class ModelListController(Controller):
                     elif sum([True if textpart.lower() in " ".join(self.modelinfos.get(model).get('tags', [''])).lower() else False for textpart in textparts]) == len(
                             textparts):
                         add_item(model)
-        Clock.schedule_once(partial(self.screen.modellist.add_widget, self.layout))
+        self.screen.modellist.add_widget(self.layout)
 
 
 
