@@ -35,10 +35,15 @@
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'Image filetypes'
+
                 MDTextField:
                     id: filetypes
                     #mode: 'rectangle'
                     hint_text: 'Set filetypes'
+                MDFillRoundFlatButton:
+                    text: "Update filetypes"
+                    on_press: app.image_selection_controller.update_filechooser_filter()
+                    on_press: app.image_selection_online_controller.update_filechooser_filter()
              # TODO: ATM not used
              #  OneLineListItem:
              #      font_style: 'H6'

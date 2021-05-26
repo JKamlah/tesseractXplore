@@ -129,8 +129,8 @@ class TesseractController(Controller):
         # file_list = get_app().image_selection_controller
 
         model = profile.get("model", "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip())
-        psm = profile.get("psm", "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip())
-        oem = profile.get("oem", "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip())
+        psm = profile.get("psm", "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip().split(' ',1)[0])
+        oem = profile.get("oem", "3" if self.screen.oem.current_item == '' else self.screen.oem.current_item.split(": ")[1].strip().split(' ',1)[0])
         outputformats = profile.get("outputformats", self.active_outputformats())
         print_on_screen = profile.get("print_on_screen", self.screen.print_on_screen_chk.active)
         groupfolder = profile.get("groupfolder", self.screen.groupfolder.text)

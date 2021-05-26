@@ -284,7 +284,7 @@ class ImageSelectionController(Controller):
     def get_model(instance):
         get_app().switch_screen('modellist')
         get_app().modellist_controller.search = True
-        get_app().screens.modellist_controller.screen.find_model_btn.disabled = False
+        get_app().modellist_controller.screen.find_model_btn.disabled = False
         get_app().modellist_controller.set_list("")
 
     @staticmethod

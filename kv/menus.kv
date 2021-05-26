@@ -70,15 +70,15 @@
     TessprofileContextMenuItem:
         id: load_tessprofile_ctx
         text: "Load profile"
-        on_release: app.tesseract_controller.search_tessprofile()
+        on_release: app.tesseract_online_controller.search_tessprofile()
     TessprofileContextMenuItem:
         id: save_tessprofile_ctx
         text: "Save profile"
-        on_release: app.tesseract_controller.save_tessprofile_dialog()
+        on_release: app.tesseract_online_controller.save_tessprofile_dialog()
     TessprofileContextMenuItem:
         id: reset_settings_ctx
         text: "Reset"
-        on_release: app.tesseract_controller.reset_settings()
+        on_release: app.tesseract_online_controller.reset_settings()
 
 <TessprofileContextMenu@ObjectContextMenu>:
     visible: False

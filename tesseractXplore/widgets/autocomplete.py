@@ -57,7 +57,7 @@ class AutocompleteSearch(MDBoxLayout, TextFieldWrapper):
         super().__init__(**kwargs)
         self.register_event_type('on_selection')
         self.trigger = Clock.create_trigger(self.callback, AUTOCOMPLETE_DELAY)
-        Clock.schedule_once(lambda *x: self.post_init(text_input_kwargs or {}))
+        Clock.schedule_once(lambda *x: self.post_init(text_input_kwargs or {}), 0.1)
 
     def post_init(self, text_input_kwargs):
         """ Finish initialization after populating children (otherwise self.ids will be empty """
@@ -107,7 +107,7 @@ class AutocompleteSearch(MDBoxLayout, TextFieldWrapper):
         """ Intermediate handler to update suggestion text based on dropdown selection """
         self.text_input.suggestion_text = '    ' + suggestion_text
         self.dispatch('on_selection', metadata)
-        Clock.schedule_once(self.dropdown_container.dismiss, 0.2)
+        Clock.schedule_once(self.dropdown_container.dismiss, 0.1)
 
     def on_selection(self, metadata):
         """  Called when a result is selected from the dropdown list """

@@ -30,8 +30,10 @@ class TesseractOnlineController(Controller):
                      '  3    Fully automatic page segmentation, but no OSD. (Default)',
                      '  4    Assume a single column of text of variable sizes.',
                      '  5    Assume a single uniform block of vertically aligned text.',
-                     '  6    Assume a single uniform block of text.', '  7    Treat the image as a single text line.',
-                     '  8    Treat the image as a single word.', '  9    Treat the image as a single word in a circle.',
+                     '  6    Assume a single uniform block of text.',
+                     '  7    Treat the image as a single text line.',
+                     '  8    Treat the image as a single word.',
+                     '  9    Treat the image as a single word in a circle.',
                      ' 10    Treat the image as a single character.',
                      ' 11    Sparse text. Find as much text as possible in no particular order.',
                      ' 12    Sparse text with OSD.',
@@ -60,7 +62,7 @@ class TesseractOnlineController(Controller):
         self.load_default_settings()
 
     def load_default_settings(self):
-        for profile, profileparam in get_app().tessprofiles.items():
+        for profile, profileparam in get_app().tessprofiles_online.items():
             if profileparam['default'] == True:
                 self.load_tessprofile(profileparam)
 
@@ -112,7 +114,7 @@ class TesseractOnlineController(Controller):
             return
         logger.info(f'Main: Recognize {len(file_list)} images')
         model = profile.get("model", "eng" if self.screen.model.current_item == '' else self.screen.model.current_item.split(": ")[1].strip())
-        psm = profile.get("psm", "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip())
+        psm = profile.get("psm", "3" if self.screen.psm.current_item == '' else self.screen.psm.current_item.split(": ")[1].strip().split(' ',1)[0])
         outputformats = ';'.join(profile.get("outputformats", self.active_outputformats()))
         if isinstance(file_list, str):
             print_on_screen = profile.get("print_on_screen", self.screen.print_on_screen_chk.active)
@@ -144,14 +146,6 @@ class TesseractOnlineController(Controller):
             else:
                 self.screen[outputformat.strip()].state = 'normal'
         self.screen.print_on_screen_chk.active = True if tessprofileparams['print_on_screen'] == "True" else False
-        if tessprofileparams['outputdir'] != "":
-            self.screen.output.set_item(f"Selected output directory: {tessprofileparams['outputdir']}")
-        else:
-            self.screen.output.text = ''
-            self.screen.output.set_item('')
-            self.screen.output.text = f"Select output directory (default: input folder)"
-        self.screen.subfolder_chk.active = True if tessprofileparams['subfolder'] == "True" else False
-        self.screen.groupfolder.text = tessprofileparams['groupfolder']
         return
 
     def save_tessprofile_dialog(self):
@@ -179,34 +173,23 @@ class TesseractOnlineController(Controller):
     def save_tessprofile(self, instance):
         tessprofilename = instance.parent.parent.parent.parent.content_cls.text
         if tessprofilename != '':
-            get_app().tessprofiles[tessprofilename] = {
+            get_app().tessprofiles_online[tessprofilename] = {
                 "model": self.screen.model.current_item.split(" ")[1] if self.screen.model.current_item.split(" ")[
                                                                              0] == "Model:" else "eng",
                 "psm": "".join([char for char in self.screen.psm.text if char.isdigit()]),
                 "outputformat": self.active_outputformats(),
                 "print_on_screen": str(self.screen.print_on_screen_chk.active),
-                "outputdir": "" if self.screen.output.text.split(" ")[0] != "Selected" else
-                self.screen.output.text.split(" ")[3],
-                "groupfolder": self.screen.groupfolder.text,
-                "subfolder": str(self.screen.subfolder_chk.active),
                 "default": False
             }
-        write_tessprofiles(get_app().tessprofiles)
+        write_tessprofiles(get_app().tessprofiles_online, online=True)
         instance.parent.parent.parent.parent.dismiss()
 
     def reset_settings(self):
         # TODO: Rework resetting
         self.reset_text(self.screen.model)
         self.reset_text(self.screen.psm)
-        self.reset_text(self.screen.oem)
         self.reset_ouputformat()
         self.screen.print_on_screen_chk.active = False
-        self.selected_output_folder = None
-        self.screen.output.text = ''
-        self.screen.output.set_item('')
-        self.screen.output.text = f"Select output directory (default: input folder)"
-        self.screen.subfolder_chk.active = False
-        self.screen.groupfolder.text = ''
 
     def reset_text(self, instance):
         instance.text = instance.text + '!'
@@ -253,5 +236,5 @@ class TesseractOnlineController(Controller):
 
     @staticmethod
     def switch_jobs(instance):
-        get_app().switch_screen('jobs')
         get_app().jobs_controller.update_jobdata()
+        get_app().switch_screen('jobs')

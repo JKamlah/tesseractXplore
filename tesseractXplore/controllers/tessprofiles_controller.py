@@ -9,6 +9,8 @@ from tesseractXplore.controllers import Controller
 from tesseractXplore.tessprofiles import write_tessprofiles
 from tesseractXplore.widgets import LeftCheckbox
 
+
+
 logger = getLogger().getChild(__name__)
 
 
@@ -22,6 +24,9 @@ class TessprofilesController(Controller):
     def __init__(self, screen, **kwargs):
         self.screen = screen
         self.layout = MDList()
+
+    def get_current_profile(self):
+        return get_app().tessprofiles_online if get_app().is_online() else get_app().tessprofiles
 
     def set_profiles(self, text="", search=False):
         """ Lists all tesseract profiles """
@@ -41,7 +46,7 @@ class TessprofilesController(Controller):
 
         self.layout.clear_widgets()
         self.screen.tessprofilelist.clear_widgets()
-        for profilename, profileparam in get_app().tessprofiles.items():
+        for profilename, profileparam in self.get_current_profile().items():
             profileparamstr = ", ".join([f"{k}:{v}" for k, v in profileparam.items()])
             if search:
                 if self.screen.exact_match_chk.active:
@@ -58,28 +63,31 @@ class TessprofilesController(Controller):
 
     def load_profile(self, profileparam, *args):
         """ Apply all settings of the choosen profile to the main window"""
-        get_app().tesseract_controller.load_tessprofile(profileparam)
-        get_app().switch_screen('tesseract_xplore')
+        if get_app().is_online():
+            get_app().tesseract_online_controller.load_tessprofile(profileparam)
+        else:
+            get_app().tesseract_controller.load_tessprofile(profileparam)
+        get_app().switch_screen(get_app().home_screen())
 
     def set_to_default(self, sel_profile, *args):
         """ Set selected profile as default profile"""
-        for profile, profileparam in get_app().tessprofiles.items():
+        for profile, profileparam in self.get_current_profile().items():
             if profile == sel_profile:
                 profileparam['default'] = True
             else:
                 profileparam['default'] = False
-        write_tessprofiles(get_app().tessprofiles)
+        write_tessprofiles(self.get_current_profile(), online=get_app().is_online())
         self.set_profiles(text=self.screen.search_field.text)
 
     def unset_default(self, sel_profile, *args):
         """ Unset default profile"""
-        get_app().tessprofiles[sel_profile]['default'] = False
-        write_tessprofiles(get_app().tessprofiles)
+        self.get_current_profile()[sel_profile]['default'] = False
+        write_tessprofiles(self.get_current_profile())
         self.set_profiles(text=self.screen.search_field.text)
 
     def remove_profile(self, profile, *args):
         """ Deletes a profile from the tessprofileslist """
         logger.info(f'TESSPROFILE: Delete {profile}')
-        del get_app().tessprofiles[profile]
-        write_tessprofiles(get_app().tessprofiles)
+        del self.get_current_profile()[profile]
+        write_tessprofiles(self.get_current_profile())
         self.set_profiles(text=self.screen.search_field.text)

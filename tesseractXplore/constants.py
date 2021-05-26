@@ -61,6 +61,7 @@ JOBS_DIR = join(DATA_DIR, 'jobs')
 CONFIG_PATH = join(DATA_DIR, 'settings.yml')
 DEFAULT_CONFIG_PATH = join(METADATA_DIR, 'default_settings.yml')
 TESSPROFILE_PATH = join(DATA_DIR, 'tessprofiles.json')
+TESSPROFILE_ONLINE_PATH = join(DATA_DIR, 'tessprofiles_online.json')
 
 # Fonts
 DEFAULT_FONTS_DIR = join(ASSETS_DIR, 'fonts', '')

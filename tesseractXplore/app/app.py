@@ -101,6 +101,7 @@ class ControllerProxy:
 
         # Read profile settings
         self.tessprofiles = read_tessprofiles()
+        self.tessprofiles_online = read_tessprofiles(online=True)
         self.modelinformations = Modelinformations()
 
         # Init controllers with references to nested screen objects
@@ -137,7 +138,6 @@ class ControllerProxy:
         self.password = self.settings_controller.password
         self.token = None
 
-
         self.image_selection_controller.post_init()
         self.image_selection_online_controller.post_init()
         self.model_selection_controller.post_init()
@@ -170,6 +170,11 @@ class TesseractXplore(MDApp, ControllerProxy):
         # Buffer + delayed trigger For collecting multiple files dropped at once
         self.dropped_files = []
         self.drop_trigger = Clock.create_trigger(self.process_dropped_files, TRIGGER_DELAY)
+
+        # Profile
+        # import cProfile
+        # self.profile = cProfile.Profile()
+        # self.profile.enable()
 
     def build(self):
         # Set color palette
@@ -220,7 +225,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         # Image(source=f'{ATLAS_TAXON_ICONS}/')
 
         # Start checking active threads for processmanager
-        Clock.schedule_interval(self.check_threads, 1)
+        Clock.schedule_interval(self.check_threads, .1)
 
         return self.root
 
@@ -238,6 +243,9 @@ class TesseractXplore(MDApp, ControllerProxy):
 
     def home(self, *args):
         self.switch_screen(self.home_screen)
+
+    def is_online(self):
+        return True if self.home_screen == HOME_SCREEN_ONLINE else False
 
     def open_nav(self, *args):
         self.nav_drawer.set_state('open')
@@ -385,9 +393,16 @@ class TesseractXplore(MDApp, ControllerProxy):
             icon = 'fullscreen-exit'
         self.toolbar.right_action_items[2] = [icon, self.toggle_fullscreen]
 
+    def stop_app(self):
+        # self.profile.disable()
+        # self.profile.dump_stats('TesseractXplore.profile')
+        # self.profile.print_stats(sort='cumulative')
+        get_app().stop()
+
 
 def main():
     TesseractXplore().run()
+
 
 if __name__ == '__main__':
     main()

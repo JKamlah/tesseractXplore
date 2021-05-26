@@ -23,9 +23,10 @@ class ModelListController(Controller):
         self.layout = MDList()
         self.checked_models = None
         self.modelinfos = {}
-        self.screen['model_selection_button'].bind(on_release=self.set_model_btn)
+        self.screen.model_selection_button.bind(on_release=self.set_model_btn)
+        self.screen.show_all_chk.bind(active=partial(self.set_list))
 
-    def set_list(self, text="", search=False):
+    def set_list(self, *args, text="", search=False):
         ''' Lists all installed models '''
 
         def add_item(model):
@@ -54,7 +55,7 @@ class ModelListController(Controller):
         self.screen.modellist.clear_widgets()
         self.modelinfos = get_app().modelinformations.get_modelinfos()
         for model in list(self.modelinfos.keys()):
-            if text == '!all':
+            if self.screen.show_all_chk.active and len(text) == 0:
                 add_item(model)
             if search and len(text) > 1:
                 if self.screen.exact_match_chk.active:

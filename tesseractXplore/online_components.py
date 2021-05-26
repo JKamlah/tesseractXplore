@@ -23,7 +23,7 @@ from tesseractXplore.recognizer import cache_stdout_dialog, close_dialog
 
 
 def authenticate() -> dict:
-    if get_app().token is not None:
+    if get_app().token is not None and  get_app().token.get('token_type', None) is not None:
         return get_app().token
     user = get_app().settings_controller.username
     pwd = get_app().settings_controller.password
@@ -36,12 +36,8 @@ def authenticate() -> dict:
         toast(f"Connection error to the host. Please try again later.")
         return {}
     if r.status_code == 401:
-        status_code = create_user(user, pwd)
-        if status_code != 200:
-            toast('Wrong password!')
-            return {}
-        print(f"User created: {user}")
-        r = requests.post(f'{URL_TESSERACTXPLORE_ONLINE}/token', headers=headers, data=data, verify=False)
+        toast('Please provide valid credentials or sign up!')
+        return {}
     token = json.loads(r.text)
     return token
 
@@ -68,7 +64,7 @@ def hash_file(fname):
 
 def ocr_image(image, model="eng", psm="4", oem="3", outputformats=None, print_on_screen=True):
     token = authenticate()
-    if not token:
+    if not token.get('token_type', False):
         return None, None
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     files = {'image': open(f'{image}', 'rb')}
@@ -133,7 +129,8 @@ def ocr_bulk_of_images(jobname, images, model="eng", psm="4", oem="3", outputfor
     #    for param in app.settings_controller.controls['extra_param'].text.split(' '):
     #        params.extend(['-c', param])
     token = authenticate()
-    if token is None: return
+    if not token.get('token_type', False):
+        return
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     imagehashs = {hash_file(image): image for image in images}
     imagefiles = {key: open(f'{val}', 'rb') for key, val in imagehashs.items()}
@@ -160,7 +157,7 @@ def ocr_bulk_of_images(jobname, images, model="eng", psm="4", oem="3", outputfor
 
 def check_job_status(jobname="TestJob") -> dict:
     token = authenticate()
-    if token is None:
+    if not token.get('token_type', False):
         return {}
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/info',
@@ -171,7 +168,7 @@ def check_job_status(jobname="TestJob") -> dict:
 
 def remove_jobs(jobs=None) -> dict:
     token = authenticate()
-    if token is None:
+    if not token.get('token_type', False):
         return {}
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     res = {}
@@ -179,7 +176,7 @@ def remove_jobs(jobs=None) -> dict:
         r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/remove',
                          headers=headers,
                          verify=False)
-        rmtree(Path(JOBS_DIR).joinpath(jobname + ".json"))
+        rmtree(Path(JOBS_DIR).joinpath(jobname + ".json"), ignore_errors=True)
         res = {jobname: json.loads(r.text)}
 
     return res
@@ -187,7 +184,7 @@ def remove_jobs(jobs=None) -> dict:
 
 def check_all_job_status() -> dict:
     token = authenticate()
-    if token is None:
+    if not token.get('token_type', False):
         return {}
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content_all',
@@ -233,7 +230,8 @@ def move_to_folder(jobname, tmpfolder):
 
 def dl_jobdata_to_folder(jobname: str):
     token = authenticate()
-    if token is None: return
+    if not token.get('token_type', False):
+        return
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/data',
                      headers=headers,
@@ -247,7 +245,8 @@ def dl_jobdata_to_folder(jobname: str):
 
 def dl_jobdata_as_folder(jobname: str, outputpath, add_images=False):
     token = authenticate()
-    if token is None: return
+    if not token.get('token_type', False):
+        return
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/data',
                      headers=headers,

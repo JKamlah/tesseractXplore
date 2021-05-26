@@ -11,7 +11,6 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.textinput import TextInput
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
-#from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.textfield import MDTextField
@@ -39,7 +38,7 @@ class JobsController:
         self.screen.remove_btn.bind(on_release=self.remove_jobdata_dialog)
 
     def update_jobdata(self, *args):
-        data = check_all_job_status()['Jobs']
+        data = check_all_job_status().get('Jobs',[])
         for idx, job in enumerate(data):
             if job[1] == "Finished":
                 job[1] = ("checkbox-marked-circle",

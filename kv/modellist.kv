@@ -21,6 +21,12 @@
                 on_press:
                     app.switch_screen('model')
             OneLineAvatarIconListItem:
+                text: 'Show all models'
+                height: dp(50)
+                #width: dp(400)
+                SwitchListItem:
+                    id: show_all_chk
+            OneLineAvatarIconListItem:
                 text: 'Exact match'
                 height: dp(50)
                 #width: dp(400)
@@ -37,7 +43,7 @@
                 MDTextField:
                     id: search_field
                     hint_text: 'Search icon'
-                    on_text: app.modellist_controller.set_list(self.text, True)
+                    on_text: app.modellist_controller.set_list(text=self.text, search=True)
 
             RecycleView:
                 id: modellist
