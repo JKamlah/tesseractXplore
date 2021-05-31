@@ -72,10 +72,13 @@ class Modelinformations():
         from tesseractXplore.metamodels import read_metamodels
         if not self.modelinfos.get(HOME_SCREEN_ONLINE, None):
             self.modelinfos[HOME_SCREEN_ONLINE] = {}
-        for metamodel in read_metamodels()['tessdata']['models'].values():
-            modelname = metamodel.get('name').rsplit('.',1)[0]
-            if not self.modelinfos[HOME_SCREEN_ONLINE].get(modelname, None):
-                self.modelinfos[HOME_SCREEN_ONLINE][modelname] = metamodel
+        modelinfos = read_metamodels()
+        for source in get_app().settings_controller.tesseract.get('model_sources_online',[]):
+            if source in modelinfos.keys():
+                for metamodel in modelinfos[source]['models'].values():
+                    modelname = metamodel.get('name').rsplit('.',1)[0]
+                    if not self.modelinfos[HOME_SCREEN_ONLINE].get(modelname, None):
+                        self.modelinfos[HOME_SCREEN_ONLINE][modelname] = metamodel
         self.write_modelinfos()
         return
 

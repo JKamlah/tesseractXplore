@@ -12,7 +12,7 @@ from kivymd.uix.textfield import MDTextField
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller
 from tesseractXplore.recognizer import recognize
-from tesseractXplore.tessprofiles import write_tessprofiles, read_tessprofiles
+from tesseractXplore.tessprofiles import write_tessprofiles
 
 logger = getLogger().getChild(__name__)
 
@@ -101,6 +101,7 @@ class TesseractController(Controller):
 
     def recognize_single_thread(self, instance, *args, file_list=None, profile=None):
         self.disable_rec(instance, *args)
+        instance.parent.hide()
         self.ocr_single_event = threading.Thread(target=self.recognize, args=(instance, args),
                          kwargs={'file_list': [instance.selected_image.original_source],'profile': profile})
         self.ocr_single_event.setDaemon(True)

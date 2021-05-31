@@ -5,6 +5,8 @@ from logging import getLogger
 from pathlib import Path
 from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from sys import platform as _platform
+import requests
+import re
 
 from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -64,12 +66,29 @@ def install_tesseract(instance):
 def thread_install_tesseract_win():
     create_threadprocess("Prepare downloading tesseract", dl_install_tesseract_win)
 
+def get_tesseract_winurl():
+    try:
+        s = requests.Session()
+        r = s.get(get_app().settings_controller.tesseract['winurl'],
+                    verify=False)
+        htmltext = r.text.split('<p>The latest installers can be downloaded here:</p>\n<ul>\n<li>')[1].split('</li>\n</ul>')[0]
+        res = re.findall(r'href="(.*)"\s', htmltext)
+        if len(res) == 2:
+            if _platform == "win32":
+                return res[0]
+            else:
+                return res[1]
+        else:
+            raise Exception
+    except:
+        if _platform == "win32":
+            return get_app().settings_controller.tesseract['win32url']
+        else:
+            return get_app().settings_controller.tesseract['win64url']
+
 def dl_install_tesseract_win():
     try:
-        if _platform == "win32":
-            url = get_app().settings_controller.tesseract['win32url']
-        else:
-            url = get_app().settings_controller.tesseract['win64url']
+        url = get_tesseract_winurl()
         download_with_progress(url, Path(tempfile.gettempdir()).joinpath("tesseract.exe"), install_tesseract_win)
     except:
         toast('Download: Error')

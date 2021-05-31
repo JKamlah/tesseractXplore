@@ -95,6 +95,7 @@ class TesseractOnlineController(Controller):
 
     def recognize_single_thread(self, instance, *args, file_list=None, profile=None):
         self.disable_rec(instance, *args)
+        instance.parent.hide()
         self.ocr_single_event = threading.Thread(target=self.recognize, args=(instance, args),
                          kwargs={'file_list': instance.selected_image.original_source,'profile': profile})
         self.ocr_single_event.setDaemon(True)
@@ -123,7 +124,7 @@ class TesseractOnlineController(Controller):
             jobname = profile.get("jobname", "Job_01" if self.screen.jobname.text == '' else self.screen.jobname.text)
             jobname = re.sub(r"[\s,\.,!,/,\\]", "_", jobname)
             create_online_threadprocess(f"{jobname}: Upload images", ocr_bulk_of_images, jobname, file_list, model=model, psm=psm, outputformats=outputformats, overwrite=str(self.screen.overwrite_job_chk.active))
-            self.enable_rec(instance)
+        self.enable_rec(instance)
 
 
     def active_outputformats(self):

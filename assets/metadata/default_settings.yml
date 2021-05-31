@@ -27,8 +27,10 @@ viewer:
 imageeditor:
   ie_thumbnail_size: '1000'
 tesseract:
-  win32url: "https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w32-setup-v5.0.0-alpha.20201127.exe"
-  win64url: "https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.0.0-alpha.20201127.exe"
+  win32url: 'https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w32-setup-v5.0.0-alpha.20210506.exe'
+  win64url: 'https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.0.0-alpha.20210506.exe'
+  winurl: 'https://github.com/UB-Mannheim/tesseract/wiki.html'
+  online_url: 'https://ocr-bw.bib.uni-mannheim.de/TesseractXplore'
   model: null
   psm: null
   oem: null
@@ -41,6 +43,7 @@ tesseract:
   tessdatadir_userspecific_sel: 'normal'
   tessdatadir_userspecific: ''
   do_invert: true
+  model_sources_online: ['tessdata','ubma']
 # Not yet configurable
 search:
   autocomplete_delay: 0.5

@@ -8,6 +8,7 @@ import zipfile
 from functools import partial
 from pathlib import Path
 from shutil import move, copyfile, rmtree
+from urllib3.exceptions import InsecureRequestWarning
 
 import requests
 from kivy.uix.textinput import TextInput
@@ -16,11 +17,13 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 
 from tesseractXplore.app import get_app
-from tesseractXplore.constants import JOBS_DIR, URL_TESSERACTXPLORE_ONLINE
+from tesseractXplore.constants import JOBS_DIR
 from tesseractXplore.evaluate import evaluate_report
 from tesseractXplore.font import get_font, fontproperties_dialog
 from tesseractXplore.recognizer import cache_stdout_dialog, close_dialog
 
+# Ignore InsecureRequestWarnings (SSL-Certficate)
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 def authenticate() -> dict:
     if get_app().token is not None and  get_app().token.get('token_type', None) is not None:
@@ -31,12 +34,15 @@ def authenticate() -> dict:
     data = {'username': user,
             'password': pwd}
     try:
-        r = requests.post(f'{URL_TESSERACTXPLORE_ONLINE}/token', headers=headers, data=data, verify=False)
+        r = requests.post(f'{get_app().settings_controller.tesseract["online_url"]}/token', headers=headers, data=data, verify=False)
     except:
         toast(f"Connection error to the host. Please try again later.")
         return {}
-    if r.status_code == 401:
+    if r is None or r.status_code == 401:
         toast('Please provide valid credentials or sign up!')
+        return {}
+    elif r.status_code == 503:
+        toast('Server is currently unavailable. Please try again later.')
         return {}
     token = json.loads(r.text)
     return token
@@ -45,13 +51,12 @@ def authenticate() -> dict:
 def create_user(user, pwd) -> int:
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     data = '{"username": "' + user + '","password_hash": "' + pwd + '"}'
-    r = requests.post(f'{URL_TESSERACTXPLORE_ONLINE}/create_user', headers=headers, data=data, verify=False)
+    r = requests.post(f'{get_app().settings_controller.tesseract["online_url"]}/create_user', headers=headers, data=data, verify=False)
     return r.status_code
 
 
 def hash_file(fname):
-    # BUF_SIZE is totally arbitrary, change for your app!
-    BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+    BUF_SIZE = 65536
     md5 = hashlib.md5()
     with open(fname, 'rb') as f:
         while True:
@@ -72,7 +77,7 @@ def ocr_image(image, model="eng", psm="4", oem="3", outputformats=None, print_on
             'psm': psm,
             'oem': oem,
             'outputformats': outputformats}
-    r = requests.post(f'{URL_TESSERACTXPLORE_ONLINE}/api/v1/single_text', files=files, data=data, headers=headers, verify=False)
+    r = requests.post(f'{get_app().settings_controller.tesseract["online_url"]}/api/v1/single_text', files=files, data=data, headers=headers, verify=False)
     if not outputformats or print_on_screen:
         pimage = Path(image)
         params = ["-l", model, "--psm", psm, "--oem", oem]
@@ -143,7 +148,7 @@ def ocr_bulk_of_images(jobname, images, model="eng", psm="4", oem="3", outputfor
     jobdescription = data
     jobdescription['images'] = imagehashs
     save_jobdescription(jobname, jobdescription)
-    r = requests.post(f'{URL_TESSERACTXPLORE_ONLINE}/api/v1/bulk',
+    r = requests.post(f'{get_app().settings_controller.tesseract["online_url"]}/api/v1/bulk',
                       files=imagefiles,
                       data=data,
                       headers=headers,
@@ -160,7 +165,7 @@ def check_job_status(jobname="TestJob") -> dict:
     if not token.get('token_type', False):
         return {}
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
-    r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/info',
+    r = requests.get(f'{get_app().settings_controller.tesseract["online_url"]}/users/content/{jobname}/info',
                      headers=headers,
                      verify=False)
     return json.loads(r.text)
@@ -173,7 +178,7 @@ def remove_jobs(jobs=None) -> dict:
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
     res = {}
     for jobname in jobs:
-        r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/remove',
+        r = requests.get(f'{get_app().settings_controller.tesseract["online_url"]}/users/content/{jobname}/remove',
                          headers=headers,
                          verify=False)
         rmtree(Path(JOBS_DIR).joinpath(jobname + ".json"), ignore_errors=True)
@@ -187,7 +192,7 @@ def check_all_job_status() -> dict:
     if not token.get('token_type', False):
         return {}
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
-    r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content_all',
+    r = requests.get(f'{get_app().settings_controller.tesseract["online_url"]}/users/content_all',
                      headers=headers,
                      verify=False)
     return json.loads(r.text)
@@ -233,7 +238,7 @@ def dl_jobdata_to_folder(jobname: str):
     if not token.get('token_type', False):
         return
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
-    r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/data',
+    r = requests.get(f'{get_app().settings_controller.tesseract["online_url"]}/users/content/{jobname}/data',
                      headers=headers,
                      verify=False)
     with tempfile.TemporaryDirectory() as tmpdirname:
@@ -248,7 +253,7 @@ def dl_jobdata_as_folder(jobname: str, outputpath, add_images=False):
     if not token.get('token_type', False):
         return
     headers = {'Authorization': token['token_type'] + ' ' + token['access_token']}
-    r = requests.get(f'{URL_TESSERACTXPLORE_ONLINE}/users/content/{jobname}/data',
+    r = requests.get(f'{get_app().settings_controller.tesseract["online_url"]}/users/content/{jobname}/data',
                      headers=headers,
                      verify=False)
     with zipfile.ZipFile(io.BytesIO(r.content), 'r') as myzip:

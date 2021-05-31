@@ -1014,3 +1014,24 @@ tessdata:
             category: 'Script'
             type: ['fast','best']
             fonts: ['']
+ubma:
+    types:
+      fast:
+        url: 'https://github.com/JKamlah/tessdata_fast_ubma/raw/main/'
+      best:
+        url: 'https://github.com/JKamlah/tessdata_best_ubma/raw/main/'
+    models:
+        GT4HistOCR:
+            name: 'script/GT4HistOCR.traineddata'
+            tags: ['Fraktur','Blackletter','Gebrochene Schriften']
+            description: 'Finetuned Fraktur model based on GT4Hist dataset.'
+            category: 'Script'
+            type: ['fast','best']
+            fonts: ['']
+        frak2021:
+            name: 'script/frak2021.traineddata'
+            tags: ['Fraktur','Blackletter','Gebrochene Schriften']
+            description: 'Model based on GT4Hist, AustrianNewspapers and german hornbooks (Fibeln) from 19th century.'
+            category: 'Script'
+            type: [ 'fast','best' ]
+            fonts: [ '' ]

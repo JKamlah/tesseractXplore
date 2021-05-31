@@ -77,7 +77,6 @@ DEFAULT_MODEL_PATH = join(METADATA_DIR, 'default_metadata_modellist.yml')
 
 # URLs / API settings
 USER_AGENT = f'tesseract-xplore/{__version__};'.lower()
-URL_TESSERACTXPLORE_ONLINE = 'http://127.0.0.1:8000'
 
 # Theme/window settings
 INIT_WINDOW_POSITION = ('custom', 100, 100)
