@@ -13,7 +13,7 @@
                     text: 'TesseractXplore settings'
                 OneLineListItem:
                     font_style: 'H6'
-                    text: 'Username'
+                    text: 'Username (email address)'
                 MDTextField:
                     #mode: 'rectangle'
                     id: username_input
@@ -24,10 +24,18 @@
                     font_style: 'H6'
                     text: 'Password'
                 MDTextField:
-                    id: password_input
-                    #mode: 'rectangle'
-                    password: True
+                    id: password_textinput
                     hint_text: 'Password'
+                    adaptive_height: True
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    MDFillRoundFlatButton:
+                        text: "Set credentials"
+                        id: set_credentials_button
+                    MDFillRoundFlatButton:
+                        text: "Request online account"
+                        id: request_account_button
                 OneLineListItem:
                 OneLineListItem:
                     font_style: 'H5'
@@ -35,7 +43,6 @@
                 OneLineListItem:
                     font_style: 'H6'
                     text: 'Image filetypes'
-
                 MDTextField:
                     id: filetypes
                     #mode: 'rectangle'

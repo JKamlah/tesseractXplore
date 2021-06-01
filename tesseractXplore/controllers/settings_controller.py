@@ -26,6 +26,7 @@ from tesseractXplore.stdout_cache import clear_stdout_cache, get_stdout_cache_si
 from tesseractXplore.tesseract import install_tesseract_dialog
 from tesseractXplore.thumbnails import delete_thumbnails, get_thumbnail_cache_size
 from tesseractXplore.font import get_font_list
+from tesseractXplore.online_components import request_account
 
 logger = getLogger().getChild(__name__)
 
@@ -72,6 +73,8 @@ class SettingsController:
         self.update_control_widgets()
 
         # Bind buttons
+        self.screen.set_credentials_button.bind(on_release=self.set_credentials)
+        self.screen.request_account_button.bind(on_release=self.request_account)
         self.screen.cache_size_output.bind(on_release=self.update_cache_sizes)
         self.screen.clear_stdout_cache_button.bind(on_release=self.clear_stdout_cache)
         self.screen.clear_stdout_cache_icon.bind(on_release=self.clear_stdout_cache)
@@ -86,6 +89,18 @@ class SettingsController:
         self.screen.tessdatadir_system_sel_chk.bind(on_release=self.set_tessdir)
 
         Clock.schedule_once(self.update_cache_sizes, 5)
+
+    def set_credentials(self, *args):
+        from hashlib import sha256
+        self.settings_dict['account']['password'] = sha256(self.screen.password_textinput.text.encode('utf-8')).hexdigest()
+        self.screen.password_textinput.text = '*'*len(self.screen.password_textinput.text)
+        self.settings_dict['account']['username'] = self.screen.username_input.text
+        write_settings(self.settings_dict)
+        toast('Credentials set')
+
+    def request_account(self, *args):
+        res = request_account(self.settings_dict['account']['username'], self.settings_dict['account']['password'])
+        toast(res)
 
     def change_colormode(self, *args):
         self.screen.dark_mode_chk.active = not self.screen.dark_mode_chk.active

@@ -47,12 +47,14 @@ def authenticate() -> dict:
     token = json.loads(r.text)
     return token
 
-
-def create_user(user, pwd) -> int:
+def request_account(user, pwd) -> int:
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     data = '{"username": "' + user + '","password_hash": "' + pwd + '"}'
-    r = requests.post(f'{get_app().settings_controller.tesseract["online_url"]}/create_user', headers=headers, data=data, verify=False)
-    return r.status_code
+    r = requests.post(f'{get_app().settings_controller.tesseract["online_url"]}/request_account', headers=headers, data=data, verify=False)
+    if r.status_code == 404:
+        return "Service not available"
+    else:
+        return r.reason
 
 
 def hash_file(fname):
