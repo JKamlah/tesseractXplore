@@ -55,14 +55,14 @@ def get_images_from_paths(paths: Union[str, List[str]], recursive: bool = False)
          Combined list of image file paths
     """
     image_paths = []
-    paths = [paths] if isinstance(paths, (str, bytes)) else paths
+    paths = paths if isinstance(paths, list) else [paths]
     logger.info(f'Getting images from paths: {paths}')
 
     for path in paths:
         if isfile(path) and path[-4:] == '.pdf':
             from tesseractXplore.pdf import extract_pdf
             path = extract_pdf(path)
-        if isinstance(path, bytes):
+        elif isinstance(path, bytes):
             path = path.decode('utf-8')
         if isdir(path):
             image_paths.extend(get_images_from_dir(path, recursive=recursive))
