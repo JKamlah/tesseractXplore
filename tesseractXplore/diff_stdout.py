@@ -97,6 +97,7 @@ def diff(stdout_cache, image, instance, *args):
 def diff_result(text, image):
     # TODO: Rework the implementation
     layoutlist = MDList()
+    get_app().diffstdout_controller.screen['scrollview'].clear_widgets()
     # layoutlist =
     from kivymd.uix.label import MDLabel
     for textline in text.split("\n"):

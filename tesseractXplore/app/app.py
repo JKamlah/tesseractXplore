@@ -225,7 +225,7 @@ class TesseractXplore(MDApp, ControllerProxy):
         # Image(source=f'{ATLAS_TAXON_ICONS}/')
 
         # Start checking active threads for processmanager
-        Clock.schedule_interval(self.check_threads, .1)
+        Clock.schedule_interval(self.check_threads, .05)
 
         return self.root
 

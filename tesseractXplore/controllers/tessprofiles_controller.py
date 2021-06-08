@@ -67,7 +67,7 @@ class TessprofilesController(Controller):
             get_app().tesseract_online_controller.load_tessprofile(profileparam)
         else:
             get_app().tesseract_controller.load_tessprofile(profileparam)
-        get_app().switch_screen(get_app().home_screen())
+        get_app().switch_screen(get_app().home_screen)
 
     def set_to_default(self, sel_profile, *args):
         """ Set selected profile as default profile"""
