@@ -14,7 +14,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineListItem
 from kivymd.uix.textfield import MDTextField
-from tesseractXplore.widgets.datatables import MDDataTable
+from kivymd.uix.datatables import MDDataTable
 
 from tesseractXplore.app import get_app
 from tesseractXplore.constants import DOWNLOAD_DIR, JOBS_DIR
@@ -36,6 +36,11 @@ class JobsController:
         self.screen.download_btn.bind(on_release=self.download_to_folder)
         self.screen.download_folder_btn.bind(on_release=self.download_as_folder_dialog)
         self.screen.remove_btn.bind(on_release=self.remove_jobdata_dialog)
+        self.screen.open_folder_btn.bind(on_release=self.open_folder)
+
+    def open_folder(self, *args):
+        webbrowser.open(DOWNLOAD_DIR)
+        return
 
     def update_jobdata(self, *args):
         data = check_all_job_status().get('Jobs',[])

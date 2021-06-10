@@ -2,6 +2,7 @@ import threading
 import time
 from logging import getLogger
 import re
+from functools import partial
 
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
@@ -75,7 +76,7 @@ class TesseractOnlineController(Controller):
     def init_dropdown(self):
         screen = self.screen
         # Init dropdownsettingsmenu
-        self.psm_menu = self.create_dropdown(screen.psm, [{'text': 'PSM: ' + psm} for psm in self.psms], self.set_psm)
+        self.psm_menu = self.create_dropdown(screen.psm, [{"viewclass":"OneLineListItem", 'text': 'PSM: ' + psm, 'on_release': partial(self.set_psm, psm)} for psm in self.psms])
 
     def disable_rec(self, instance, *args):
         self.screen.recognize_button.disabled = True
@@ -204,16 +205,16 @@ class TesseractOnlineController(Controller):
         self.screen.pdf.state = 'normal'
         self.screen.tsv.state = 'normal'
 
-    def create_dropdown(self, caller, item, callback):
+    def create_dropdown(self, caller, item):
         menu = MDDropdownMenu(caller=caller,
                               items=item,
                               position='bottom',
                               width_mult=20)
-        menu.bind(on_release=callback)
+        menu.bind()
         return menu
 
-    def set_psm(self, menu, instance, *args):
-        self.screen.psm.set_item(instance.text)
+    def set_psm(self, text):
+        self.screen.psm.set_item(text)
         self.psm_menu.dismiss()
 
     def select_output(self, path=None):

@@ -1,5 +1,6 @@
 import threading
 import time
+from functools import partial
 from logging import getLogger
 
 from kivymd.toast import toast
@@ -76,8 +77,8 @@ class TesseractController(Controller):
     def init_dropdown(self):
         screen = self.screen
         # Init dropdownsettingsmenu
-        self.psm_menu = self.create_dropdown(screen.psm, [{'text': 'PSM: ' + psm} for psm in self.psms], self.set_psm)
-        self.oem_menu = self.create_dropdown(screen.oem, [{'text': 'OEM: ' + oem} for oem in self.oems], self.set_oem)
+        self.psm_menu = self.create_dropdown(screen.psm, [{"viewclass":"OneLineListItem", 'text': 'PSM: ' + psm, 'on_release': partial(self.set_psm, psm)} for psm in self.psms])
+        self.oem_menu = self.create_dropdown(screen.oem, [{"viewclass":"OneLineListItem", 'text': 'OEM: ' + oem, 'on_release': partial(self.set_oem, oem)} for oem in self.oems])
 
     def disable_rec(self, instance, *args):
         self.screen.recognize_button_fst.disabled = True
@@ -247,20 +248,20 @@ class TesseractController(Controller):
         self.screen.pdf.state = 'normal'
         self.screen.tsv.state = 'normal'
 
-    def create_dropdown(self, caller, item, callback):
+    def create_dropdown(self, caller, item):
         menu = MDDropdownMenu(caller=caller,
                               items=item,
                               position='bottom',
                               width_mult=20)
-        menu.bind(on_release=callback)
+        menu.bind()
         return menu
 
-    def set_psm(self, menu, instance, *args):
-        self.screen.psm.set_item(instance.text)
+    def set_psm(self, text):
+        self.screen.psm.set_item(text)
         self.psm_menu.dismiss()
 
-    def set_oem(self, menu, instance, *args):
-        self.screen.oem.set_item(instance.text)
+    def set_oem(self, text):
+        self.screen.oem.set_item(text)
         self.oem_menu.dismiss()
 
     def select_output(self, path=None):
