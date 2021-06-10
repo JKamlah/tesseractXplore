@@ -37,6 +37,8 @@ class StarButton(IconRightWidget):
 
 class TooltipFloatingButton(MDFloatingActionButton, MDTooltip):
     """ Floating action button class with tooltip behavior """
+    def set_text(self, interval):
+        pass
 
 
 class TooltipIconButton(MDRoundFlatIconButton, MDTooltip):
