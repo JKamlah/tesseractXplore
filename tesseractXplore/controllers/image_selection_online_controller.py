@@ -45,6 +45,7 @@ class ImageSelectionOnlineController(Controller):
         self.screen.load_button.bind(on_release=self.add_file_chooser_images)
         self.screen.open_folder_button.bind(on_release=self.open_folder)
         self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection_dialog)
+        self.screen.home_button.bind(on_release=self.home_folder)
         self.screen.sort_button.bind(on_release=self.sort_previews)
         self.screen.zoomin_button.bind(on_release=self.zoomin)
         self.screen.zoomout_button.bind(on_release=self.zoomout)
@@ -64,6 +65,9 @@ class ImageSelectionOnlineController(Controller):
                 webbrowser.open(str(folder.resolve()))
             else:
                 webbrowser.open(str(folder.parent.resolve()))
+
+    def home_folder(self, *args):
+        self.file_chooser.path = str(Path.home())
 
     def update_filechooser_filter(self):
         # TODO: Rework this
