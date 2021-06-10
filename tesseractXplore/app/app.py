@@ -342,10 +342,10 @@ class TesseractXplore(MDApp, ControllerProxy):
 
     def init_toolbar(self, screen_name:str):
         self.toolbar.right_action_items = [
-            ['cast', self.toggle_online_offline],
-            ['border-none-variant', self.toggle_border],
-            ['fullscreen', self.toggle_fullscreen],
-            ['dots-vertical', self.open_settings],
+            ['cloud-off-outline', self.toggle_online_offline, 'Switch to TesseracXploreOnline'],
+            ['border-none-variant', self.toggle_border, 'Borderless'],
+            ['fullscreen', self.toggle_fullscreen, 'Fullscreen'],
+            ['dots-vertical', self.open_settings, 'Open app settings'],
         ]
 
     def set_theme_mode(self, switch=None, is_active: bool = None):
@@ -357,19 +357,21 @@ class TesseractXplore(MDApp, ControllerProxy):
     def toggle_online_offline(self, *args):
         """ Enable or disable fullscreen, and change icon"""
         # Window fullscreen doesn't work with two displays
-        if self.toolbar.right_action_items[0][0] == 'cast':
+        if self.toolbar.right_action_items[0][0] == 'cloud-off-outline':
             self.theme_cls.primary_palette = MD_PRIMARY_PALETTE_ONLINE
             self.theme_cls.accent_palette = MD_ACCENT_PALETTE_ONLINE
             self.switch_screen(HOME_SCREEN_ONLINE)
             self.home_screen = HOME_SCREEN_ONLINE
-            icon = 'cast-connected'
+            icon = 'cloud-outline'
+            tooltip_text = 'Switch to TesseracXplore'
         else:
             self.theme_cls.primary_palette = MD_PRIMARY_PALETTE
             self.theme_cls.accent_palette = MD_ACCENT_PALETTE
             self.switch_screen(HOME_SCREEN)
             self.home_screen = HOME_SCREEN
-            icon = 'cast'
-        self.toolbar.right_action_items[0] = [icon, self.toggle_online_offline]
+            icon = 'cloud-off-outline'
+            tooltip_text = 'Switch to TesseracXploreOnline'
+        self.toolbar.right_action_items[0] = [icon, self.toggle_online_offline, tooltip_text]
 
     def toggle_border(self, *args):
         """ Enable or disable fullscreen, and change icon"""
@@ -377,10 +379,12 @@ class TesseractXplore(MDApp, ControllerProxy):
         if self.toolbar.right_action_items[1][0] == 'border-all-variant':
             Window.borderless = 0
             icon = 'border-none-variant'
+            tooltip_text = 'Borderless'
         else:
             Window.borderless = 1
             icon = 'border-all-variant'
-        self.toolbar.right_action_items[1] = [icon, self.toggle_border]
+            tooltip_text = 'Window'
+        self.toolbar.right_action_items[1] = [icon, self.toggle_border, tooltip_text]
 
     def toggle_fullscreen(self, *args):
         """ Enable or disable fullscreen, and change icon"""
@@ -388,10 +392,12 @@ class TesseractXplore(MDApp, ControllerProxy):
         if self.toolbar.right_action_items[2][0] == 'fullscreen-exit':
             Window.restore()
             icon = 'fullscreen'
+            tooltip_text = 'Fullscreen'
         else:
             Window.maximize()
             icon = 'fullscreen-exit'
-        self.toolbar.right_action_items[2] = [icon, self.toggle_fullscreen]
+            tooltip_text = 'Normalscreen'
+        self.toolbar.right_action_items[2] = [icon, self.toggle_fullscreen, tooltip_text]
 
     def stop_app(self):
         # self.profile.disable()
