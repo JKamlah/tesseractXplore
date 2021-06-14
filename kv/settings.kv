@@ -49,8 +49,8 @@
                     hint_text: 'Set filetypes'
                 MDFillRoundFlatButton:
                     text: "Update filetypes"
-                    on_press: app.image_selection_controller.update_filechooser_filter()
-                    on_press: app.image_selection_online_controller.update_filechooser_filter()
+                    on_press: app.image_selection_controller.update_filechooser_filter(filters=["*" + filter.strip() for filter in app.settings_controller.controls['filetypes'].text.replace("'","").split(',')])
+                    on_press: app.image_selection_online_controller.update_filechooser_filter(filters=["*" + filter.strip() for filter in app.settings_controller.controls['filetypes'].text.replace("'","").split(',')])
              # TODO: ATM not used
              #  OneLineListItem:
              #      font_style: 'H6'
