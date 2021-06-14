@@ -4,6 +4,7 @@ import shutil
 import webbrowser
 from logging import getLogger
 from pathlib import Path
+from functools import partial
 
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
@@ -155,6 +156,47 @@ class ImageSelectionOnlineController(Controller):
                     if file == preview.original_source:
                         self.image_previews.remove_widget(preview)
         instance.parent.parent.parent.parent.dismiss()
+
+    def fileformat_filter_dialog(self, *args):
+        from kivymd.uix.list import OneLineIconListItem, MDList
+        from tesseractXplore.widgets import LeftCheckbox
+
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+
+        def item(imageformat):
+            item = OneLineIconListItem(
+                text=imageformat,
+                size_hint=(None, None),
+                size=(250,1)
+            )
+            item.add_widget(LeftCheckbox(active='*'+imageformat in self.file_chooser.filters))
+            return item
+
+        layout = MDList()
+        for imageformat in sorted(set(['jpg', 'jpeg', 'jp2', 'png', 'ppm', 'gif', 'tif', 'tiff', 'pdf']+[filteritem[1:] for filteritem in self.file_chooser.filters])):
+            layout.add_widget(item(imageformat))
+        dialog = MDDialog(title="Filter for imageformats",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=layout,
+                          buttons=[
+                              MDFlatButton(
+                                  text="FILTER", on_release=partial(self.update_filechooser_filter_by_dialog,
+                                                                    checkbox_filter_list=layout)
+                              ),
+                              MDFlatButton(
+                                  text="RESET", on_release=partial(self.update_filechooser_filter)
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        if get_app()._platform not in ['win32', 'win64']:
+            # TODO: Focus function seems buggy in win
+            dialog.content_cls.focused = True
+        dialog.open()
 
     def add_file_chooser_images(self, *args):
         """ Add one or more files and/or dirs selected via a FileChooser """
