@@ -19,7 +19,6 @@ from tesseractXplore.widgets.inputs import DropdownTextField, TextFieldWrapper
 from tesseractXplore.widgets.labels import HideableTooltip, TooltipLabel
 from tesseractXplore.widgets.lists import SortableList, SwitchListItem, TextInputListItem, ModelListItem, \
     ThumbnailListItem, ListItemWithCheckbox, LeftCheckbox
-from tesseractXplore.widgets.mdtabs import MDTabsLabel
 from tesseractXplore.widgets.menus import ObjectContextMenu, AutoHideMenuItem, PhotoContextMenuItem, \
     ListContextMenuItem, TessprofileContextMenuItem
 from tesseractXplore.widgets.model_autocomplete import ModelAutocompleteSearch
