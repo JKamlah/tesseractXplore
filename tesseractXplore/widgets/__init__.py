@@ -26,3 +26,4 @@ from tesseractXplore.widgets.progress_bar import LoaderProgressBar
 from tesseractXplore.widgets.spinner import FntSpinnerOption
 from tesseractXplore.widgets.tabs import Tab
 from tesseractXplore.widgets.zoom import Zoom
+from tesseractXplore.widgets.filechooser import MyFileChooser
