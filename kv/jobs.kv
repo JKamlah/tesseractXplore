@@ -1,31 +1,45 @@
 <JobsScreen>:
     name: 'jobs'
 
+    MDFillRoundFlatIconButton:
+        size_hint_y: None
+        pos_hint: {'x': .8}
+        id: open_folder_btn
+        text: 'Open download folder'
+        icon: 'folder-open-outline'
+        adaptive_height: True
     BoxLayout:
         #adaptive_height: True
         size_hint_y: None
         pos_hint: {'x': .3}
-        MDFillRoundFlatButton:
-            text: "Refresh"
+        MDFillRoundFlatIconButton:
             id: update_btn
+            text: "Refresh"
+            icon: 'cloud-sync-outline'
             adaptive_height: True
 
-        MDFillRoundFlatButton:
-            text: "Download"
+        MDFillRoundFlatIconButton:
             id: download_btn
+            text: "Download"
+            icon: 'cloud-download-outline'
             adaptive_height: True
 
-        MDFillRoundFlatButton:
-            text: "Download as folder"
+        MDFillRoundFlatIconButton:
             id: download_folder_btn
+            text: 'Download as folder'
+            icon: 'cloud-download-outline'
             adaptive_height: True
 
-        MDFillRoundFlatButton:
-            text: "Remove"
+        MDFillRoundFlatIconButton:
             id: remove_btn
+            text: 'Remove'
+            icon: 'trash-can-outline'
             adaptive_height: True
+
+
 
     MDBoxLayout
         orientation: "vertical"
         MDBoxLayout:
             id: job_data
+
