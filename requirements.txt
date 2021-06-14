@@ -1,6 +1,6 @@
 cython
 kivy
--e git://github.com/kivymd/KivyMD.git@29e07fe094522bb2aad5a0f3ce311f65c7b2a869#egg=KivyMD
+-e git://github.com/kivymd/KivyMD.git@ad75c6b4c5ff7d1f5534bf7360017d4e84fb6de1#egg=KivyMD
 kivy-garden.contextmenu
 pygments
 appdirs

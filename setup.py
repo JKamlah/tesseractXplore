@@ -57,7 +57,7 @@ setup(
         'kivy',
         'kivy-garden.contextmenu',
         'pygments',
-        'KivyMD @ git+https://github.com/kivymd/KivyMD.git@29e07fe094522bb2aad5a0f3ce311f65c7b2a869#egg=KivyMD',
+        'KivyMD @ git+https://github.com/kivymd/KivyMD.git@ad75c6b4c5ff7d1f5534bf7360017d4e84fb6de1#egg=KivyMD',
     ],
     extras_require=extras_require,
     entry_points={
