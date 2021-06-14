@@ -29,7 +29,8 @@ class ImageSelectionOnlineController(Controller):
         self.screen = screen
         self.image_previews = screen.image_previews
         self.file_chooser = screen.file_chooser
-        self.update_filechooser_filter()
+        self.update_filechooser_filter(filters=get_app().settings_controller.get_formatfilters())
+        self.user_filter = ""
         self.file_list = []
         self.theme_cls = get_app().theme_cls
 
@@ -46,6 +47,7 @@ class ImageSelectionOnlineController(Controller):
         self.screen.load_button.bind(on_release=self.add_file_chooser_images)
         self.screen.open_folder_button.bind(on_release=self.open_folder)
         self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection_dialog)
+        self.screen.fileformat_filter_button.bind(on_release=self.fileformat_filter_dialog)
         self.screen.home_button.bind(on_release=self.home_folder)
         self.screen.sort_button.bind(on_release=self.sort_previews)
         self.screen.zoomin_button.bind(on_release=self.zoomin)
@@ -70,12 +72,19 @@ class ImageSelectionOnlineController(Controller):
     def home_folder(self, *args):
         self.file_chooser.path = str(Path.home())
 
-    def update_filechooser_filter(self):
+    def update_filechooser_filter_by_dialog(self, instance, checkbox_filter_list,):
         # TODO: Rework this
-        self.file_chooser.filters = ["*" + filter.strip() for filter in
-                                     get_app().settings_controller.controls['filetypes'].text.replace("'",
-                                                                                                      "").split(
-                                         ',')]
+        if checkbox_filter_list.children[0].text != "":
+            self.user_filter = checkbox_filter_list.children[0].text
+            filters = ['*'+self.user_filter+'*']
+        else:
+            filters = ['*'+filter.text for filter in checkbox_filter_list.children[1:] if filter.ids._left_container.children[0].active]
+        instance.parent.parent.parent.parent.dismiss()
+        self.update_filechooser_filter(filters)
+
+    def update_filechooser_filter(self, filters):
+        # TODO: Rework this
+        self.file_chooser.filters = filters
         self.file_chooser._update_files()
 
     def zoomin(self, instance, *args):
@@ -174,8 +183,10 @@ class ImageSelectionOnlineController(Controller):
             return item
 
         layout = MDList()
-        for imageformat in sorted(set(['jpg', 'jpeg', 'jp2', 'png', 'ppm', 'gif', 'tif', 'tiff', 'pdf']+[filteritem[1:] for filteritem in self.file_chooser.filters])):
+        for imageformat in sorted(set(['jpg', 'jpeg', 'jp2', 'png', 'ppm', 'gif', 'tif', 'tiff', 'pdf']+[filteritem[1:] for filteritem in get_app().settings_controller.get_formatfilters()])):
             layout.add_widget(item(imageformat))
+        layout.add_widget(MDTextField(text=self.user_filter,
+                                      hint_text="User specific filter (e.g. {filename}*{extension}",))
         dialog = MDDialog(title="Filter for imageformats",
                           type='custom',
                           auto_dismiss=False,

@@ -113,6 +113,10 @@ class SettingsController:
         menu.bind(on_release=callback)
         return menu
 
+    def get_formatfilters(self):
+        return ["*" + filter.strip() for filter in
+         self.controls['filetypes'].text.replace("'","").split(',')]
+
     def set_tessdir_btn(self, instance, *args):
         self.set_tessdir()
 

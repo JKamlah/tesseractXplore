@@ -29,10 +29,8 @@ class ImageSelectionController(Controller):
         self.screen = screen
         self.image_previews = screen.image_previews
         self.file_chooser = screen.file_chooser
-        self.update_filechooser_filter(filters=["*" + filter.strip() for filter in
-                                         get_app().settings_controller.controls['filetypes'].text.replace("'",
-                                                                                                          "").split(
-                                             ',')])
+        self.update_filechooser_filter(filters=get_app().settings_controller.get_formatfilters())
+        self.user_filter = ''
         self.file_list = []
         self.theme_cls = get_app().theme_cls
 
@@ -76,7 +74,11 @@ class ImageSelectionController(Controller):
 
     def update_filechooser_filter_by_dialog(self, instance, checkbox_filter_list,):
         # TODO: Rework this
-        filters = ['*'+filter.text for filter in checkbox_filter_list.children if filter.ids._left_container.children[0].active]
+        if checkbox_filter_list.children[0].text != "":
+            self.user_filter = checkbox_filter_list.children[0].text
+            filters = ['*'+self.user_filter+'*']
+        else:
+            filters = ['*'+filter.text for filter in checkbox_filter_list.children[1:] if filter.ids._left_container.children[0].active]
         instance.parent.parent.parent.parent.dismiss()
         self.update_filechooser_filter(filters)
 
@@ -183,6 +185,8 @@ class ImageSelectionController(Controller):
         layout = MDList()
         for imageformat in sorted(set(['jpg', 'jpeg', 'jp2', 'png', 'ppm', 'gif', 'tif', 'tiff', 'pdf']+[filteritem[1:] for filteritem in self.file_chooser.filters])):
             layout.add_widget(item(imageformat))
+        layout.add_widget(MDTextField(text=self.user_filter,
+                                      hint_text="User specific filter (e.g. {filename}*{extension}",))
         dialog = MDDialog(title="Filter for imageformats",
                           type='custom',
                           auto_dismiss=False,
