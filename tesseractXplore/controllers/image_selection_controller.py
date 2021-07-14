@@ -9,6 +9,8 @@ from functools import partial
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
+from kivymd.toast import toast
+from kivymd.uix.list import MDList, OneLineListItem
 
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller, ImageBatchLoader
@@ -128,15 +130,28 @@ class ImageSelectionController(Controller):
         # Load and save start dir from file chooser with the rest of the app settings
         get_app().add_control_widget(self.file_chooser, 'start_dir', 'photos')
 
+    def update_filechooser_multiselection(self, *args):
+        self.file_chooser.selection = list(set([sel for sel in self.file_chooser.selection if sel != '../']))
+        for sel in self.file_chooser.selection:
+            if Path(sel).is_file():
+                break
+        else:
+            return
+        self.file_chooser.selection = [sel for sel in self.file_chooser.selection if Path(sel).is_file()]
+
+
     def delete_file_chooser_selection_dialog(self, *args):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
-
-        dialog = MDDialog(title="Deletion warning",
+        if self.file_chooser.multiselection == True:
+            self.update_filechooser_multiselection()
+        sellist = MDList()
+        for sel in self.file_chooser.selection:
+            sellist.add_widget(OneLineListItem(text=sel))
+        dialog = MDDialog(title="The following selection will be deleted:",
                           type='custom',
                           auto_dismiss=False,
-                          content_cls=MDTextField(text=f"Do you want to delete:{self.file_chooser.selection}",
-                                                  readonly=True),
+                          content_cls=sellist,
                           buttons=[
                               MDFlatButton(
                                   text="DELETE", on_release=self.delete_file_chooser_selection
@@ -156,7 +171,13 @@ class ImageSelectionController(Controller):
             if os.path.isfile(sel):
                 os.remove(sel)
             else:
-                shutil.rmtree(sel)
+                try:
+                    shutil.rmtree(sel)
+                except FileNotFoundError:
+                    toast(f"No such file or directory: {sel}")
+                    logger.error(f"No such file or directory: {sel}")
+                    instance.parent.parent.parent.parent.dismiss()
+                    return
         self.file_chooser._update_files()
         for file in self.file_list:
             if not os.path.isfile(file):
@@ -211,6 +232,8 @@ class ImageSelectionController(Controller):
 
     def add_file_chooser_images(self, *args):
         """ Add one or more files and/or dirs selected via a FileChooser """
+        if self.file_chooser.multiselection == True:
+            self.update_filechooser_multiselection()
         if not self.file_chooser.selection:
             self.add_images([fname for fname in self.file_chooser.files[1:] if fname[-4:] != ".pdf"])
         self.add_images(self.file_chooser.selection)

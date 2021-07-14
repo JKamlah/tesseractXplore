@@ -9,6 +9,9 @@ from functools import partial
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
+from kivymd.toast import toast
+from kivymd.uix.list import MDList, OneLineListItem
+
 
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.controllers import Controller, ImageBatchLoaderOnline
@@ -128,15 +131,27 @@ class ImageSelectionOnlineController(Controller):
         # Load and save start dir from file chooser with the rest of the app settings
         get_app().add_control_widget(self.file_chooser, 'start_dir_online', 'photos')
 
+    def update_filechooser_multiselection(self, *args):
+        self.file_chooser.selection = list(set([sel for sel in self.file_chooser.selection if sel != '../']))
+        for sel in self.file_chooser.selection:
+            if Path(sel).is_file():
+                break
+        else:
+            return
+        self.file_chooser.selection = [sel for sel in self.file_chooser.selection if Path(sel).is_file()]
+
     def delete_file_chooser_selection_dialog(self, *args):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
-
-        dialog = MDDialog(title="Deletion warning",
+        if self.file_chooser.multiselection == True:
+            self.update_filechooser_multiselection()
+        sellist = MDList()
+        for sel in self.file_chooser.selection:
+            sellist.add_widget(OneLineListItem(text=sel))
+        dialog = MDDialog(title="The following selection will be deleted:",
                           type='custom',
                           auto_dismiss=False,
-                          content_cls=MDTextField(text=f"Do you want to delete:{self.file_chooser.selection}",
-                                                  readonly=True),
+                          content_cls=sellist,
                           buttons=[
                               MDFlatButton(
                                   text="DELETE", on_release=self.delete_file_chooser_selection
@@ -156,7 +171,13 @@ class ImageSelectionOnlineController(Controller):
             if os.path.isfile(sel):
                 os.remove(sel)
             else:
-                shutil.rmtree(sel)
+                try:
+                    shutil.rmtree(sel)
+                except FileNotFoundError:
+                    toast(f"No such file or directory: {sel}")
+                    logger.error(f"No such file or directory: {sel}")
+                    instance.parent.parent.parent.parent.dismiss()
+                    return
         self.file_chooser._update_files()
         for file in self.file_list:
             if not os.path.isfile(file):
@@ -222,6 +243,8 @@ class ImageSelectionOnlineController(Controller):
     def add_images(self, paths):
         """ Add one or more files and/or dirs, with deduplication """
         # TODO: Loading in one step seems buggy - asyncio.run(self.load_images(paths))
+        if self.file_chooser.multiselection == True:
+            self.update_filechooser_multiselection()
         for path in paths:
             asyncio.run(self.load_images(path))
 
