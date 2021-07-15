@@ -49,6 +49,8 @@ class ImageSelectionOnlineController(Controller):
         self.screen.clear_button.bind(on_release=self.clear)
         self.screen.load_button.bind(on_release=self.add_file_chooser_images)
         self.screen.open_folder_button.bind(on_release=self.open_folder)
+        self.screen.goto_folder_button.bind(on_release=self.goto_folder_dialog)
+        self.screen.refresh_button.bind(on_release=self.refresh_file_chooser)
         self.screen.delete_button.bind(on_release=self.delete_file_chooser_selection_dialog)
         self.screen.fileformat_filter_button.bind(on_release=self.fileformat_filter_dialog)
         self.screen.home_button.bind(on_release=self.home_folder)
@@ -64,6 +66,38 @@ class ImageSelectionOnlineController(Controller):
         # TODO: Not working atm only on main window atm (see app.py)
         # self.screen.image_scrollview.bind(on_keyboard=self.on_keyboard)
 
+    def goto_folder_dialog(self, *args):
+        def close_dialog(instance, *args):
+            instance.parent.parent.parent.parent.dismiss()
+
+        if self.file_chooser.multiselect == True:
+            self.update_filechooser_multiselect()
+        sellist = MDList()
+        for sel in self.file_chooser.selection:
+            sellist.add_widget(OneLineListItem(text=sel))
+        dialog = MDDialog(title="Please insert the desired folderpath",
+                          type='custom',
+                          auto_dismiss=False,
+                          content_cls=MDTextField(text=''),
+                          buttons=[
+                              MDFlatButton(
+                                  text="GO TO FOLDER", on_release=self.goto_folder
+                              ),
+                              MDFlatButton(
+                                  text="DISCARD", on_release=close_dialog
+                              ),
+                          ],
+                          )
+        if get_app()._platform not in ['win32', 'win64']:
+            # TODO: Focus function seems buggy in win
+            dialog.content_cls.focused = True
+        dialog.open()
+
+    def goto_folder(self, instance, *args):
+        path = instance
+        self.file_chooser.path = path
+        return
+
     def open_folder(self, *args):
         if self.file_chooser.selection:
             folder = Path(self.file_chooser.selection[0])
@@ -74,6 +108,9 @@ class ImageSelectionOnlineController(Controller):
 
     def home_folder(self, *args):
         self.file_chooser.path = str(Path.home())
+
+    def refresh_file_chooser(self, *args):
+        self.file_chooser._update_files()
 
     def update_filechooser_filter_by_dialog(self, instance, checkbox_filter_list,):
         # TODO: Rework this
@@ -131,7 +168,7 @@ class ImageSelectionOnlineController(Controller):
         # Load and save start dir from file chooser with the rest of the app settings
         get_app().add_control_widget(self.file_chooser, 'start_dir_online', 'photos')
 
-    def update_filechooser_multiselection(self, *args):
+    def update_filechooser_multiselect(self, *args):
         self.file_chooser.selection = list(set([sel for sel in self.file_chooser.selection if sel != '../']))
         for sel in self.file_chooser.selection:
             if Path(sel).is_file():
@@ -143,8 +180,8 @@ class ImageSelectionOnlineController(Controller):
     def delete_file_chooser_selection_dialog(self, *args):
         def close_dialog(instance, *args):
             instance.parent.parent.parent.parent.dismiss()
-        if self.file_chooser.multiselection == True:
-            self.update_filechooser_multiselection()
+        if self.file_chooser.multiselect == True:
+            self.update_filechooser_multiselect()
         sellist = MDList()
         for sel in self.file_chooser.selection:
             sellist.add_widget(OneLineListItem(text=sel))
@@ -243,14 +280,14 @@ class ImageSelectionOnlineController(Controller):
     def add_images(self, paths):
         """ Add one or more files and/or dirs, with deduplication """
         # TODO: Loading in one step seems buggy - asyncio.run(self.load_images(paths))
-        if self.file_chooser.multiselection == True:
-            self.update_filechooser_multiselection()
+        if self.file_chooser.multiselect == True:
+            self.update_filechooser_multiselect()
         for path in paths:
             asyncio.run(self.load_images(path))
 
     async def load_images(self, paths):
         # Determine images to load, ignoring duplicates
-        images = get_images_from_paths(paths, recursive=self.input_dict['recursive'])
+        images = get_images_from_paths(paths, recursive=False)
         new_images = list(set(images) - set(self.file_list))
         logger.info(f'Main: Loading {len(new_images)} ({len(images) - len(new_images)} already loaded)')
         if not new_images:
@@ -313,7 +350,6 @@ class ImageSelectionOnlineController(Controller):
         return {
             "gt_id": int(0),
             "model_id": int(0),
-            "recursive": self.screen.recursive_chk.active,
         }
 
     def get_state(self, *args):

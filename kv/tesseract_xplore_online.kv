@@ -157,26 +157,35 @@
                             size_hint_y: None
                             height: dp(50)
                             spacing: dp(5)
-                            #MDRaisedButton:
-                            #    id: debug_button
-                            #    text: 'Debug'
-                            #    md_bg_color: app.theme_cls.primary_dark
-                            MDBoxLayout:
+                            ControlTooltipButton:
+                                id: refresh_button
+                                icon: "refresh"
                                 md_bg_color: app.theme_cls.primary_dark
-                                adaptive_height: True
-                                padding: dp(10), dp(0)
-                                MDSwitch:
-                                    id: recursive_chk
-                                MDLabel:
-                                    text: 'Recursive'
-                                    halign: 'center'
-                                    font_style: 'Button'
-                                    theme_text_color: 'ContrastParentBackground'
+                                tooltip_text: 'Refresh folderview'
+                                halign: 'bottom'
                             ControlTooltipButton:
                                 id: load_button
                                 icon: "upload"
                                 md_bg_color: app.theme_cls.primary_dark
                                 tooltip_text: 'Load Selected File/Folder'
+                                halign: 'bottom'
+                            ControlTooltipButton:
+                                id: fileformat_filter_button
+                                icon: 'file-image'
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Filter'
+                                halign: 'bottom'
+                            ControlTooltipButton:
+                                id: goto_folder_button
+                                icon: "folder-search"
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Go to folder'
+                                halign: 'bottom'
+                            ControlTooltipButton:
+                                id: home_button
+                                icon: "folder-home"
+                                md_bg_color: app.theme_cls.primary_dark
+                                tooltip_text: 'Go to home folder'
                                 halign: 'bottom'
                             ControlTooltipButton:
                                 id: open_folder_button
@@ -189,18 +198,6 @@
                                 icon: 'trash-can'
                                 md_bg_color: app.theme_cls.primary_dark
                                 tooltip_text: 'Delete Selected File/Folder'
-                                halign: 'bottom'
-                            ControlTooltipButton:
-                                id: fileformat_filter_button
-                                icon: 'file-image'
-                                md_bg_color: app.theme_cls.primary_dark
-                                tooltip_text: 'Filter'
-                                halign: 'bottom'
-                            ControlTooltipButton:
-                                id: home_button
-                                icon: "folder-home"
-                                md_bg_color: app.theme_cls.primary_dark
-                                tooltip_text: 'Go to home folder'
                                 halign: 'bottom'
             StatusBar:
                 id: status_bar
