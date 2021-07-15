@@ -59,13 +59,14 @@ def pdf_dialog(pdfpath,cmds):
         layout.add_widget(OneLineListItem(text='Last page'))
         # id last
         layout.add_widget(MDTextField(text=pages, hint_text="Last page", height=(get_app()._window.size[1])//2))
-        layout.add_widget(OneLineListItem(text='Imageformat (jpg, jp2, png, ppm(default), tiff)'))
+        layout.add_widget(OneLineListItem(text='Fileformat (default: ppm (rendering), '
+                                               'embedded format (extraction)'))
         # id = "fileformat"
         boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
         boxlayout.add_widget(MyToggleButton(text="jpeg", group="imageformat"))
-        boxlayout.add_widget(MyToggleButton(text="jp2", group="imageformat"))
-        defaulttoggle = MyToggleButton(text="ppm", group="imageformat")
-        boxlayout.add_widget(defaulttoggle)
+        #boxlayout.add_widget(MyToggleButton(text="jp2", group="imageformat"))
+        #defaulttoggle = MyToggleButton(text="ppm", group="imageformat")
+        #boxlayout.add_widget(defaulttoggle)
         boxlayout.add_widget(MyToggleButton(text="png", group="imageformat"))
         boxlayout.add_widget(MyToggleButton(text="tiff", group="imageformat"))
         layout.add_widget(boxlayout)
@@ -169,8 +170,7 @@ def pdfimages(pdfpath, cmds, instance, ocr, *args):
                         process = cmds["pdftoppm"]
                     else:
                         process = cmds["pdfimages"]
-                        fileformat.text = "j" if fileformat.text == "jpeg" else fileformat.text
-                        fileformat.text = "jpeg" if fileformat.text == "jp2" else fileformat.text
+                        params = " ;".join(params).replace('-jpeg','-j').split(' ;')
     p1 = Popen([process, *params, pdfpath, pdfdir.joinpath(Path(pdfpath.split('.')[0]).name)])
     p1.communicate()
     get_app().image_selection_controller.file_chooser._update_files()
