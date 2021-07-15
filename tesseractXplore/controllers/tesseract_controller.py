@@ -2,6 +2,7 @@ import threading
 import time
 from functools import partial
 from logging import getLogger
+from pathlib import Path
 
 from kivymd.toast import toast
 from kivymd.uix.button import MDFlatButton
@@ -277,7 +278,10 @@ class TesseractController(Controller):
         self.exit_output_manager()
 
     def select_output_folder(self):
-        self.output_manager.show("/")
+        if get_app().image_selection_controller.file_list != []:
+            self.output_manager.show(str(Path(get_app().image_selection_controller.file_list[0]).parent.resolve()))
+        else:
+            self.output_manager.show("/")
 
     def exit_output_manager(self, *args):
         '''Called when the user reaches the root of the directory tree.'''
