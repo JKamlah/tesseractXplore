@@ -24,7 +24,6 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
     OCR with tesseract on images
     """
     # TODO: Simplify this a bit
-    all_metadata = []
     outputs = []
     app = get_app()
     pb = LoaderProgressBar(color=get_app().theme_cls.primary_color)
@@ -33,10 +32,13 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
     status_bar = app.image_selection_controller.status_bar
     status_bar.clear_widgets()
     status_bar.add_widget(pb)
+    idx = 0
     for idx, image in enumerate(images):
-        if app.tesseract_controller.ocr_stop: break
+        if app.tesseract_controller.ocr_stop:
+            break
         pb.update(None, idx + 1)
         output = None
+        image_path = Path(image)
         params = ["-l", model, "--psm", psm, "--oem", oem, ]
         if tessdatadir:
             params.extend(["--tessdata-dir", tessdatadir])
@@ -48,10 +50,10 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
             for param in app.settings_controller.controls['extra_param'].text.split(' '):
                 params.extend(['-c', param])
         if not outputformats or print_on_screen:
+            outputformats = list(set(['txt' if format=='pdf' else format for format in outputformats ]))
             tesscmd = get_app().settings_controller.tesseract['tesspath'] if get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
             p1 = Popen([tesscmd, *params, image, 'stdout', *outputformats], stdout=PIPE)
         else:
-            image_path = Path(image)
             output = image_path.parent.joinpath(image_path.name.rsplit(".", 1)[0]) \
                 if output_folder is None else Path(output_folder).joinpath(image_path.name)
             tesscmd = get_app().settings_controller.tesseract['tesspath'] if get_app().settings_controller.tesseract['tesspath'] != "" else "tesseract"
@@ -59,8 +61,23 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
         stdout, stderr = p1.communicate()
         stdout = str(stdout.decode("utf-8"))
         if not outputformats or print_on_screen:
-            pimage = Path(image)
-            dialog = MDDialog(title=pimage.name,
+            # TODO: Currently there are some errors thrown by scrollview, activate this code to add scrollbar if this is fixed!
+            # from kivy.uix.scrollview import ScrollView
+            # from kivymd.uix.boxlayout import MDBoxLayout
+            # layout = MDBoxLayout(adaptive_height=True,width= get_app()._window.size[0]-150,
+            #                           height= get_app()._window.size[1]-150,)
+            # view = ScrollView(scroll_type= ['bars'], bar_width=10,)
+            #
+            # view.add_widget(TextInput(text=stdout,
+            #                           size_hint= (None, None),
+            #                           width= get_app()._window.size[0]-150,
+            #                           height= get_app()._window.size[1]-150,
+            #                           multiline=True,
+            #                           readonly=True,
+            #                           font_name=get_font(),
+            #                           font_size=int(get_app().settings_controller.screen.fontsize.text)))
+            # layout.add_widget(view)
+            dialog = MDDialog(title=image_path.name,
                               type='custom',
                               auto_dismiss=False,
                               content_cls=TextInput(text=stdout,
@@ -77,7 +94,7 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                                       text="EVALUATE", on_release=partial(evaluate_report, stdout)
                                   ),
                                   MDFlatButton(
-                                      text="SAVE", on_release=partial(cache_stdout_dialog, pimage, stdout, params)
+                                      text="SAVE TO STDOUT", on_release=partial(cache_stdout_dialog, image_path, stdout, params)
                                   ),
                                   MDFlatButton(
                                       text="DISCARD", on_release=close_dialog
@@ -101,9 +118,11 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
                 out_path = new_path
                 if subfolder:
                     out_path = out_path.joinpath(outputformat.upper())
-                    if not out_path.exists(): out_path.mkdir()
+                    if not out_path.exists():
+                        out_path.mkdir()
                 if out_path != image_path.parent:
-                    if outputformat == "alto": outputformat = "xml"
+                    if outputformat == "alto":
+                        outputformat = "xml"
                     # print(str(image_path.parent.joinpath(output.name+"."+outputformat)))
                     # print(str(out_path.joinpath(output.name+"."+outputformat)))
                     move(str(image_path.parent.joinpath(output.name + "." + outputformat).absolute()),
