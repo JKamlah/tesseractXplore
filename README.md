@@ -205,7 +205,7 @@ Ctrl+Q          | Quit                      | All
 - Jan Kamlah [@JKamlah](https://github.com/JKamlah) - Core developer
 - Jordan Cook [@JWCook](https://github.com/JWCook ) - Creator of [naturtag](https://github.com/JWCook/naturtag)
 
-### Code Contributors
+### Contributors/Tester
 
 This project exists thanks to all the people who contribute.
 Thanks for all the testing and feeback.
