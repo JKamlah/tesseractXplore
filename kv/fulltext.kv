@@ -18,65 +18,67 @@
                     orientation: 'vertical'
                     background_color: app.theme_cls.primary_color
                     md_bg_color: 0,0,0,1
-                    MDDropDownItem:
-                        id: textfiles
-                        text: ''
-                        on_release: app.fulltext_view_controller.textfiles_menu.open()
-                        md_bg_color: 0,0,0,1
                     MDBoxLayout:
-                        size_hint_y: None
-                        height: dp(30)
-                        spacing: dp(5)
-                        MDRaisedButton:
-                            id: save_text_button
-                            text: 'Save text'
+                        orientation: 'vertical'
+                        MDDropDownItem:
+                            id: textfiles
+                            text: ''
+                            on_release: app.fulltext_view_controller.textfiles_menu.open()
+                            md_bg_color: 0,0,0,1
+                        MDBoxLayout:
+                            size_hint_y: None
                             height: dp(30)
-                            theme_text_color: 'Primary'
-                            md_bg_color: app.theme_cls.primary_dark
-                        MDRaisedButton:
-                            id: delete_empty_lines_button
-                            text: 'Delete empty lines'
-                            height: dp(30)
-                            theme_text_color: 'Primary'
-                            md_bg_color: app.theme_cls.primary_dark
-                        MDRaisedButton:
-                            id: set_fontsize
-                            text: 'Set fontsize'
-                            height: dp(30)
-                            theme_text_color: 'Primary'
-                            md_bg_color:  app.theme_cls.primary_dark
-                            on_release: if root.ids.fontsize.text.replace('.','').isdigit(): root.ids.text.font_size = float(root.ids.fontsize.text)
-                        MDTextFieldRect:
-                            size_hint: None, None
-                            height: '30dp'
-                            width: '50dp'
-                            id: fontsize
-                            mode: 'rectangle'
-                        MDRaisedButton:
-                            id: replace_button
-                            text: 'Replace'
-                            height: dp(30)
-                            theme_text_color: 'Primary'
-                            md_bg_color:  app.theme_cls.primary_dark
-                            on_release: root.ids.text.text = root.ids.text.text.replace(root.ids.find.text, root.ids.replace.text)
-                        MDTextFieldRect:
-                            id: find
-                            size_hint: None, None
-                            height: '30dp'
-                            width: '100dp'
-                            hint_text: 'Find'
-                            mode: 'rectangle'
-                        MDTextFieldRect:
-                            id: replace
-                            size_hint: None, None
-                            height: '30dp'
-                            width: '100dp'
-                            hint_text: 'Replace'
-                            mode: 'rectangle'
-                    TextInput:
-                        id: text
-                        readonly: False
-                        multiline: True
+                            spacing: dp(5)
+                            MDRaisedButton:
+                                id: save_text_button
+                                text: 'Save text'
+                                height: dp(30)
+                                theme_text_color: 'Primary'
+                                md_bg_color: app.theme_cls.primary_dark
+                            MDRaisedButton:
+                                id: delete_empty_lines_button
+                                text: 'Delete empty lines'
+                                height: dp(30)
+                                theme_text_color: 'Primary'
+                                md_bg_color: app.theme_cls.primary_dark
+                            MDRaisedButton:
+                                id: set_fontsize
+                                text: 'Set fontsize'
+                                height: dp(30)
+                                theme_text_color: 'Primary'
+                                md_bg_color:  app.theme_cls.primary_dark
+                                on_release: if root.ids.fontsize.text.replace('.','').isdigit(): root.ids.text.font_size = float(root.ids.fontsize.text)
+                            MDTextFieldRect:
+                                size_hint: None, None
+                                height: '30dp'
+                                width: '50dp'
+                                id: fontsize
+                                mode: 'rectangle'
+                            MDRaisedButton:
+                                id: replace_button
+                                text: 'Replace'
+                                height: dp(30)
+                                theme_text_color: 'Primary'
+                                md_bg_color:  app.theme_cls.primary_dark
+                                on_release: root.ids.text.text = root.ids.text.text.replace(root.ids.find.text, root.ids.replace.text)
+                            MDTextFieldRect:
+                                id: find
+                                size_hint: None, None
+                                height: '30dp'
+                                width: '100dp'
+                                hint_text: 'Find'
+                                mode: 'rectangle'
+                            MDTextFieldRect:
+                                id: replace
+                                size_hint: None, None
+                                height: '30dp'
+                                width: '100dp'
+                                hint_text: 'Replace'
+                                mode: 'rectangle'
+                        TextInput:
+                            id: text
+                            readonly: False
+                            multiline: True
 
                 Tab:
                     text: 'ALTO'

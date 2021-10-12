@@ -198,6 +198,23 @@ Ctrl+S          | Open settings screen      | All
 Ctrl+Backspace  | Return to main screen     | All
 Ctrl+Q          | Quit                      | All
 
+## Contributors
+
+### Code Contributors
+
+- Jan Kamlah [@JKamlah](https://github.com/JKamlah) - Core developer
+- Jordan Cook [@JWCook](https://github.com/JWCook ) - Creator of [naturtag](https://github.com/JWCook/naturtag)
+
+### Contributors/Tester
+
+This project exists thanks to all the people who contribute.
+Thanks for all the testing and feeback.
+
+- Philipp Zumstein [@zuphilip](https://github.com/zuphilip)
+- Stefan Weil [@stweil](https://github.com/stweil)
+- Benjamin Rosemann [@b2m](https://github.com/b2m)
+
+
 # See Also
 *  This project is based on [naturtag](https://github.com/JWCook/naturtag).
 

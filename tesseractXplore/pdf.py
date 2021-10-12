@@ -16,7 +16,7 @@ from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.list import MDList, OneLineListItem, OneLineAvatarListItem
+from kivymd.uix.list import MDList, OneLineListItem, ThreeLineListItem, OneLineAvatarListItem
 from kivymd.uix.progressbar import MDProgressBar
 from kivymd.uix.textfield import MDTextField
 
@@ -59,8 +59,9 @@ def pdf_dialog(pdfpath,cmds):
         layout.add_widget(OneLineListItem(text='Last page'))
         # id last
         layout.add_widget(MDTextField(text=pages, hint_text="Last page", height=(get_app()._window.size[1])//2))
-        layout.add_widget(OneLineListItem(text='Fileformat (default: ppm (rendering), '
-                                               'embedded format (extraction)'))
+        layout.add_widget(ThreeLineListItem(text='Fileformat output',
+                                            secondary_text='Default: ppm (rendering), embedded format (extraction)',
+                                            tertiary_text='Extraction with jpeg outputs ppm on win (bug)'))
         # id = "fileformat"
         boxlayout = MDBoxLayout(orientation="horizontal", adaptive_height=True)
         boxlayout.add_widget(MyToggleButton(text="jpeg", group="imageformat"))
@@ -202,7 +203,10 @@ def extract_pdf(pdfpath):
             run_cmd_with_sudo_dialog(title="Installing Poppler",func=install_poppler_unix_thread)
     else:
         pdftoolpath = Path(PDF_DIR)
-        if not pdftoolpath.exists():
+        if pdftoolpath.joinpath('poppler-0.68.0_x86').exists():
+            import shutil
+            shutil.rmtree(str(pdftoolpath.resolve()), ignore_errors=True)
+        if not pdftoolpath.exists() or not any(pdftoolpath.iterdir()):
             # TODO: Don work atm properly and use the official site
             try:
                 create_threadprocess("Installing poppler utils", install_poppler_win,str(pdftoolpath.absolute()))
@@ -254,7 +258,8 @@ def install_poppler_unix(sudopwd=""):
 def install_poppler_win(pdftoolpath,*args, **kwargs):
     """ Installation of poppler utils on win platforms"""
     try:
-        url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'
+        #url = 'https://digi.bib.uni-mannheim.de/~jkamlah/poppler-0.68.0_x86.zip'
+        url = 'https://github.com/oschwartz10612/poppler-windows/releases/download/v21.03.0/Release-21.03.0.zip'
         r = requests.get(url, stream=True)
         z = zipfile.ZipFile(io.BytesIO(r.content))
         Path(pdftoolpath).mkdir(parents=True)
