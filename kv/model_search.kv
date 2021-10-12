@@ -2,90 +2,92 @@
 
 # Model search tab
 <ModelSearchTab@Tab>:
-    text: 'magnify'
+    icon: 'magnify'
+    title: 'Search'
     # tooltip_text: 'Search'
     orientation: 'vertical'
     padding: dp(20)
-    TabHeader:
-        text: 'Search'
-    ModelAutocompleteSearch:
-        size_hint_min_y: 150
-        id: model_search_input
-        hint_text: 'Model search'
-        helper_text: 'Enter a search term'
-    ScrollViewY:
-        size_hint_min_y: 300
-        MDBoxLayout:
-            orientation: 'vertical'
-            SectionHeader:
-                text: 'Selection filter'
-            MDTextField:
-                id: modelgroup_input
-                hint_text: 'Group filter (commonfilter: tessdata)'
-                helper_text: 'Group filter (commonfilter: tessdata)'
-            MDTextField:
-                id: model_tagfilter_input
-                hint_text: 'Tag filter'
-                helper_text: 'Filter selection by tags with search term'
-            SectionHeader:
-                text: 'Model type'
-                tooltip_text: 'Type to browse model best, fast'
+
+    BoxLayout:
+        orientation: 'vertical'
+        ModelAutocompleteSearch:
+            size_hint_min_y: 150
+            id: model_search_input
+            hint_text: 'Model search'
+            helper_text: 'Enter a search term'
+        ScrollViewY:
+            size_hint_min_y: 300
             MDBoxLayout:
-                orientation: 'horizontal'
-                adaptive_height: True
-                col: 3
-                OneLineAvatarIconListItem:
-                    text: 'Fast'
-                    height: dp(50)
-                    #width: dp(400)
-                    SwitchListItem:
-                        id: fastmodel_chk
-                        active: True
-                OneLineAvatarIconListItem:
-                    text: 'Best'
-                    height: dp(50)
-                    #width: dp(400)
-                    SwitchListItem:
-                        id: bestmodel_chk
-                        active: True
-            SectionHeader:
-                text: 'Model categories'
-                tooltip_text: 'Categories to browse model language or script'
-            MDBoxLayout:
-                orientation: 'horizontal'
-                adaptive_height: True
-                col: 3
-                OneLineAvatarIconListItem:
-                    text: 'Language'
-                    height: dp(50)
-                    #width: dp(400)
-                    SwitchListItem:
-                        id: languagemodel_chk
-                        active: True
-                OneLineAvatarIconListItem:
-                    text: 'Script'
-                    height: dp(50)
-                    #width: dp(400)
-                    SwitchListItem:
-                        id: scriptmodel_chk
-                        active: True
-            MDBoxLayout:
-                spacing: dp(10)
-                TooltipIconButton:
-                    id: model_search_button
-                    icon: 'magnify'
-                    text: 'Apply filter'
-                    width: dp(220)
-                TooltipIconButton:
-                    id: reset_search_button
-                    icon: 'restart'
-                    text: 'Reset Filters'
-                    width: dp(220)
-                TooltipIconButton:
-                    id: download_via_url_button
-                    icon: 'arrow-down-circle-outline'
-                    text: 'Download via URL'
-                    width: dp(300)
+                orientation: 'vertical'
+                SectionHeader:
+                    text: 'Selection filter'
+                MDTextField:
+                    id: modelgroup_input
+                    hint_text: 'Group filter (commonfilter: tessdata)'
+                    helper_text: 'Group filter (commonfilter: tessdata)'
+                MDTextField:
+                    id: model_tagfilter_input
+                    hint_text: 'Tag filter'
+                    helper_text: 'Filter selection by tags with search term'
+                SectionHeader:
+                    text: 'Model type'
+                    tooltip_text: 'Type to browse model best, fast'
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    col: 3
+                    OneLineAvatarIconListItem:
+                        text: 'Fast'
+                        height: dp(50)
+                        #width: dp(400)
+                        SwitchListItem:
+                            id: fastmodel_chk
+                            active: True
+                    OneLineAvatarIconListItem:
+                        text: 'Best'
+                        height: dp(50)
+                        #width: dp(400)
+                        SwitchListItem:
+                            id: bestmodel_chk
+                            active: True
+                SectionHeader:
+                    text: 'Model categories'
+                    tooltip_text: 'Categories to browse model language or script'
+                MDBoxLayout:
+                    orientation: 'horizontal'
+                    adaptive_height: True
+                    col: 3
+                    OneLineAvatarIconListItem:
+                        text: 'Language'
+                        height: dp(50)
+                        #width: dp(400)
+                        SwitchListItem:
+                            id: languagemodel_chk
+                            active: True
+                    OneLineAvatarIconListItem:
+                        text: 'Script'
+                        height: dp(50)
+                        #width: dp(400)
+                        SwitchListItem:
+                            id: scriptmodel_chk
+                            active: True
+                MDBoxLayout:
+                    spacing: dp(10)
+                    TooltipIconButton:
+                        id: model_search_button
+                        icon: 'magnify'
+                        text: 'Apply filter'
+                        width: dp(220)
+                    TooltipIconButton:
+                        id: reset_search_button
+                        icon: 'restart'
+                        text: 'Reset Filters'
+                        width: dp(220)
+                    TooltipIconButton:
+                        id: download_via_url_button
+                        icon: 'arrow-down-circle-outline'
+                        text: 'Download via URL'
+                        width: dp(300)
     # Temp spacer
 #    MDBoxLayout:
 #        height: 300
