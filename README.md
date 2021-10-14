@@ -99,7 +99,7 @@ If you use zsh-commandline you need to escape brackets with backslash!
 
 ## Win (cmd.exe)
 
-For windows please use the current [installer](/JKamlah/tesseractXplore/releases/latest/download/TesseractXploreSetup.exe).
+For windows please use the current [installer](https://github.com/JKamlah/tesseractXplore/releases/latest/download/TesseractXploreSetup.exe).
 
 ```
 python3 -m venv venv
