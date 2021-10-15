@@ -76,7 +76,7 @@ class TesseractOnlineController(Controller):
     def init_dropdown(self):
         screen = self.screen
         # Init dropdownsettingsmenu
-        self.psm_menu = self.create_dropdown(screen.psm, [{"viewclass":"OneLineListItem", 'text': 'PSM: ' + psm, 'on_release': partial(self.set_psm, psm)} for psm in self.psms])
+        self.psm_menu = self.create_dropdown(screen.psm, [{"viewclass":"OneLineListItem", 'text': 'PSM: ' + psm, 'on_release': partial(self.set_psm, 'PSM: ' + psm)} for psm in self.psms])
 
     def disable_rec(self, instance, *args):
         self.screen.recognize_button.disabled = True

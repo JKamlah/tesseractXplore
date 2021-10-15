@@ -78,8 +78,8 @@ class TesseractController(Controller):
     def init_dropdown(self):
         screen = self.screen
         # Init dropdownsettingsmenu
-        self.psm_menu = self.create_dropdown(screen.psm, [{"viewclass":"OneLineListItem", 'text': 'PSM: ' + psm, 'on_release': partial(self.set_psm, psm)} for psm in self.psms])
-        self.oem_menu = self.create_dropdown(screen.oem, [{"viewclass":"OneLineListItem", 'text': 'OEM: ' + oem, 'on_release': partial(self.set_oem, oem)} for oem in self.oems])
+        self.psm_menu = self.create_dropdown(screen.psm, [{"viewclass":"OneLineListItem", 'text': 'PSM: ' + psm, 'on_release': partial(self.set_psm, 'PSM: ' + psm)} for psm in self.psms])
+        self.oem_menu = self.create_dropdown(screen.oem, [{"viewclass":"OneLineListItem", 'text': 'OEM: ' + oem, 'on_release': partial(self.set_oem, 'OEM: ' + oem)} for oem in self.oems])
 
     def disable_rec(self, instance, *args):
         self.screen.recognize_button_fst.disabled = True
