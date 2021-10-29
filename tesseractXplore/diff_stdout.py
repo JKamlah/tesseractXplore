@@ -1,5 +1,5 @@
-import difflib
 from functools import partial
+import difflib
 
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
@@ -8,6 +8,7 @@ from kivymd.uix.list import MDList, OneLineListItem
 from tesseractXplore.app import alert, get_app
 from tesseractXplore.stdout_cache import read_stdout_cache
 from tesseractXplore.font import get_fontstyle
+from tesseractXplore.difflib import subseq_matcher, seq_align
 
 
 def close_dialog(instance, *args):
@@ -73,24 +74,48 @@ def set_item(instance, instance_menu, instance_menu_item):
 def diff(stdout_cache, image, instance, *args):
     close_dialog(instance)
     fst_key = instance.parent.parent.parent.parent.content_cls.children[0].text
-    fst_text = "\n".join([line for line in stdout_cache[fst_key]["fulltext"].split("\n") if line.strip() != ""])
+    seq1 = [line for line in stdout_cache[fst_key]["fulltext"].split("\n") if line.strip() != ""]
     snd_key = instance.parent.parent.parent.parent.content_cls.children[1].text
-    snd_text = "\n".join([line for line in stdout_cache[snd_key]["fulltext"].split("\n") if line.strip() != ""])
-    s = difflib.SequenceMatcher(None, fst_text, snd_text)
+    seq2 = [line for line in stdout_cache[snd_key]["fulltext"].split("\n") if line.strip() != ""]
+    text = ""
+    edits, chars = 0, 0
+    for matched_subseq in subseq_matcher(seq1, seq2):
+        # TODO: Optimize seq_align
+        for glyphs in seq_align(*matched_subseq):
+            if not glyphs[0]:
+                text += "[color=00FFFF]" + glyphs[1] + "[/color]"
+                edits += len(glyphs[1])
+            elif not glyphs[1]:
+                text += "[color=b39ddb]" + glyphs[0] + "[/color]"
+                edits += len(glyphs[0])
+            elif glyphs[0] != glyphs[1]:
+                text += '[color=b39ddb]' + glyphs[0] + "[/color]" + "[color=00FFFF]" + glyphs[1] + "[/color]"
+                edits += len(glyphs[1])
+            else:
+                text += glyphs[0]
+                chars += len(glyphs[0])
+        text += '\n'
+        # s = difflib.SequenceMatcher(None, *matched_subseq)
+        # sum_ratio += s.ratio()*(len(seq1)+len(seq2))/2
+        # char += (len(seq1)+len(seq2))/2
+        # for groupname, *value in s.get_opcodes():
+        #     if groupname == "equal":
+        #         text += matched_subseq[0][value[0]:value[1]]
+        #     elif groupname == "replace":
+        #         text += '[color=b39ddb]' + matched_subseq[0][value[0]:value[1]] + "[/color]" + "[color=00FFFF]" + matched_subseq[1][
+        #                                                                                                  value[2]:value[
+        #                                                                                                      3]] + "[/color]"
+        #     elif groupname == "add":
+        #         text += "[color=00FFFF]" + matched_subseq[1][value[2]:value[3]] + "[/color]"
+        #     else:
+        #         text += "[color=b39ddb]" + matched_subseq[0][value[0]:value[1]] + "[/color]"
+        # text += '\n'
+    accuracy = 100
+    if chars+edits > 0:
+        accuracy = 100-(edits*100/(chars+edits))
     text = f"[b][color=b39ddb]{fst_key}[/color][/b]\n" \
-           f"[b][color=00FFFF]{snd_key}[/color][/b]\n\n" \
-           f"Ratio between both texts: {round(s.ratio(), 3)}\n\n"
-    for groupname, *value in s.get_opcodes():
-        if groupname == "equal":
-            text += fst_text[value[0]:value[1]]
-        elif groupname == "replace":
-            text += '[color=b39ddb]' + fst_text[value[0]:value[1]] + "[/color]" + "[color=00FFFF]" + snd_text[
-                                                                                                     value[2]:value[
-                                                                                                         3]] + "[/color]"
-        elif groupname == "add":
-            text += "[color=00FFFF]" + snd_text[value[2]:value[3]] + "[/color]"
-        else:
-            text += "[color=b39ddb]" + fst_text[value[0]:value[1]] + "[/color]"
+        f"[b][color=00FFFF]{snd_key}[/color][/b]\n" \
+        f"Accuracy: {accuracy:.2f} %\n\n" + text
     return diff_result(text, image)
 
 
