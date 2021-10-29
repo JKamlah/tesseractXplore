@@ -18,26 +18,30 @@ def seq_align(s1, s2):
 
     for op in ops:
         if not last_op:
-            yield s1[:op[1]], s2[:op[2]]
+            if op[1] != 0 and op[2] != 0:
+                yield s1[:op[1]], s2[:op[2]]
             last_op = op
         if op[0] == "insert":
-            if last_op[1] != op[1]:
+            if last_op[0] != op[0] or last_op[1] != op[1]:
                 yield report(last_op, seq1, seq2)
-                yield s1[last_op[1] + 1:op[1]], s2[last_op[2] + 1:op[2]]
+                if last_op[1] < op[1]:
+                    yield s1[last_op[1]:op[1]], s2[last_op[2]:op[2]]
                 seq1, seq2 = "", ""
             seq2 += s2[op[2]]
-            op = (op[0],op[1],(op[2]+1))
+            op = (op[0], op[1], (op[2]+1))
         elif op[0] == "delete":
-            if last_op[2] != op[2]:
+            if last_op[0] != op[0] or last_op[2] != op[2]:
                 yield report(last_op, seq1, seq2)
-                yield s1[last_op[1]:op[1]], s2[last_op[2]:op[2]]
+                if last_op[2] < op[2]:
+                    yield s1[last_op[1]:op[1]], s2[last_op[2]:op[2]]
                 seq1, seq2 = "", ""
             seq1 += s1[op[1]]
-            op = (op[0],(op[1]+1),op[2])
+            op = (op[0], (op[1]+1), op[2])
         elif op[0] == "replace":
-            if not (last_op[1]+1 >= op[1] or last_op[2] >= op[2]):
+            if last_op[0] != op[0] or last_op[1] < op[1]:
                 yield report(last_op, seq1, seq2)
-                yield s1[last_op[1]:op[1]], s2[last_op[2]:op[2]]
+                if last_op[1] < op[1]:
+                    yield s1[last_op[1]:op[1]], s2[last_op[2]:op[2]]
                 seq1, seq2 = "", ""
             seq1 += s1[op[1]]
             seq2 += s2[op[2]]
@@ -63,7 +67,7 @@ def subseq_matcher(seq1, seq2):
         ls_grid[max_val[0][0]][max_val[0][1]] = -1
         max_val = np.argwhere(ls_grid == np.amax(ls_grid))
     matched_seq = []
-    if len(seq1) <= len(seq2):
+    if len(seq1) < len(seq2):
         for col_id, col in enumerate(ls_grid.T):
             match = np.argwhere(col == -1)
             if len(match) == 0:
