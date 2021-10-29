@@ -67,22 +67,19 @@ def subseq_matcher(seq1, seq2):
         ls_grid[max_val[0][0]][max_val[0][1]] = -1
         max_val = np.argwhere(ls_grid == np.amax(ls_grid))
     matched_seq = []
-    if len(seq1) < len(seq2):
-        for col_id, col in enumerate(ls_grid.T):
-            match = np.argwhere(col == -1)
-            if len(match) == 0:
-                matched_seq.append(["", seq2[col_id]])
-            else:
-                matched_seq.append([seq1[match[0][0]], seq2[col_id]])
-            if col_id < len(seq1) and np.sum(ls_grid[col_id][:]) != -1:
-                matched_seq.append([seq1[col_id], ""])
-    else:
-        for row_id, col in enumerate(ls_grid):
-            match = np.argwhere(col == -1)
-            if len(match) == 0:
-                matched_seq.append([seq1[row_id], ""])
-            else:
-                matched_seq.append([seq1[row_id], seq2[match[0][0]]])
-            if row_id < len(seq2) and np.sum(ls_grid.T[row_id, :]) != -1:
-                matched_seq.append(["", seq2[row_id]])
+    unmatched_col = []
+    for col_id, col in enumerate(ls_grid.T):
+        if not np.sum(col):
+            unmatched_col.append(col_id)
+    for row_id, row in enumerate(ls_grid):
+        match = np.argwhere(row == -1)
+        if len(match) == 0:
+            matched_seq.append([seq1[row_id], ""])
+        else:
+            matched_seq.append([seq1[row_id], seq2[match[0][0]]])
+        if row_id < len(seq2) and np.sum(ls_grid.T[row_id, :]) != -1:
+            matched_seq.append(["", seq2[row_id]])
+        if row_id in unmatched_col:
+            matched_seq.append(["", seq2[unmatched_col.pop()]])
+    matched_seq.extend([["", seq2[col_id]] for col_id in unmatched_col])
     return matched_seq
