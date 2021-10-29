@@ -110,12 +110,12 @@ def diff(stdout_cache, image, instance, *args):
         #     else:
         #         text += "[color=b39ddb]" + matched_subseq[0][value[0]:value[1]] + "[/color]"
         # text += '\n'
-    accuracy = 100
+    similarity_score = 100
     if chars+edits > 0:
-        accuracy = 100-(edits*100/(chars+edits))
+        similarity_score = 100-(edits*100/(chars+edits))
     text = f"[b][color=b39ddb]{fst_key}[/color][/b]\n" \
         f"[b][color=00FFFF]{snd_key}[/color][/b]\n" \
-        f"Accuracy: {accuracy:.2f} %\n\n" + text
+        f"Similarity score: {similarity_score:.2f} %\n\n" + text
     return diff_result(text, image)
 
 
