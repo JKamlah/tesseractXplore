@@ -116,7 +116,7 @@ def diff(stdout_cache, image, instance, *args):
     #    similarity_score = 100-(edits*100/(chars+edits))
     text = f"[b][color=b39ddb]{fst_key}[/color][/b]\n" \
         f"[b][color=00FFFF]{snd_key}[/color][/b]\n" \
-        f"Similarity score: {sum_ratio/chars:.2f} %\n\n" + text
+        f"Similarity score: {(sum_ratio/chars)*100:.2f} %\n\n" + text
     return diff_result(text, image)
 
 
