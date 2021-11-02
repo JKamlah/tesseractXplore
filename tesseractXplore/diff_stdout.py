@@ -78,44 +78,45 @@ def diff(stdout_cache, image, instance, *args):
     snd_key = instance.parent.parent.parent.parent.content_cls.children[1].text
     seq2 = [line for line in stdout_cache[snd_key]["fulltext"].split("\n") if line.strip() != ""]
     text = ""
-    edits, chars = 0, 0
+    #edits, chars, = 0, 0
+    sum_ratio, chars = 0, 0
     for matched_subseq in subseq_matcher(seq1, seq2):
         # TODO: Optimize seq_align
-        for glyphs in seq_align(*matched_subseq):
-            if not glyphs[0]:
-                text += "[color=00FFFF]" + glyphs[1] + "[/color]"
-                edits += len(glyphs[1])
-            elif not glyphs[1]:
-                text += "[color=b39ddb]" + glyphs[0] + "[/color]"
-                edits += len(glyphs[0])
-            elif glyphs[0] != glyphs[1]:
-                text += '[color=b39ddb]' + glyphs[0] + "[/color]" + "[color=00FFFF]" + glyphs[1] + "[/color]"
-                edits += len(glyphs[1])
-            else:
-                text += glyphs[0]
-                chars += len(glyphs[0])
-        text += '\n'
-        # s = difflib.SequenceMatcher(None, *matched_subseq)
-        # sum_ratio += s.ratio()*(len(seq1)+len(seq2))/2
-        # char += (len(seq1)+len(seq2))/2
-        # for groupname, *value in s.get_opcodes():
-        #     if groupname == "equal":
-        #         text += matched_subseq[0][value[0]:value[1]]
-        #     elif groupname == "replace":
-        #         text += '[color=b39ddb]' + matched_subseq[0][value[0]:value[1]] + "[/color]" + "[color=00FFFF]" + matched_subseq[1][
-        #                                                                                                  value[2]:value[
-        #                                                                                                      3]] + "[/color]"
-        #     elif groupname == "add":
-        #         text += "[color=00FFFF]" + matched_subseq[1][value[2]:value[3]] + "[/color]"
+        # for glyphs in seq_align(*matched_subseq):
+        #     if not glyphs[0]:
+        #         text += "[color=00FFFF]" + glyphs[1] + "[/color]"
+        #         edits += len(glyphs[1])
+        #     elif not glyphs[1]:
+        #         text += "[color=b39ddb]" + glyphs[0] + "[/color]"
+        #         edits += len(glyphs[0])
+        #     elif glyphs[0] != glyphs[1]:
+        #         text += '[color=b39ddb]' + glyphs[0] + "[/color]" + "[color=00FFFF]" + glyphs[1] + "[/color]"
+        #         edits += len(glyphs[1])
         #     else:
-        #         text += "[color=b39ddb]" + matched_subseq[0][value[0]:value[1]] + "[/color]"
+        #         text += glyphs[0]
+        #         chars += len(glyphs[0])
         # text += '\n'
-    similarity_score = 100
-    if chars+edits > 0:
-        similarity_score = 100-(edits*100/(chars+edits))
+        s = difflib.SequenceMatcher(None, *matched_subseq)
+        sum_ratio += s.ratio()*(len(seq1)+len(seq2))/2
+        chars += (len(seq1) + len(seq2)) / 2
+        for groupname, *value in s.get_opcodes():
+            if groupname == "equal":
+                text += matched_subseq[0][value[0]:value[1]]
+            elif groupname == "replace":
+                text += '[color=b39ddb]' + matched_subseq[0][value[0]:value[1]] + "[/color]" + "[color=00FFFF]" + matched_subseq[1][
+                                                                                                         value[2]:value[
+                                                                                                             3]] + "[/color]"
+            elif groupname == "add":
+                text += "[color=00FFFF]" + matched_subseq[1][value[2]:value[3]] + "[/color]"
+            else:
+                text += "[color=b39ddb]" + matched_subseq[0][value[0]:value[1]] + "[/color]"
+        text += '\n'
+    #similarity_score = 100
+    #if chars+edits > 0:
+    #    similarity_score = 100-(edits*100/(chars+edits))
     text = f"[b][color=b39ddb]{fst_key}[/color][/b]\n" \
         f"[b][color=00FFFF]{snd_key}[/color][/b]\n" \
-        f"Similarity score: {similarity_score:.2f} %\n\n" + text
+        f"Similarity score: {sum_ratio/chars:.2f} %\n\n" + text
     return diff_result(text, image)
 
 
