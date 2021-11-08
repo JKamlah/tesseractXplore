@@ -26,6 +26,7 @@ viewer:
   pdfviewer: 'webbrowser'
 imageeditor:
   ie_thumbnail_size: '1000'
+  load_images_async: false
 tesseract:
   win32url: 'https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w32-setup-v5.0.0-alpha.20210506.exe'
   win64url: 'https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-v5.0.0-alpha.20210506.exe'

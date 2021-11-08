@@ -1,6 +1,7 @@
 import asyncio
 import os
 import shutil
+import time
 import webbrowser
 from logging import getLogger
 from pathlib import Path
@@ -18,6 +19,7 @@ from tesseractXplore.controllers.fulltext_view_controller import find_file
 from tesseractXplore.diff_stdout import diff_dialog
 from tesseractXplore.image_glob import get_images_from_paths
 from tesseractXplore.pdf import open_pdf
+from tesseractXplore.widgets import ImageMetaTile
 
 logger = getLogger().getChild(__name__)
 
@@ -101,7 +103,6 @@ class ImageSelectionController(Controller):
 
 
     def open_folder(self, *args):
-        stop = 1
         if self.file_chooser.selection:
             folder = Path(self.file_chooser.selection[0])
             if folder.is_dir():
@@ -297,13 +298,20 @@ class ImageSelectionController(Controller):
         if not new_images:
             return
         self.file_list.extend(new_images)
+        if not get_app().settings_controller.controls['load_images_async'].active:
+            for img in new_images:
+                widget = ImageMetaTile(source=img)
+                widget.bind(on_touch_down=self.on_image_click)
+                self.image_previews.add_widget(widget)
+                await asyncio.sleep(0)
+        else:
+            # TODO: Solve the problem of async adding imagetile with correct label
+            # Start batch loader + progress bar
+            loader = ImageBatchLoader()
+            self.start_progress(len(new_images), loader)
+            loader.add_batch(new_images, parent=self.image_previews)
+            loader.start_thread()
 
-        # Start batch loader + progress bar
-        loader = ImageBatchLoader()
-        self.start_progress(len(new_images), loader)
-        # for new_image in new_images:
-        loader.add_batch(new_images, parent=self.image_previews)
-        loader.start_thread()
 
     def open_pdf_instance(self, instance, *args):
         """ Open a pdf via webbrowser or another external software """

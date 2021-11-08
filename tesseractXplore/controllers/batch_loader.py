@@ -92,7 +92,7 @@ class BatchRunner(EventDispatcher):
     async def join(self):
         """ Wait for all queues to be initialized and then processed """
         while not self.queues:
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1)
         for queue in self.queues:
             await queue.join()
 
@@ -184,6 +184,7 @@ class WidgetBatchLoader(BatchLoader):
         """ Add a widget to its parent on the main thread """
         if parent:
             parent.add_widget(widget)
+            #parent.dispatch('on_load')
 
 
 class ModelBatchLoader(WidgetBatchLoader):

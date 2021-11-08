@@ -1,7 +1,9 @@
 """ Classes to extend image container functionality for caching, metadata, etc. """
 from io import BytesIO
 from os.path import basename
+import time
 from logging import getLogger
+from pathlib import Path
 
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.image import AsyncImage
@@ -85,9 +87,8 @@ class ImageMetaTile(SmartTileWithLabel):
     """ Class that contains an image thumbnail to display plus its associated metadata """
 
     def __init__(self, source, **kwargs):
-        super().__init__(source=get_thumbnail(source), **kwargs)
+        super().__init__(source=get_thumbnail(source), text=Path(source).name, **kwargs)
         self.original_source = source
-        self.text = basename(source)
 
     def on_metadata(self, *args):
         """ Triggered whenever metadata changes """
