@@ -117,7 +117,7 @@ def recognize(images, model="eng", psm="4", oem="3", tessdatadir=None, output_fo
             for outputformat in outputformats:
                 out_path = new_path
                 if subfolder:
-                    out_path = out_path.joinpath(outputformat.upper())
+                    out_path = out_path.joinpath(outputformat)
                     if not out_path.exists():
                         out_path.mkdir()
                 if out_path != image_path.parent:
