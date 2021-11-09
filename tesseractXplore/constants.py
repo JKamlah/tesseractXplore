@@ -98,6 +98,7 @@ F8 = 289
 F9 = 290
 F10 = 291
 F11 = 292
+F12 = 293
 
 # Type aliases
 IntTuple = Tuple[Optional[int], Optional[int]]

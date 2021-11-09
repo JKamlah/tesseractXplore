@@ -43,9 +43,8 @@ from tesseractXplore.constants import (
     MD_PRIMARY_PALETTE_ONLINE,
     MD_ACCENT_PALETTE,
     MD_ACCENT_PALETTE_ONLINE,
-    BACKSPACE,
-    ENTER,
-    F2, F5, F6, F7, F8,  F9, F10, F11, TRIGGER_DELAY,
+    BACKSPACE, ENTER, F2, F5, F6, F7, F8, F9, F10, F11, F12,
+    TRIGGER_DELAY,
 )
 from tesseractXplore.controllers import (
     ImageSelectionController,
@@ -304,6 +303,9 @@ class TesseractXplore(MDApp, ControllerProxy):
             self.toggle_border()
         elif key == F11:
             self.toggle_fullscreen()
+        elif key == F12:
+            self.settings_controller.change_colormode()
+            self.settings_controller.save_settings()
 
 
     # TODO: current_screen_*() may be better organized as controller methods (inherited/overridden as needed)
