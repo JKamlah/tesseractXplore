@@ -2,15 +2,18 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "TesseractXplore"
-!define PRODUCT_VERSION "0.2.3"
+!define PRODUCT_VERSION "0.2.4"
 !define PRODUCT_PUBLISHER "UB Mannheim"
 !define PRODUCT_WEB_SITE "https://github.com/JKamlah/tesseractXplore"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\tesseractXplore.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
-; MUI 1.67 compatible ------
-!include "MUI.nsh"
+!define REGKEY "SOFTWARE\${PRODUCT_NAME}"
+
+; HKLM (all users) vs HKCU (current user) defines
+!define env_hklm 'HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"'
+!define env_hkcu 'HKCU "Environment"
 
 # MultiUser Symbol Definitions
 # https://nsis.sourceforge.io/Docs/MultiUser/Readme.html
@@ -26,6 +29,10 @@
 !define MULTIUSER_USE_PROGRAMFILES64
 !endif
 
+; MUI 1.67 compatible ------
+!include MultiUser.nsh
+!include MUI2.nsh
+
 ; MUI Settings
 !define MUI_ABORTWARNING
 !define MUI_ICON "assets\TX.ico"
@@ -40,7 +47,7 @@
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\tesseractXplore.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\tesseractXplore_$PRODUCT_VERSION.exe"
 !insertmacro MUI_PAGE_FINISH
 
 
@@ -54,7 +61,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Setup.exe"
+OutFile "TesseractXploreSetup.exe"
 InstallDir "$PROGRAMFILES\TesseractXplore"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -93,7 +100,7 @@ Function un.onUninstSuccess
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Möchten Sie TesseractXplore und alle seinen Komponenten deinstallieren?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Mï¿½chten Sie TesseractXplore und alle seinen Komponenten deinstallieren?" IDYES +2
   Abort
 FunctionEnd
 
