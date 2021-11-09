@@ -282,7 +282,9 @@ class TesseractXplore(MDApp, ControllerProxy):
                     self.on_request_close()
                 elif codepoint == 's':
                     self.settings_controller.save_settings()
-                elif self.screen_manager.current == HOME_SCREEN:
+                elif self.screen_manager.current == self.home_screen:
+                    if codepoint == 'r':
+                        self.__getattribute__(self.home_screen.replace('_xplore', '')+'_controller').reset_settings()
                     if codepoint == '+':
                         self.image_selection_controller.zoomin(None, None)
                     elif codepoint == '-':

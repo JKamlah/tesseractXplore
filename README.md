@@ -199,6 +199,7 @@ F11             | Toggle fullscreen         | All
 F11             | Toggle dark/light mode    | All
 Ctrl+S          | Save settings             | All
 Ctrl+Q          | Quit                      | All
+Ctrl+R          | Reset tesseract settings  | Image selection
 Ctrl+O          | Open selected image folder| Image selection
 Ctrl+'+'        | Zoom in                   | Image selection
 Ctrl+'-'        | Zoom out                  | Image selection
