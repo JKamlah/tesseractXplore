@@ -99,8 +99,9 @@ If you use zsh-commandline you need to escape brackets with backslash!
 
 ## Win (cmd.exe)
 
-For windows please use the current [installer](https://github.com/JKamlah/tesseractXplore/releases/latest/download/TesseractXploreSetup.exe).
+For windows please use the current [installer](https://github.com/JKamlah/tesseractXplore/releases/latest/download/TesseractXploreSetup.exe). (recommended)
 
+Alternative: Build it from source
 ```
 python3 -m venv venv
 venv\Scripts\activate.bat
@@ -182,23 +183,29 @@ On the right side of the window is an information page with download option.
 There are also some settings to customize the application and global parameters.
 And yes, there is a dark mode, because why not.
 
-![Screenshot]
-
 ### Keyboard Shortcuts
 Some keyboard shortcuts are included for convenience:
 
 Key(s)          | Action                    | Screen
 ----            |----                       |----------
+F1              | Switch to kivy settings   | All
+F2              | Switch to app settings    | All
+F5              | Switch to home screen     | All
+F6              | Switch to model selection | All
+F7              | Switch to model search    | All
+F9              | Toggle online/offline     | All
+F10             | Toggle borderless         | All
 F11             | Toggle fullscreen         | All
-Ctrl+O          | Open file chooser         | Image selection
-Shift+Ctrl+O    | Open file chooser (dirs)  | Image selection
-Ctrl+Enter      | Run image tagger          | Image selection
+Ctrl+S          | Save settings             | All
+Ctrl+Q          | Quit                      | All
+Ctrl+O          | Open selected image folder| Image selection
+Ctrl+'+'        | Zoom in                   | Image selection
+Ctrl+'-'        | Zoom out                  | Image selection
 Ctrl+Enter      | Run model search          | Model search
+Ctrl+Enter      | Run image tagger          | Image selection
 Shift+Ctrl+X    | Clear selected images     | Image selection
 Shift+Ctrl+X    | Clear search filters      | Model search
-Ctrl+S          | Open settings screen      | All
-Ctrl+Backspace  | Return to main screen     | All
-Ctrl+Q          | Quit                      | All
+
 
 ## Contributors
 

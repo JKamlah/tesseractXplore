@@ -90,6 +90,13 @@ MAX_LABEL_CHARS = 80
 # Key codes; reference: https://gist.github.com/Enteleform/a2e4daf9c302518bf31fcc2b35da4661
 BACKSPACE = 8
 ENTER = 13
+F2 = 283
+F5 = 286
+F6 = 287
+F7 = 288
+F8 = 289
+F9 = 290
+F10 = 291
 F11 = 292
 
 # Type aliases

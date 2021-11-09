@@ -45,7 +45,7 @@ from tesseractXplore.constants import (
     MD_ACCENT_PALETTE_ONLINE,
     BACKSPACE,
     ENTER,
-    F11, TRIGGER_DELAY,
+    F2, F5, F6, F7, F8,  F9, F10, F11, TRIGGER_DELAY,
 )
 from tesseractXplore.controllers import (
     ImageSelectionController,
@@ -272,31 +272,39 @@ class TesseractXplore(MDApp, ControllerProxy):
 
     def on_keyboard(self, window, key, scancode, codepoint, modifier):
         """ Handle keyboard shortcuts """
-        if (modifier, key) == (['ctrl'], BACKSPACE):
-            self.home()
-        elif (modifier, key) == (['ctrl'], ENTER):
-            self.current_screen_action()
-        elif (set(modifier), codepoint) == ({'ctrl', 'shift'}, 'x'):
-            self.current_screen_clear()
-        elif (modifier, codepoint) == (['ctrl'], 'o'):
-            self.image_selection_controller.open_native_file_chooser()
-        elif (set(modifier), codepoint) == ({'ctrl', 'shift'}, 'o'):
-            self.image_selection_controller.open_native_file_chooser(dirs=True)
-        elif (modifier, codepoint) == (['ctrl'], 'q'):
-            self.on_request_close()
-        elif (modifier, codepoint) == (['ctrl'], 's'):
+        if 'ctrl' in modifier:
+            if 'shift' in modifier:
+                if codepoint == 'x':
+                    self.current_screen_clear()
+            else:
+                if key == ENTER:
+                    self.current_screen_action()
+                elif codepoint == 'q':
+                    self.on_request_close()
+                elif codepoint == 's':
+                    self.settings_controller.save_settings()
+                elif self.screen_manager.current == HOME_SCREEN:
+                    if codepoint == '+':
+                        self.image_selection_controller.zoomin(None, None)
+                    elif codepoint == '-':
+                        self.image_selection_controller.zoomout(None, None)
+                    elif codepoint == 'o':
+                        self.image_selection_controller.open_folder()
+        elif key == F2:
             self.switch_screen('settings')
-        elif (modifier, codepoint) == (['ctrl'], 't'):
+        elif key == F5:
+            self.home()
+        elif key == F6:
+            self.switch_screen('modellist')
+        elif key == F7:
             self.switch_screen('model')
-        elif (modifier, codepoint) == (['ctrl'], 'v'):
-            self.current_screen_paste()
-        elif self.screen_manager.current == HOME_SCREEN:
-            if (modifier, codepoint) == (['ctrl'], '+'):
-                self.image_selection_controller.zoomin(None, None)
-            elif (modifier, codepoint) == (['ctrl'], '-'):
-                self.image_selection_controller.zoomout(None, None)
+        elif key == F9:
+            self.toggle_online_offline()
+        elif key == F10:
+            self.toggle_border()
         elif key == F11:
             self.toggle_fullscreen()
+
 
     # TODO: current_screen_*() may be better organized as controller methods (inherited/overridden as needed)
     def current_screen_action(self):
